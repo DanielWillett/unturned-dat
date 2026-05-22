@@ -15,9 +15,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+using DanielWillett.UnturnedDataFileLspServer.Data.Project;
 #if DEBUG
 using System.ComponentModel;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
 // ReSharper disable InconsistentOrderOfLocks
 #endif
 #if KEEP_VIRTUAL_FILE_SYSTEM
