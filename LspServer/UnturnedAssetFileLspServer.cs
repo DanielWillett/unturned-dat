@@ -130,6 +130,7 @@ internal sealed class UnturnedAssetFileLspServer
                 .WithInput(Console.OpenStandardInput())
                 .WithHandler<UnturnedAssetFileSyncHandler>()
                 .WithHandler<HoverHandler>()
+                .WithHandler<InlayHintsHandler>()
                 .WithHandler<DocumentSymbolHandler>()
                 // .WithHandler<KeyCompletionHandler>()
                 .WithHandler<DiscoverAssetPropertiesHandler>()
