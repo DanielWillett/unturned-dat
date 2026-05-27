@@ -128,10 +128,10 @@ public readonly struct UnityEngineVersion : IEquatable<UnityEngineVersion>, ICom
     }
 
     /// <inheritdoc />
-    string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString();
+    string IFormattable.ToString(string? format, IFormatProvider? formatProvider) => ToString();
 
     /// <inheritdoc />
-    public int CompareTo(object obj) => obj is UnityEngineVersion v ? CompareTo(v) : 1;
+    public int CompareTo(object? obj) => obj is UnityEngineVersion v ? CompareTo(v) : 1;
 
     public static UnityEngineVersion Parse(string str)
     {

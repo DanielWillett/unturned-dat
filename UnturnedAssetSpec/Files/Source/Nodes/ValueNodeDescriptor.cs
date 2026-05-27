@@ -176,7 +176,7 @@ public readonly struct ValueNodeDescriptor
     {
         if (!IsListElement)
         {
-            return HasValue ? $"{KeyToString(_prop)} = {_prop.Value}" : _prop.ToString();
+            return !HasValue ? _prop.ToString() ?? string.Empty : $"{KeyToString(_prop)} = {_prop.Value}";
         }
 
         int depth = ListDepth;

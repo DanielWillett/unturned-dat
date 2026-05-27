@@ -21,17 +21,17 @@ public static class DataRefs
     /// <summary>
     /// Read-only, case-insensitive set of all reserved keywords for data-refs.
     /// </summary>
-    public static IImmutableSet<string> Keywords { get; }
+    public static ImmutableHashSet<string> Keywords { get; }
 
     /// <summary>
     /// All built-in data-ref roots (besides contextual ones supplied by <see cref="IDataRefReadContext"/>).
     /// </summary>
-    public static IImmutableDictionary<string, DataRefRootFactory> Roots { get; }
+    public static ImmutableDictionary<string, DataRefRootFactory> Roots { get; }
 
     /// <summary>
     /// All built-in data-ref properties.
     /// </summary>
-    public static IImmutableDictionary<string, IPropertyFactory> Properties { get; }
+    public static ImmutableDictionary<string, IPropertyFactory> Properties { get; }
 
     static DataRefs()
     {

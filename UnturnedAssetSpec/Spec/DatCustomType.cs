@@ -141,7 +141,8 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
     {
         value = Optional<DatObjectValue>.Null;
 
-        IDictionarySourceNode? legacyParentDictionary = (args.ParentNode as IPropertySourceNode)?.Parent as IDictionarySourceNode;
+        IDictionarySourceNode? legacyParentDictionary
+            = args.ParentNode as IDictionarySourceNode ?? (args.ParentNode as IPropertySourceNode)?.Parent as IDictionarySourceNode;
 
         bool maybeModern = args.KeyFilter != LegacyExpansionFilter.Legacy;
         bool maybeLegacy = args.KeyFilter != LegacyExpansionFilter.Modern;
@@ -317,11 +318,121 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
         return true;
     }
 
-    private bool TryParseLegacyObject(ref TypeParserArgs<DatObjectValue> args, ref FileEvaluationContext ctx, out Optional<DatObjectValue> value, IDictionarySourceNode dictionary)
+    private bool TryParseLegacyObject(
+        ref TypeParserArgs<DatObjectValue> args,
+        ref FileEvaluationContext ctx,
+        out Optional<DatObjectValue> value,
+        IDictionarySourceNode dictionary)
     {
-        // todo
-        value = Optional<DatObjectValue>.Null;
-        return false;
+        if (!args.TryGetBaseKey(out string? baseKey))
+        {
+            value = Optional<DatObjectValue>.Null;
+            return false;
+        }
+
+        if (!string.IsNullOrEmpty(baseKey) && baseKey[^1] != '_')
+        {
+            baseKey += "_";
+        }
+
+        bool failure = false;
+        ImmutableArray<DatObjectPropertyValue>.Builder properties = ImmutableArray.CreateBuilder<DatObjectPropertyValue>();
+        bool shouldIgnoreError = args.ShouldIgnoreFailureDiagnostic;
+
+        bool referencedNode = false;
+
+        bool any = false;
+        foreach (DatProperty property in Properties)
+        {
+            if (!property.TryGetValue(
+                    ref ctx,
+                    out IValue? propertyValue,
+                    out IPropertySourceNode? node,
+                    args.DiagnosticSink,
+                    args.ReferencedPropertySink,
+                    TypeParserMissingValueBehavior.FallbackToDefaultValue,
+                    baseKey
+                )
+               )
+            {
+                if (!dictionary.TryGetProperty(property, ref ctx, out _, LegacyExpansionFilter.Modern))
+                {
+                    // missing required property
+                    if (property.Required != null && property.Required.TryEvaluateValue(out Optional<bool> isRequired, ref ctx) && isRequired.Value)
+                    {
+                        args.DiagnosticSink?.UNT2014_Object(ref args, property.Key, ctx.RootBreadcrumbs.ToString(false));
+                        failure = true;
+                        shouldIgnoreError = true;
+                    }
+                }
+                else
+                {
+                    any = true;
+                }
+
+                continue;
+            }
+
+            if (node != null)
+            {
+                if (node == args.ParentNode)
+                {
+                    referencedNode = true;
+                }
+                else
+                {
+                    args.ReferencedPropertySink?.AcceptReferencedProperty(node);
+                }
+            }
+
+            any = true;
+            properties.Add(new DatObjectPropertyValue(propertyValue, property, node?.Value));
+        }
+
+        if (!referencedNode && args.ParentNode is IPropertySourceNode prop)
+        {
+            args.ReferencedPropertySink?.AcceptDereferencedProperty(prop);
+        }
+
+        if (!any)
+        {
+            // no properties provided
+            if (args.MissingValueBehavior != TypeParserMissingValueBehavior.FallbackToDefaultValue)
+            {
+                args.DiagnosticSink?.UNT2004_NoDictionary(ref args, args.ParentNode);
+            }
+            else
+            {
+                if (args.Property?.GetIncludedDefaultValue(false) is { } defValue)
+                {
+                    if (defValue.TryGetValueAs(ref ctx, out value))
+                    {
+                        args.Result = TypeParserResult.UsedDefaultValue;
+                        return true;
+                    }
+
+                    args.Result = TypeParserResult.Failed;
+                }
+                else
+                {
+                    args.Result = TypeParserResult.UsedDefaultValueNoneAvailable;
+                }
+
+                value = Optional<DatObjectValue>.Null;
+                return false;
+            }
+        }
+
+        args.ShouldIgnoreFailureDiagnostic = shouldIgnoreError;
+
+        if (failure)
+        {
+            value = Optional<DatObjectValue>.Null;
+            return false;
+        }
+
+        value = new Optional<DatObjectValue>(new DatObjectValue(this, properties.MoveToImmutableOrCopy()));
+        return true;
     }
 
     public override void Visit<TVisitor>(ref TVisitor visitor)

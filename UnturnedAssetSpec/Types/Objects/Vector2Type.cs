@@ -109,6 +109,11 @@ public sealed class Vector2Type : BaseVectorType<Vector2, Vector2Type>
                 args.ReferencedPropertySink.AcceptReferencedProperty(xProperty);
             if (yProperty != null && queryPropNode != yProperty)
                 args.ReferencedPropertySink.AcceptReferencedProperty(yProperty);
+
+            if (queryPropNode is IPropertySourceNode p && queryPropNode != xProperty && queryPropNode != yProperty)
+            {
+                args.ReferencedPropertySink.AcceptDereferencedProperty(p);
+            }
         }
 
         hadOneComp = true;
@@ -145,16 +150,23 @@ public sealed class Vector2Type : BaseVectorType<Vector2, Vector2Type>
         if (xProperty == null || yProperty == null)
         {
             if (xProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(xProperty);
+
             if (yProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, yKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(yProperty);
 
             value = default;
             return false;
+        }
+
+        if (args.ReferencedPropertySink != null)
+        {
+            args.ReferencedPropertySink.AcceptReferencedProperty(xProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(yProperty);
         }
 
         return VectorTypes.TryParseArg(ref args, out value.X, xProperty) & VectorTypes.TryParseArg(ref args, out value.Y, yProperty);

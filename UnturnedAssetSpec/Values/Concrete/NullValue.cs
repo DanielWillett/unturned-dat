@@ -137,7 +137,7 @@ public sealed class NullValue<T>(IType<T> type) : IValue<T>, IValueExpressionNod
         return HashCode.Combine(601500687, Type);
     }
 
-    bool IEquatable<IExpressionNode>.Equals(IExpressionNode? other)
+    bool IEquatable<IExpressionNode?>.Equals(IExpressionNode? other)
     {
         switch (other)
         {

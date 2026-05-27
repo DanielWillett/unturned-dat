@@ -22,7 +22,7 @@ public sealed class BundleReferenceConverter : JsonConverter<BundleReference>
                 return default;
 
             case JsonTokenType.String:
-                if (!KnownTypeValueHelper.TryParseMasterBundleReference(reader.GetString(), out string name, out string path))
+                if (!KnownTypeValueHelper.TryParseMasterBundleReference(reader.GetString()!, out string name, out string path))
                 {
                     throw new JsonException("Unable to parse a bundle reference from a string.");
                 }

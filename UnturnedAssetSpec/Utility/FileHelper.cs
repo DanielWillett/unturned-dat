@@ -29,7 +29,7 @@ internal static class FileHelper
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            fileLocation = Path.GetPathRoot(fileLocation);
+            fileLocation = Path.GetPathRoot(fileLocation)!;
         }
 
         return new DriveInfo(fileLocation).AvailableFreeSpace >= byteCount;

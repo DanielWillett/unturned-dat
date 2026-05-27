@@ -1,7 +1,7 @@
-﻿using System;
+﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+using System;
 using System.Collections.Generic;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
 
@@ -52,7 +52,16 @@ internal class OrderFileComparer : IComparer<DatProperty>
         (_orderMap, _orderAltOffset) = orderfile.GetRelativePositions(typeName, context);
     }
 
-    public int Compare(DatProperty x, DatProperty y)
+    public int Compare(DatProperty? x, DatProperty? y)
+    {
+        if (x == null)
+        {
+            return y == null ? 0 : -1;
+        }
+
+        return y == null ? 1 : CompareIntl(x, y);
+    }
+    protected int CompareIntl(DatProperty x, DatProperty y)
     {
         if (x == y) return 0;
 
@@ -108,8 +117,13 @@ internal class OrderFileComparer<T> : OrderFileComparer, IComparer<T>
         _selector = selector;
     }
 
-    public int Compare(T x, T y)
+    public int Compare(T? x, T? y)
     {
-        return Compare(_selector(x), _selector(y));
+        if (x == null)
+        {
+            return y == null ? 0 : -1;
+        }
+
+        return y == null ? 1 : CompareIntl(_selector(x), _selector(y));
     }
 }

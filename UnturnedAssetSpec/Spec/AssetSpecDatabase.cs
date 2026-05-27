@@ -425,7 +425,7 @@ public class AssetSpecDatabase : IDisposable, IAssetSpecDatabase
                 continue;
             }
 
-            string? skill = skillValue.GetString();
+            string skill = skillValue.GetString()!;
             if (!SkillReference.TryParse(skill, Information, out SkillReference correspondingSkill))
                 continue;
 

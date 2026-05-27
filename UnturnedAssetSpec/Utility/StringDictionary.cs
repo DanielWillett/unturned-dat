@@ -40,6 +40,8 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
     public ValueCollection Values => new ValueCollection(this);
 
     /// <inheritdoc />
+    [MemberNotNullWhen(true, nameof(_sync))]
+    [MemberNotNullWhen(true, nameof(SyncRoot))]
     public bool IsSynchronized => _synchronized && !_readonly;
 
     /// <inheritdoc />
@@ -58,7 +60,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
         _entries = copy._entries == null || copy._entries.Length == 0 ? null : new KeyValuePair<string, T>[copy._entries.Length];
         if (_entries != null)
         {
-            Array.Copy(copy._entries, _entries, _entries.Length);
+            Array.Copy(copy._entries!, _entries, _entries.Length);
         }
         _sync = _synchronized ? _buckets : null;
         Count = copy.Count;
@@ -723,7 +725,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
     }
 
     /// <inheritdoc />
-    void IDictionary.Add(object key, object value)
+    void IDictionary.Add(object key, object? value)
     {
         if (key is not string str)
         {
@@ -1040,7 +1042,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
                 if (_version == -1)
                 {
                     _index = -1;
-                    if (_dictionary is { _synchronized: true, _readonly: false })
+                    if (_dictionary.IsSynchronized)
                     {
                         if (!_lockTaken)
                             Monitor.Enter(_dictionary._sync, ref _lockTaken);
@@ -1070,7 +1072,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
             public void Dispose()
             {
                 if (_lockTaken)
-                    Monitor.Exit(_dictionary._sync);
+                    Monitor.Exit(_dictionary._sync!);
             }
         }
     }
@@ -1207,7 +1209,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
                 if (_version == -1)
                 {
                     _index = -1;
-                    if (_dictionary is { _synchronized: true, _readonly: false })
+                    if (_dictionary.IsSynchronized)
                     {
                         if (!_lockTaken)
                             Monitor.Enter(_dictionary._sync, ref _lockTaken);
@@ -1237,7 +1239,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
             public void Dispose()
             {
                 if (_lockTaken)
-                    Monitor.Exit(_dictionary._sync);
+                    Monitor.Exit(_dictionary._sync!);
             }
         }
     }
@@ -1266,7 +1268,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
             if (_version == -1)
             {
                 _index = -1;
-                if (_dictionary is { _synchronized: true, _readonly: false })
+                if (_dictionary.IsSynchronized)
                 {
                     if (!_lockTaken)
                         Monitor.Enter(_dictionary._sync, ref _lockTaken);
@@ -1296,7 +1298,7 @@ public class StringDictionary<T> : IDictionary<string, T>, IReadOnlyDictionary<s
         public void Dispose()
         {
             if (_lockTaken)
-                Monitor.Exit(_dictionary._sync);
+                Monitor.Exit(_dictionary._sync!);
         }
 
         /// <inheritdoc />

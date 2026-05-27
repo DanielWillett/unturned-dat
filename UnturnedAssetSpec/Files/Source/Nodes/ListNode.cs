@@ -78,7 +78,7 @@ internal class ListNode : AnySourceNode, IListSourceNode
         return n1.Count == n2.Count && ArraysEqual(n1._values, n2._values);
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && EqualsHelper(this, (ListNode)other);
     }
@@ -106,7 +106,7 @@ internal sealed class SingleCommentedListNode : ListNode, ICommentSourceNode
         Comment = comment;
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comment.Equals(((SingleCommentedListNode)other).Comment);
     }
@@ -126,7 +126,7 @@ internal sealed class MultipleCommentedListNode : ListNode, ICommentSourceNode
         Comments = comments;
     }
     
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comments.Equals(((MultipleCommentedListNode)other).Comments);
     }

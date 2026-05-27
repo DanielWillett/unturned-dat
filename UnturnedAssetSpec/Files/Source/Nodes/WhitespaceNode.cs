@@ -23,7 +23,7 @@ internal class WhitespaceNode : AnySourceNode, IWhiteSpaceSourceNode
         Lines = lines;
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Lines == ((WhitespaceNode)other).Lines;
     }

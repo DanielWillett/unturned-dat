@@ -24,7 +24,7 @@ internal sealed class CommentOnlyNode : AnySourceNode, ICommentSourceNode
         Comment = comment;
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comment.Equals(((CommentOnlyNode)other).Comment);
     }

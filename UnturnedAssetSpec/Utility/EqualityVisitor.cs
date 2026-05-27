@@ -20,6 +20,74 @@ public struct EqualityVisitor<TValue> : IValueVisitor, IGenericVisitor
     public TValue? Value;
     public bool CaseInsensitive;
 
+    /// <summary>
+    /// Attempts to compare two values to see if they're equal.
+    /// </summary>
+    /// <typeparam name="TOtherValue">The type of the other value to compare with.</typeparam>
+    /// <param name="value">The first value in the comparison.</param>
+    /// <param name="otherValue">The other value in the comparison.</param>
+    /// <param name="caseInsensitive">Whether or not to ignore case when comparing the values, if they're a <see cref="string"/> type.</param>
+    /// <param name="isEqual">Whether or not the two values should be considered equal, given the parameters.</param>
+    /// <returns>Whether or not a comparison could be made successfully between the two values.</returns>
+    public static bool TryCompare<TOtherValue>(TValue value, TOtherValue otherValue, bool caseInsensitive, out bool isEqual)
+        where TOtherValue : IEquatable<TOtherValue>
+    {
+        EqualityVisitor<TValue> v;
+        v.IsEqual = false;
+        v.IsNull = value == null;
+        v.Value = value;
+        v.CaseInsensitive = caseInsensitive;
+        v.Success = false;
+
+        v.Accept(otherValue);
+
+        if (!v.Success)
+        {
+            isEqual = false;
+            return false;
+        }
+
+        isEqual = v.IsEqual;
+        return true;
+    }
+
+    /// <inheritdoc cref="TryCompare{TOtherValue}(TValue,TOtherValue,bool,out bool)"/>
+    public static bool TryCompare<TOtherValue>(TValue value, TOtherValue otherValue, out bool isEqual)
+        where TOtherValue : IEquatable<TOtherValue>
+    {
+        return TryCompare(value, otherValue, false, out isEqual);
+    }
+
+    /// <inheritdoc cref="TryCompare{TOtherValue}(TValue,TOtherValue,bool,out bool)"/>
+    public static bool TryCompare<TOtherValue>(Optional<TValue> value, Optional<TOtherValue> otherValue, bool caseInsensitive, out bool isEqual)
+        where TOtherValue : IEquatable<TOtherValue>
+    {
+        EqualityVisitor<TValue> v;
+        v.IsEqual = false;
+        v.IsNull = !value.HasValue;
+        v.Value = value.Value;
+        v.CaseInsensitive = caseInsensitive;
+        v.Success = false;
+
+        v.Accept(otherValue);
+
+        if (!v.Success)
+        {
+            isEqual = false;
+            return false;
+        }
+
+        isEqual = v.IsEqual;
+        return true;
+    }
+
+    /// <inheritdoc cref="TryCompare{TOtherValue}(TValue,TOtherValue,bool,out bool)"/>
+    public static bool TryCompare<TOtherValue>(Optional<TValue> value, Optional<TOtherValue> otherValue, out bool isEqual)
+        where TOtherValue : IEquatable<TOtherValue>
+    {
+        return TryCompare(value, otherValue, false, out isEqual);
+    }
+
     public void Accept<TOtherValue>(IType<TOtherValue> type, Optional<TOtherValue> optVal)
         where TOtherValue : IEquatable<TOtherValue>
     {

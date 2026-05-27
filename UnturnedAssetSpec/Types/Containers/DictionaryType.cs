@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 
@@ -475,7 +474,7 @@ public class DictionaryType<TKeyType, TValueType>
     public bool TryParse(ref TypeParserArgs<EquatableArray<DictionaryPair<TValueType>>> args, ref FileEvaluationContext ctx, out Optional<EquatableArray<DictionaryPair<TValueType>>> value)
     {
         value = Optional<EquatableArray<DictionaryPair<TValueType>>>.Null;
-        
+
         switch (args.ValueNode)
         {
             // null (no value)
@@ -516,7 +515,7 @@ public class DictionaryType<TKeyType, TValueType>
                     if (args.DiagnosticSink != null
                         && _keyType != null
                         && _args.RequireKeyType
-                        && !TryParseKey(property, ref args, ref ctx, out _))
+                        && !TryParseKey(property, ref args, ref ctx))
                     {
                         allPassed = false;
                     }
@@ -581,14 +580,15 @@ public class DictionaryType<TKeyType, TValueType>
     private bool TryParseKey(
         IPropertySourceNode property,
         ref TypeParserArgs<EquatableArray<DictionaryPair<TValueType>>> args,
-        ref FileEvaluationContext ctx,
-        out Optional<TKeyType> parsedKey
+        ref FileEvaluationContext ctx
     )
     {
+        // Optional<TKeyType> parsedKey;
+
         string key = property.Key;
         if (_keyType.Equals(StringType.Instance))
         {
-            parsedKey = Unsafe.As<string, TKeyType>(ref key);
+            // parsedKey = Unsafe.As<string, TKeyType>(ref key);
             return true;
         }
 
@@ -601,9 +601,9 @@ public class DictionaryType<TKeyType, TValueType>
             parseArgs.ValueRange = property.Range;
             parseArgs.TextAsString = key;
 
-            if (converter.TryParse(key, ref parseArgs, out TKeyType? keyValue))
+            if (converter.TryParse(key, ref parseArgs, out _ /* TKeyType? keyValue */))
             {
-                parsedKey = keyValue;
+                // parsedKey = keyValue;
                 return true;
             }
 
@@ -623,7 +623,7 @@ public class DictionaryType<TKeyType, TValueType>
 
             args.CreateSubTypeParserArgs(out TypeParserArgs<TKeyType> parseArgs, fakeNode, args.ParentNode, _keyType, LegacyExpansionFilter.Modern);
 
-            if (parser.TryParse(ref parseArgs, ref ctx, out parsedKey))
+            if (parser.TryParse(ref parseArgs, ref ctx, out _/* parsedKey */))
             {
                 return true;
             }
@@ -631,7 +631,7 @@ public class DictionaryType<TKeyType, TValueType>
             args.ShouldIgnoreFailureDiagnostic |= parseArgs.ShouldIgnoreFailureDiagnostic;
         }
 
-        parsedKey = Optional<TKeyType>.Null;
+        // parsedKey = Optional<TKeyType>.Null;
         return false;
     }
 

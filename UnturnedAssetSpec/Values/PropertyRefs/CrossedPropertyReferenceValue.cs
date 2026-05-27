@@ -1,15 +1,15 @@
 ﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
 using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+using DanielWillett.UnturnedDataFileLspServer.Data.Project;
 using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
 
@@ -80,6 +80,7 @@ public class CrossedPropertyReferenceValue : ICrossedPropertyReference
     /// <inheritdoc />
     public override int GetHashCode()
     {
+        // ReSharper disable once NonReadonlyMemberInGetHashCode
         return HashCode.Combine(1332296112, _propertyReference);
     }
 

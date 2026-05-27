@@ -103,7 +103,7 @@ public struct FileRange : IEquatable<FileRange>, IComparable<FileRange>, ICompar
     }
 
     /// <inheritdoc />
-    public readonly int CompareTo(object obj) => obj is FileRange p ? CompareTo(p) : 1;
+    public readonly int CompareTo(object? obj) => obj is FileRange p ? CompareTo(p) : 1;
 
     public static bool operator ==(FileRange left, FileRange right) => left.Start == right.Start && left.End == right.End;
     public static bool operator !=(FileRange left, FileRange right) => left.Start != right.Start || left.End != right.End;

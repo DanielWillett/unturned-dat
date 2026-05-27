@@ -45,18 +45,18 @@ public readonly struct IncludedProperty : IConfigurableDataRefProperty, IEquatab
     }
 
     /// <inheritdoc />
-    public OneOrMore<KeyValuePair<string, object>> Options
+    public OneOrMore<KeyValuePair<string, object?>> Options
     {
         get
         {
             if (RequireValue)
             {
-                return new OneOrMore<KeyValuePair<string, object>>(
-                    new KeyValuePair<string, object>(nameof(RequireValue), BoxedPrimitives.True)
+                return new OneOrMore<KeyValuePair<string, object?>>(
+                    new KeyValuePair<string, object?>(nameof(RequireValue), BoxedPrimitives.True)
                 );
             }
 
-            return OneOrMore<KeyValuePair<string, object>>.Null;
+            return OneOrMore<KeyValuePair<string, object?>>.Null;
         }
     }
 

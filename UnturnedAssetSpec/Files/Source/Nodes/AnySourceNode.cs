@@ -68,7 +68,7 @@ internal abstract class AnySourceNode : ISourceNode
         LastCharacterIndex = properties.LastCharacterIndex;
     }
 
-    public virtual bool Equals(ISourceNode other)
+    public virtual bool Equals(ISourceNode? other)
     {
         if (ReferenceEquals(this, other))
             return true;
@@ -111,12 +111,14 @@ internal abstract class AnySourceNode : ISourceNode
 
     public override int GetHashCode()
     {
+        // ReSharper disable NonReadonlyMemberInGetHashCode
         int hashCode = -268197062;
         hashCode = hashCode * -1521134295 + (int)Type;
         hashCode = hashCode * -1521134295 + Index;
         hashCode = hashCode * -1521134295 + Range.GetHashCode();
         hashCode = hashCode * -1521134295 + Depth.GetHashCode();
         return hashCode;
+        // ReSharper restore NonReadonlyMemberInGetHashCode
     }
 
     public abstract void Visit<TVisitor>(ref TVisitor visitor)

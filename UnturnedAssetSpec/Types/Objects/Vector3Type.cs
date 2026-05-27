@@ -131,6 +131,11 @@ public sealed class Vector3Type : BaseVectorType<Vector3, Vector3Type>
                 args.ReferencedPropertySink.AcceptReferencedProperty(yProperty);
             if (zProperty != null && queryPropNode != zProperty)
                 args.ReferencedPropertySink.AcceptReferencedProperty(zProperty);
+
+            if (queryPropNode is IPropertySourceNode p && queryPropNode != xProperty && queryPropNode != yProperty && queryPropNode != zProperty)
+            {
+                args.ReferencedPropertySink.AcceptDereferencedProperty(p);
+            }
         }
 
         hadOneComp = true;
@@ -176,22 +181,30 @@ public sealed class Vector3Type : BaseVectorType<Vector3, Vector3Type>
         if (xProperty == null || yProperty == null || zProperty == null)
         {
             if (xProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(xProperty);
+
             if (yProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, yKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(yProperty);
+
             if (zProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, zKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(zProperty);
 
             value = default;
             return false;
         }
 
+        if (args.ReferencedPropertySink != null)
+        {
+            args.ReferencedPropertySink.AcceptReferencedProperty(xProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(yProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(zProperty);
+        }
 
         return VectorTypes.TryParseArg(ref args, out value.X, xProperty)
                & VectorTypes.TryParseArg(ref args, out value.Y, yProperty)

@@ -60,7 +60,7 @@ public static class SourceNodeExtensions
         /// <summary>
         /// Try to get a property by it's key or alias.
         /// </summary>
-        public bool TryGetProperty(DatProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out IPropertySourceNode? propertyNode, LegacyExpansionFilter filter = LegacyExpansionFilter.Either)
+        public bool TryGetProperty(DatProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out IPropertySourceNode? propertyNode, LegacyExpansionFilter filter = LegacyExpansionFilter.Either, string? baseKey = null)
         {
             if (ctx.CachedProperty == property && ctx.CachedPropertyNode != null)
             {
@@ -70,7 +70,7 @@ public static class SourceNodeExtensions
 
             if (property.Keys.IsDefaultOrEmpty)
             {
-                if (node.TryGetProperty(property.Key, out propertyNode))
+                if (node.TryGetProperty(baseKey + property.Key, out propertyNode))
                     return true;
             }
             else
@@ -83,7 +83,7 @@ public static class SourceNodeExtensions
                     if (key.Condition != null && !key.Condition.TryEvaluateValue(out Optional<bool> passesCondition, ref ctx) && !passesCondition.GetValueOrDefault(false))
                         continue;
 
-                    if (node.TryGetProperty(key.Key, out propertyNode))
+                    if (node.TryGetProperty(baseKey + key.Key, out propertyNode))
                         return true;
                 }
             }

@@ -558,4 +558,7 @@
   <data name="JsonException_InvalidTemplateGroup" xml:space="preserve">
     <value>Property "{0}" template group at index {1} couldn't be parsed.</value>
   </data>
+  <data name="Type_Name_Color_ModernIs32Bit" xml:space="preserve">
+    <value>Color (0-255, Legacy: 0-1)</value>
+  </data>
 </root>

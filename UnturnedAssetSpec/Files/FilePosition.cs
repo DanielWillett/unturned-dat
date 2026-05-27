@@ -58,7 +58,7 @@ public struct FilePosition : IEquatable<FilePosition>, IComparable<FilePosition>
     }
 
     /// <inheritdoc />
-    public readonly int CompareTo(object obj) => obj is FilePosition p ? CompareTo(p) : 1;
+    public readonly int CompareTo(object? obj) => obj is FilePosition p ? CompareTo(p) : 1;
 
     public static bool operator ==(FilePosition left, FilePosition right) => left.Line == right.Line && left.Character == right.Character;
     public static bool operator !=(FilePosition left, FilePosition right) => left.Line != right.Line || left.Character != right.Character;

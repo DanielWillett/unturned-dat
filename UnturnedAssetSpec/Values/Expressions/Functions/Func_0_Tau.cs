@@ -26,5 +26,5 @@ internal sealed class Tau : ExpressionFunction, IFunctionExpressionNode
     int IFunctionExpressionNode.Count => 0;
     IExpressionFunction IFunctionExpressionNode.Function => this;
     IExpressionNode IFunctionExpressionNode.this[int index] => throw new ArgumentOutOfRangeException(nameof(index));
-    bool IEquatable<IExpressionNode>.Equals(IExpressionNode? other) => other is Tau;
+    bool IEquatable<IExpressionNode?>.Equals(IExpressionNode? other) => other is Tau;
 }

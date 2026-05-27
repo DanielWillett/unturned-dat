@@ -549,7 +549,7 @@ public class ListType<TCountType, TElementType>
         return _subType.Equals(other._subType) && _args.Equals(in other._args);
     }
 
-    private void CheckCount(int ct, ref TypeParserArgs<EquatableArray<TElementType>> args)
+    private void CheckCount(ref int ct, ref TypeParserArgs<EquatableArray<TElementType>> args)
     {
         if (ct < _minCount)
         {
@@ -559,6 +559,7 @@ public class ListType<TCountType, TElementType>
         if (ct > _maxCount)
         {
             args.DiagnosticSink?.UNT1024_More(ref args, args.ParentNode, _maxCount.Value);
+            ct = _maxCount.Value;
         }
     }
 
@@ -657,18 +658,20 @@ public class ListType<TCountType, TElementType>
                     break;
                 }
 
-                CheckCount(listNode.Count, ref args);
-                if (listNode.Count == 0)
+                int ct = listNode.Count;
+                CheckCount(ref ct, ref args);
+                if (ct == 0)
                 {
                     value = EquatableArray<TElementType>.Empty;
                     args.Result = TypeParserResult.Successful;
                     return true;
                 }
 
-                array = new TElementType?[listNode.Count];
+                array = new TElementType?[ct];
                 int index = 0;
                 ImmutableArray<ISourceNode> values = listNode.Children;
-                for (int i = 0; i < values.Length; ++i)
+                ct = Math.Min(values.Length, ct);
+                for (int i = 0; i < ct; ++i)
                 {
                     ISourceNode node = values[i];
                     if (node is not IAnyValueSourceNode v)
@@ -727,7 +730,7 @@ public class ListType<TCountType, TElementType>
 
                     if (success)
                     {
-                        CheckCount(count, ref args);
+                        CheckCount(ref count, ref args);
 
                         IDictionarySourceNode? defaultDictionary;
 
@@ -753,6 +756,10 @@ public class ListType<TCountType, TElementType>
                             else
                             {
                                 singularPropertyName = args.Property?.Key ?? string.Empty;
+                                if (args.BaseKey != null)
+                                {
+                                    singularPropertyName = args.BaseKey + "_" + singularPropertyName;
+                                }
                             }
 
                             // trim 's' from end by default
@@ -761,10 +768,10 @@ public class ListType<TCountType, TElementType>
                                 singularPropertyName = singularPropertyName[..^1];
                             }
                         }
-                        // todo: else if (ctx.CurrentObject != null)
-                        // todo: {
-                        // todo:     singularPropertyName = ctx.CurrentObject.BaseKey + "_" + singularPropertyName;
-                        // todo: }
+                        else if (args.BaseKey != null)
+                        {
+                            singularPropertyName = args.BaseKey + "_" + singularPropertyName;
+                        }
 
                         IDictionarySourceNode? dictionaryNode = _args.ElementContext switch
                         {
@@ -795,7 +802,8 @@ public class ListType<TCountType, TElementType>
                             string newKey = CreateLegacyKey(singularPropertyName, i);
                             bool needsDefault = false, wasIncluded = false;
 
-                            if (!dictionaryNode.TryGetProperty(newKey, out IPropertySourceNode? property))
+                            if (!dictionaryNode.TryGetProperty(newKey, out IPropertySourceNode? property)
+                                && _subType.TrimmingBehavior <= PropertySearchTrimmingBehavior.CreatesSiblingPropertiesInSameFile)
                             {
                                 args.DiagnosticSink?.UNT1007(ref args, valueNode, newKey);
                                 needsDefault = true;
@@ -803,14 +811,23 @@ public class ListType<TCountType, TElementType>
                             else
                             {
                                 wasIncluded = true;
-                                args.ReferencedPropertySink?.AcceptReferencedProperty(property);
-                                args.CreateSubTypeParserArgs(out TypeParserArgs<TElementType> elementParseArgs, property.Value, property, _subType, LegacyExpansionFilter.Modern);
+                                TypeParserArgs<TElementType> elementParseArgs;
+                                if (property != null)
+                                {
+                                    args.ReferencedPropertySink?.AcceptReferencedProperty(property);
+                                    args.CreateSubTypeParserArgs(out elementParseArgs, property.Value, property, _subType, LegacyExpansionFilter.Either);
+                                }
+                                else
+                                {
+                                    args.CreateSubTypeParserArgs(out elementParseArgs, null, dictionaryNode, _subType, LegacyExpansionFilter.Legacy);
+                                    elementParseArgs.BaseKey = newKey;
+                                }
 
                                 if (!TryParseWithIndex(i, ref elementParseArgs, ref ctx, out Optional<TElementType> elementType) || !elementType.HasValue)
                                 {
                                     if (!elementParseArgs.ShouldIgnoreFailureDiagnostic)
                                     {
-                                        args.DiagnosticSink?.UNT2004_Generic(ref args, property.Value == null ? "-" : property.Value.ToString()!, _subType);
+                                        args.DiagnosticSink?.UNT2004_Generic(ref args, property?.Value == null ? "-" : property.Value.ToString()!, _subType);
                                     }
 
                                     needsDefault = true;
@@ -912,18 +929,26 @@ public class ListType<TCountType, TElementType>
             return;
 
         TElementType? value = array[index];
+
+        EqualityVisitor<TElementType> visitor = default;
+        visitor.Value = value;
+        visitor.IsNull = value == null;
+
         for (int i = 0; i < index; ++i)
         {
             TElementType? other = array[i];
-            if (other == null)
-            {
-                if (value != null)
-                    continue;
-            }
-            else if (value == null)
+
+            visitor.Accept(other);
+
+            if (!visitor.Success)
                 continue;
-            else if (!EqualityComparer<TElementType>.Default.Equals(value, other))
+
+            visitor.Success = false;
+
+            if (!visitor.IsEqual)
                 continue;
+
+            visitor.IsEqual = false;
 
             args.DiagnosticSink?.UNT1027(ref args, node, index, i);
             args.ShouldIgnoreFailureDiagnostic = false;

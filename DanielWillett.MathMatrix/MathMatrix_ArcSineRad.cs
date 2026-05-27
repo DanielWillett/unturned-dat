@@ -1,24 +1,35 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
-partial class MathMatrix
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor, TIdealOut>(string inVal, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
         AsinRadVisitor<TVisitor, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
-        ConvertToNumber<TIdealOut, AsinRadVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, AsinRadVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(ulong inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -26,6 +37,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(uint inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -33,6 +47,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(ushort inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -40,6 +57,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(byte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -47,6 +67,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(long inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -54,6 +77,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(int inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -61,6 +87,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(short inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -68,6 +97,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(sbyte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -75,6 +107,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(float inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(MathF.Asin(inVal));
         return true;
@@ -82,6 +117,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(double inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin(inVal));
         return true;
@@ -89,6 +127,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AsinRad{TIn,TVisitor,TIdealOut}"/>
     public static bool AsinRad<TVisitor>(decimal inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Asin((double)inVal));
         return true;
@@ -98,6 +139,9 @@ partial class MathMatrix
     public static bool AsinRad<TIn, TVisitor>(TIn inVal, ref TVisitor visitor)
         where TIn : IEquatable<TIn>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return AsinRad<TIn, TVisitor, TIn>(inVal, ref visitor);
     }
@@ -112,6 +156,9 @@ partial class MathMatrix
         where TIn : IEquatable<TIn>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TIn) == typeof(ulong))
@@ -164,14 +211,17 @@ partial class MathMatrix
 
     private struct AsinRadVisitor<TVisitor, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = AsinRad<T, TVisitor, TIdealOut>(value, ref Visitor);
+            Result = AsinRad<T, TVisitor, TIdealOut>(value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

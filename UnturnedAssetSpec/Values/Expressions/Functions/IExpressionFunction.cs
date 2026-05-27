@@ -1,5 +1,4 @@
 ﻿using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using System;
@@ -35,7 +34,11 @@ public interface IExpressionFunction
     /// </summary>
     bool Evaluate<TOut, TVisitor>(ref TVisitor visitor)
         where TOut : IEquatable<TOut>
-        where TVisitor : IGenericVisitor;
+        where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
+    ;
 
     /// <summary>
     /// Evaluate the function with 1 argument.
@@ -43,7 +46,11 @@ public interface IExpressionFunction
     bool Evaluate<TIn, TOut, TVisitor>(TIn v, ref TVisitor visitor)
         where TIn : IEquatable<TIn>
         where TOut : IEquatable<TOut>
-        where TVisitor : IGenericVisitor;
+        where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
+    ;
 
     /// <summary>
     /// Evaluate the function with 2 arguments.
@@ -52,7 +59,11 @@ public interface IExpressionFunction
         where TIn1 : IEquatable<TIn1>
         where TIn2 : IEquatable<TIn2>
         where TOut : IEquatable<TOut>
-        where TVisitor : IGenericVisitor;
+        where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
+    ;
 
     /// <summary>
     /// Evaluate the function with 3 arguments.
@@ -62,7 +73,11 @@ public interface IExpressionFunction
         where TIn2 : IEquatable<TIn2>
         where TIn3 : IEquatable<TIn3>
         where TOut : IEquatable<TOut>
-        where TVisitor : IGenericVisitor;
+        where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
+    ;
 }
 
 /// <summary>
@@ -98,6 +113,9 @@ public abstract class ExpressionFunction : IExpressionFunction
     public virtual bool Evaluate<TOut, TVisitor>(ref TVisitor visitor)
         where TOut : IEquatable<TOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return false;
     }
@@ -106,6 +124,9 @@ public abstract class ExpressionFunction : IExpressionFunction
         where TIn : IEquatable<TIn>
         where TOut : IEquatable<TOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return false;
     }
@@ -115,6 +136,9 @@ public abstract class ExpressionFunction : IExpressionFunction
         where TIn2 : IEquatable<TIn2>
         where TOut : IEquatable<TOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return false;
     }
@@ -125,6 +149,9 @@ public abstract class ExpressionFunction : IExpressionFunction
         where TIn3 : IEquatable<TIn3>
         where TOut : IEquatable<TOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return false;
     }

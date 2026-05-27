@@ -1,24 +1,35 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
-partial class MathMatrix
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor, TIdealOut>(string inVal, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
         AcosDegVisitor<TVisitor, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
-        ConvertToNumber<TIdealOut, AcosDegVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, AcosDegVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(ulong inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -26,6 +37,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(uint inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -33,6 +47,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(ushort inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -40,6 +57,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(byte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -47,6 +67,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(long inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -54,6 +77,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(int inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -61,6 +87,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(short inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -68,6 +97,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(sbyte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -75,6 +107,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(float inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(MathF.Acos(inVal) * (180f / MathF.PI));
         return true;
@@ -82,6 +117,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(double inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos(inVal) * (180 / Math.PI));
         return true;
@@ -89,6 +127,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="AcosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool AcosDeg<TVisitor>(decimal inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Acos((double)inVal) * (180 / Math.PI));
         return true;
@@ -98,6 +139,9 @@ partial class MathMatrix
     public static bool AcosDeg<TIn, TVisitor>(TIn inVal, ref TVisitor visitor)
         where TIn : IEquatable<TIn>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return AcosDeg<TIn, TVisitor, TIn>(inVal, ref visitor);
     }
@@ -112,6 +156,9 @@ partial class MathMatrix
         where TIn : IEquatable<TIn>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TIn) == typeof(ulong))
@@ -164,14 +211,17 @@ partial class MathMatrix
 
     private struct AcosDegVisitor<TVisitor, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = AcosDeg<T, TVisitor, TIdealOut>(value, ref Visitor);
+            Result = AcosDeg<T, TVisitor, TIdealOut>(value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

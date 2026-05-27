@@ -97,7 +97,7 @@ internal class DictionaryNode : AnySourceNode, IDictionarySourceNode
         return n1.Count == n2.Count && ArraysEqual(n1.Values, n2.Values);
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && EqualsHelper(this, (DictionaryNode)other);
     }
@@ -125,7 +125,7 @@ internal sealed class SingleCommentedDictionaryNode : DictionaryNode, ICommentSo
         Comment = comment;
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comment.Equals(((SingleCommentedDictionaryNode)other).Comment);
     }
@@ -145,7 +145,7 @@ internal sealed class MultipleCommentedDictionaryNode : DictionaryNode, IComment
         Comments = comments;
     }
     
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comments.Equals(((MultipleCommentedDictionaryNode)other).Comments);
     }

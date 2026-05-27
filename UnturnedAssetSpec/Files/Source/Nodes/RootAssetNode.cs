@@ -235,7 +235,7 @@ internal sealed class RootAssetNode : RootAssetNodeSkippedLocalization
 
         Localization = ImmutableArray<ILocalizationSourceFile>.Empty;
         
-        if (database.FileTypes.TryGetValue(ActualType, out DatFileType specType)
+        if (database.FileTypes.TryGetValue(ActualType, out DatFileType? specType)
             && specType is not IDatTypeWithLocalizationProperties { LocalizationProperties.Length: > 0 })
         {
             return;

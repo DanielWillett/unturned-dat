@@ -254,7 +254,7 @@ public class PooledList<T> : IList<T>, IReadOnlyList<T>, IList, IDisposable
     {
         return ((IList)this).IndexOf(value) >= 0;
     }
-    int IList.IndexOf(object value)
+    int IList.IndexOf(object? value)
     {
         if (default(T) == null)
         {
@@ -266,11 +266,11 @@ public class PooledList<T> : IList<T>, IReadOnlyList<T>, IList, IDisposable
 
         return value is T t ? IndexOf(t) : -1;
     }
-    void IList.Insert(int index, object value)
+    void IList.Insert(int index, object? value)
     {
-        Insert(index, (T)value);
+        Insert(index, (T?)value!);
     }
-    void IList.Remove(object value)
+    void IList.Remove(object? value)
     {
         if (default(T) == null)
         {

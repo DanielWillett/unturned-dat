@@ -178,8 +178,12 @@ public static class TypeParsers
         return false;
     }
 
-    internal static bool TryApplyMissingValueBehavior<T>(ref TypeParserArgs<T> args, ref FileEvaluationContext ctx, out Optional<T> value, out bool returnValue)
-        where T : IEquatable<T>
+    internal static bool TryApplyMissingValueBehavior<T>(
+        ref TypeParserArgs<T> args,
+        ref FileEvaluationContext ctx,
+        out Optional<T> value,
+        out bool returnValue
+    ) where T : IEquatable<T>
     {
         DatProperty? property = args.Property;
         if (property != null)
@@ -232,8 +236,11 @@ public static class TypeParsers
         return false;
     }
 
-    internal static bool TryApplyMissingValueBehaviorToNullValue<T>(ref TypeParserArgs<T> args, ref FileEvaluationContext ctx, out Optional<T> value)
-        where T : IEquatable<T>
+    internal static bool TryApplyMissingValueBehaviorToNullValue<T>(
+        ref TypeParserArgs<T> args,
+        ref FileEvaluationContext ctx,
+        out Optional<T> value
+    ) where T : IEquatable<T>
     {
         bool hasProperty = args.ParentNode is IPropertySourceNode;
         if (args.Property?.GetIncludedDefaultValue(hasProperty) is { } defValue)

@@ -1,11 +1,11 @@
 ﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
+using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
 

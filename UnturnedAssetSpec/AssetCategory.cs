@@ -477,7 +477,7 @@ public sealed class AssetCategory : DatEnumType, IEquatable<AssetCategory>, ICom
     /// <inheritdoc />
     public override int GetHashCode() => 543963484;
 
-    IType ITypeFactory.CreateType(in JsonElement typeDefinition, string typeId, IDatSpecificationReadContext spec, DatProperty owner, string context = "")
+    IType ITypeFactory.CreateType(in JsonElement typeDefinition, string typeId, IDatSpecificationReadContext spec, DatProperty owner, string context)
     {
         return this;
     }

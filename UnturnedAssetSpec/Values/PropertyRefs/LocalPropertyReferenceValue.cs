@@ -4,13 +4,13 @@ using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
 

@@ -1,39 +1,51 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604
 #pragma warning disable CS8600
 
-partial class MathMatrix
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TInY, TVisitor, TIdealOut>(string inValX, TInY inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
         MinXVisitor<TVisitor, TInY, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueY = inValY;
-        ConvertToNumber<TIdealOut, MinXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, MinXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TInX, TVisitor, TIdealOut>(TInX inValX, string inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
         MinYVisitor<TVisitor, TInX, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueX = inValX;
-        ConvertToNumber<TIdealOut, MinYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, MinYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
 
@@ -42,6 +54,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInY) == typeof(ulong))
             return Min(inValX, As<TInY, ulong>(inValY!), ref visitor);
@@ -92,6 +107,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -99,6 +117,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -106,6 +127,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -113,6 +137,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -120,6 +147,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -130,6 +160,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -140,6 +173,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -150,6 +186,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -160,6 +199,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY <= 0)
             visitor.Accept(inValY);
@@ -170,6 +212,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY <= 0)
             visitor.Accept(inValY);
@@ -180,6 +225,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ulong inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(new decimal(inValX), inValY));
         return true;
@@ -190,6 +238,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -241,6 +292,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -248,6 +302,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -255,6 +312,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -262,6 +322,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -269,6 +332,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -279,6 +345,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -289,6 +358,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -299,6 +371,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -309,6 +384,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY <= 0)
             visitor.Accept(inValY);
@@ -319,6 +397,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(inValX, inValY));
         return true;
@@ -326,6 +407,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(uint inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(new decimal(inValX), inValY));
         return true;
@@ -336,6 +420,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -387,6 +474,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -394,6 +484,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -401,6 +494,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -408,6 +504,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -415,6 +514,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -425,6 +527,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -435,6 +540,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -445,6 +553,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -455,6 +566,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(inValX, inValY));
         return true;
@@ -462,6 +576,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(inValX, inValY));
         return true;
@@ -469,6 +586,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(ushort inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(new decimal(inValX), inValY));
         return true;
@@ -479,6 +599,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -529,6 +652,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -536,6 +662,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -543,6 +672,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -550,6 +682,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -557,6 +692,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -567,6 +705,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -577,6 +718,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -587,6 +731,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(inValY);
@@ -597,6 +744,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(inValX, inValY));
         return true;
@@ -604,6 +754,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(inValX, inValY));
         return true;
@@ -611,6 +764,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(byte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY <= 0 ? inValY : Math.Min(new decimal(inValX), inValY));
         return true;
@@ -621,6 +777,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -671,6 +830,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -681,6 +843,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -691,6 +856,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -701,6 +869,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -711,6 +882,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -718,6 +892,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -725,6 +902,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -732,6 +912,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -739,6 +922,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), new decimal(inValY)));
         return true;
@@ -746,6 +932,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), new decimal(inValY)));
         return true;
@@ -753,6 +942,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(long inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), inValY));
         return true;
@@ -763,6 +955,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -815,6 +1010,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -825,6 +1023,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -835,6 +1036,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -845,6 +1049,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -855,6 +1062,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -862,6 +1072,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -869,6 +1082,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -876,6 +1092,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -883,6 +1102,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, (double)inValY));
         return true;
@@ -890,6 +1112,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -897,6 +1122,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(int inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), inValY));
         return true;
@@ -907,6 +1135,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -959,6 +1190,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -969,6 +1203,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -979,6 +1216,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -989,6 +1229,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -999,6 +1242,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1006,6 +1252,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1013,6 +1262,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1020,6 +1272,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1027,6 +1282,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1034,6 +1292,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1041,6 +1302,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(short inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), inValY));
         return true;
@@ -1051,6 +1315,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1103,6 +1370,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -1113,6 +1383,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -1123,6 +1396,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -1133,6 +1409,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -1143,6 +1422,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1150,6 +1432,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1157,6 +1442,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1164,6 +1452,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1171,6 +1462,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1178,6 +1472,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1185,6 +1482,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(sbyte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), inValY));
         return true;
@@ -1195,6 +1495,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1247,6 +1550,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -1257,6 +1563,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -1267,6 +1576,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, inValY));
         return true;
@@ -1274,6 +1586,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, inValY));
         return true;
@@ -1281,6 +1596,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), new decimal(inValY)));
         return true;
@@ -1288,6 +1606,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min((double)inValX, inValY));
         return true;
@@ -1295,6 +1616,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1302,6 +1626,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1309,6 +1636,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1316,6 +1646,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1323,6 +1656,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(float inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), inValY));
         return true;
@@ -1333,6 +1669,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1385,6 +1724,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(inValX);
@@ -1395,6 +1737,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, inValY));
         return true;
@@ -1402,6 +1747,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, inValY));
         return true;
@@ -1409,6 +1757,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, inValY));
         return true;
@@ -1416,6 +1767,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), new decimal(inValY)));
         return true;
@@ -1423,6 +1777,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1430,6 +1787,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1437,6 +1797,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1444,6 +1807,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1451,6 +1817,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1458,6 +1827,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(double inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(new decimal(inValX), inValY));
         return true;
@@ -1468,6 +1840,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1520,6 +1895,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1527,6 +1905,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1534,6 +1915,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1541,6 +1925,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? inValX : Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1548,6 +1935,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1555,6 +1945,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1562,6 +1955,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1569,6 +1965,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1576,6 +1975,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1583,6 +1985,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, new decimal(inValY)));
         return true;
@@ -1590,6 +1995,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Min{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Min<TVisitor>(decimal inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Min(inValX, inValY));
         return true;
@@ -1600,6 +2008,9 @@ partial class MathMatrix
         where TInX : IEquatable<TInX>
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInX) == typeof(string))
         {
@@ -1621,6 +2032,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInX) == typeof(ulong))
@@ -1731,31 +2145,37 @@ partial class MathMatrix
 
     private struct MinXVisitor<TVisitor, TInY, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInY ValueY;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Min<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Visitor);
+            Result = Min<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 
     private struct MinYVisitor<TVisitor, TInX, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInX ValueX;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Min<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Visitor);
+            Result = Min<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

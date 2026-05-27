@@ -600,7 +600,7 @@ public class PropertyBreadcrumbsTests
         parsedBreadcrumbs.ResolveFromPropertyRef(supplyType, ref ctx);
 
         PropertyBreadcrumbs combinedBreadcrumbsString = PropertyBreadcrumbs.Root.Combine("Config", index: 1).Combine(index: 1);
-        PropertyBreadcrumbs combinedBreadcrumbsNode = PropertyBreadcrumbs.Root.Combine(sn1).Combine(sn2).Combine(sn3);
+        PropertyBreadcrumbs combinedBreadcrumbsNode = PropertyBreadcrumbs.Root.Combine(sn1).Combine(sn2).Combine(sn3!);
 
         PropertyBreadcrumbs[] breadcrumbs = [ autoBreadcrumbs, manualBreadcrumbs, parsedBreadcrumbs, combinedBreadcrumbsString, combinedBreadcrumbsNode ];
 

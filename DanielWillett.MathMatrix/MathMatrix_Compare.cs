@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604
 #pragma warning disable CS8600
 
-partial class MathMatrix
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TInY, TVisitor>(string inValX, TInY inValY, bool caseInsensitive, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TInY : IEquatable<TInY>
     {
         if (typeof(TInY) == typeof(string))
@@ -20,17 +25,22 @@ partial class MathMatrix
 
         CompareXVisitor<TVisitor, TInY> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueY = inValY;
         visitorProxy.CaseInsensitive = caseInsensitive;
-        ConvertToNumber<object, CompareXVisitor<TVisitor, TInY>>(inValX, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<object, CompareXVisitor<TVisitor, TInY>>(inValX, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TInX, TVisitor>(TInX inValX, string inValY, bool caseInsensitive, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TInX : IEquatable<TInX>
     {
         if (typeof(TInX) == typeof(string))
@@ -41,11 +51,13 @@ partial class MathMatrix
 
         CompareYVisitor<TVisitor, TInX> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueX = inValX;
         visitorProxy.CaseInsensitive = caseInsensitive;
-        ConvertToNumber<object, CompareYVisitor<TVisitor, TInX>>(inValY, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<object, CompareYVisitor<TVisitor, TInX>>(inValY, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
 
@@ -53,6 +65,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(ulong inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInY) == typeof(ulong))
             return Compare(inValX, As<TInY, ulong>(inValY!), ref visitor);
@@ -102,6 +117,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -109,6 +127,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -116,6 +137,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -123,6 +147,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -130,6 +157,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -140,6 +170,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -150,6 +183,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -160,6 +196,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -170,6 +209,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -180,6 +222,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -190,6 +235,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ulong inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : new decimal(inValX).CompareTo(inValY));
         return true;
@@ -199,6 +247,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(uint inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -249,6 +300,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((ulong)inValX).CompareTo(inValY));
         return true;
@@ -256,6 +310,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -263,6 +320,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -270,6 +330,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -277,6 +340,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -287,6 +353,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -297,6 +366,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -307,6 +379,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -317,6 +392,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -327,6 +405,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : ((double)inValX).CompareTo(inValY));
         return true;
@@ -334,6 +415,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(uint inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : new decimal(inValX).CompareTo(inValY));
         return true;
@@ -343,6 +427,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(ushort inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -393,6 +480,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((ulong)inValX).CompareTo(inValY));
         return true;
@@ -400,6 +490,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((uint)inValX).CompareTo(inValY));
         return true;
@@ -407,6 +500,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(inValX.CompareTo(inValY)));
         return true;
@@ -414,6 +510,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(inValX.CompareTo(inValY)));
         return true;
@@ -421,6 +520,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -431,6 +533,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -441,6 +546,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -451,6 +559,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -461,6 +572,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : ((float)inValX).CompareTo(inValY));
         return true;
@@ -468,6 +582,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : ((double)inValX).CompareTo(inValY));
         return true;
@@ -475,6 +592,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(ushort inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : new decimal(inValX).CompareTo(inValY));
         return true;
@@ -484,6 +604,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(byte inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -533,6 +656,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((ulong)inValX).CompareTo(inValY));
         return true;
@@ -540,6 +666,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((uint)inValX).CompareTo(inValY));
         return true;
@@ -547,6 +676,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(((ushort)inValX).CompareTo(inValY)));
         return true;
@@ -554,6 +686,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(inValX.CompareTo(inValY)));
         return true;
@@ -561,6 +696,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -571,6 +709,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -581,6 +722,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -591,6 +735,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
             visitor.Accept(1);
@@ -601,6 +748,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : ((float)inValX).CompareTo(inValY));
         return true;
@@ -608,6 +758,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : ((double)inValX).CompareTo(inValY));
         return true;
@@ -615,6 +768,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(byte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValY < 0 ? 1 : new decimal(inValX).CompareTo(inValY));
         return true;
@@ -624,6 +780,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(long inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -673,6 +832,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -683,6 +845,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -693,6 +858,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -703,6 +871,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -713,6 +884,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -720,6 +894,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -727,6 +904,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -734,6 +914,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -741,6 +924,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(new decimal(inValY)));
         return true;
@@ -748,6 +934,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(new decimal(inValY)));
         return true;
@@ -755,6 +944,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(long inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(inValY));
         return true;
@@ -764,6 +956,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(int inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -815,6 +1010,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -825,6 +1023,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -835,6 +1036,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -845,6 +1049,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -855,6 +1062,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((long)inValX).CompareTo(inValY));
         return true;
@@ -862,6 +1072,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -869,6 +1082,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -876,6 +1092,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -883,6 +1102,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((double)inValX).CompareTo(inValY));
         return true;
@@ -890,6 +1112,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((double)inValX).CompareTo(inValY));
         return true;
@@ -897,6 +1122,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(int inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(inValY));
         return true;
@@ -906,6 +1134,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(short inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -957,6 +1188,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -967,6 +1201,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -977,6 +1214,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -987,6 +1227,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -997,6 +1240,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((long)inValX).CompareTo(inValY));
         return true;
@@ -1004,6 +1250,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((int)inValX).CompareTo(inValY));
         return true;
@@ -1011,6 +1260,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(inValX.CompareTo(inValY)));
         return true;
@@ -1018,6 +1270,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(inValX.CompareTo(inValY)));
         return true;
@@ -1025,6 +1280,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((float)inValX).CompareTo(inValY));
         return true;
@@ -1032,6 +1290,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((double)inValX).CompareTo(inValY));
         return true;
@@ -1039,6 +1300,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(short inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(inValY));
         return true;
@@ -1048,6 +1312,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(sbyte inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1099,6 +1366,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -1109,6 +1379,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -1119,6 +1392,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -1129,6 +1405,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -1139,6 +1418,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((long)inValX).CompareTo(inValY));
         return true;
@@ -1146,6 +1428,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((int)inValX).CompareTo(inValY));
         return true;
@@ -1153,6 +1438,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(((short)inValX).CompareTo(inValY)));
         return true;
@@ -1160,6 +1448,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Sign(inValX.CompareTo(inValY)));
         return true;
@@ -1167,6 +1458,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((float)inValX).CompareTo(inValY));
         return true;
@@ -1174,6 +1468,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((double)inValX).CompareTo(inValY));
         return true;
@@ -1181,6 +1478,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(sbyte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(inValY));
         return true;
@@ -1190,6 +1490,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(float inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1241,6 +1544,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -1251,6 +1557,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -1261,6 +1570,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(inValY));
         return true;
@@ -1268,6 +1580,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(inValY));
         return true;
@@ -1275,6 +1590,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(new decimal(inValY)));
         return true;
@@ -1282,6 +1600,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((double)inValX).CompareTo(inValY));
         return true;
@@ -1289,6 +1610,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1296,6 +1620,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1303,6 +1630,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1310,6 +1640,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(((double)inValX).CompareTo(inValY));
         return true;
@@ -1317,6 +1650,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(float inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(inValY));
         return true;
@@ -1326,6 +1662,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(double inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1377,6 +1716,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
             visitor.Accept(-1);
@@ -1387,6 +1729,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(inValY));
         return true;
@@ -1394,6 +1739,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(inValY));
         return true;
@@ -1401,6 +1749,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(inValY));
         return true;
@@ -1408,6 +1759,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(new decimal(inValY)));
         return true;
@@ -1415,6 +1769,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1422,6 +1779,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1429,6 +1789,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1436,6 +1799,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1443,6 +1809,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1450,6 +1819,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(double inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX).CompareTo(inValY));
         return true;
@@ -1459,6 +1831,9 @@ partial class MathMatrix
     public static bool Compare<TInY, TVisitor>(decimal inValX, TInY? inValY, bool caseInsensitive, ref TVisitor visitor)
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1510,6 +1885,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1517,6 +1895,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1524,6 +1905,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1531,6 +1915,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX < 0 ? -1 : inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1538,6 +1925,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1545,6 +1935,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1552,6 +1945,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1559,6 +1955,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1566,6 +1965,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1573,6 +1975,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(new decimal(inValY)));
         return true;
@@ -1580,6 +1985,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Compare{TInX,TInY,TVisitor}"/>
     public static bool Compare<TVisitor>(decimal inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX.CompareTo(inValY));
         return true;
@@ -1596,6 +2004,9 @@ partial class MathMatrix
         where TInX : IEquatable<TInX>
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInX) == typeof(ulong))
@@ -1698,31 +2109,37 @@ partial class MathMatrix
 
     private struct CompareXVisitor<TVisitor, TInY> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TInY : IEquatable<TInY>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInY ValueY;
         public bool CaseInsensitive;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Compare(value, ValueY, CaseInsensitive, ref Visitor);
+            Result = Compare(value, ValueY, CaseInsensitive, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 
     private struct CompareYVisitor<TVisitor, TInX> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TInX : IEquatable<TInX>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInX ValueX;
         public bool CaseInsensitive;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Compare(ValueX, value, CaseInsensitive, ref Visitor);
+            Result = Compare(ValueX, value, CaseInsensitive, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

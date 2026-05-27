@@ -1,11 +1,10 @@
 ﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using System;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 
 #pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 

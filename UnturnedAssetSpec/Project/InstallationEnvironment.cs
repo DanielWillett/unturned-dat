@@ -1560,7 +1560,7 @@ public class InstallationEnvironment : IDisposable
         ReadOnlySpan<char> dirName = OSPathHelper.GetDirectoryName(filePath);
         ReadOnlySpan<char> fileName = OSPathHelper.GetFileName(filePath);
 
-        if (dirName == null)
+        if (dirName.IsEmpty)
             return false;
 
         if (fileName.Equals("Asset.dat", OSPathHelper.PathComparison))

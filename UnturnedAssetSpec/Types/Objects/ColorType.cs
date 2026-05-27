@@ -15,8 +15,8 @@ namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
 /// <list type="bullet">
 ///     <item><c><see cref="VectorTypeOptions"/> Mode</c> - Acceptable syntaxes (comma-separated).</item>
 ///     <item><c><see cref="bool"/> Alpha</c> - Whether or not the alpha channel can be parsed. Defaults to <see langword="false"/>.</item>
-///     <item><c><see cref="bool"/> StrictHex</c> - Whether or not the color has to conform to the <c>Palette.hex</c> method's expected format (exactly 7 characters long). Defaults to <see langword="false"/>.</
-///     <item><c><see cref="bool"/> ModernIs32Bit</c> - Whether or not the modern (object) color should be parsed using 32-bit (0-255) rules. Defaults to <see langword="false"/>.</
+///     <item><c><see cref="bool"/> StrictHex</c> - Whether or not the color has to conform to the <c>Palette.hex</c> method's expected format (exactly 7 characters long). Defaults to <see langword="false"/>.</item>
+///     <item><c><see cref="bool"/> ModernIs32Bit</c> - Whether or not the modern (object) color should be parsed using 32-bit (0-255) rules. Defaults to <see langword="false"/>.</item>
 ///     <item><c><see cref="string"/> RKey</c> - Overrides the "R" property name for modern (and maybe legacy) parsing.</item>
 ///     <item><c><see cref="string"/> GKey</c> - Overrides the "G" property name for modern (and maybe legacy) parsing.</item>
 ///     <item><c><see cref="string"/> BKey</c> - Overrides the "B" property name for modern (and maybe legacy) parsing.</item>
@@ -49,8 +49,7 @@ public sealed class ColorType : BaseVectorType<Color, ColorType>
 
     public override string Id => TypeId;
 
-    // todo: shouldn't show 0-1 when ModernIs32Bit is enabled
-    public override string DisplayName => Resources.Type_Name_Color;
+    public override string DisplayName => ModernIs32Bit ? Resources.Type_Name_Color_ModernIs32Bit : Resources.Type_Name_Color;
 
     public static ITypeFactory Factory => Instance;
 
@@ -235,24 +234,49 @@ public sealed class ColorType : BaseVectorType<Color, ColorType>
         if (rProperty == null || gProperty == null || bProperty == null || (AllowAlpha && aProperty == null))
         {
             if (rProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, rKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(rProperty);
+
             if (gProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, gKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(gProperty);
+
             if (bProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, bKey);
-            }
-            if (AllowAlpha && aProperty == null)
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(bProperty);
+
+            if (AllowAlpha)
             {
-                args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, aKey);
+                if (aProperty == null)
+                    args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, aKey);
+                else
+                    args.ReferencedPropertySink?.AcceptReferencedProperty(aProperty);
+            }
+            else if (aProperty != null)
+            {
+                args.ReferencedPropertySink?.AcceptDereferencedProperty(aProperty);
             }
 
             value = default;
             return false;
+        }
+
+        if (args.ReferencedPropertySink != null)
+        {
+            args.ReferencedPropertySink.AcceptReferencedProperty(rProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(gProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(bProperty);
+            if (AllowAlpha)
+            {
+                args.ReferencedPropertySink.AcceptReferencedProperty(aProperty!);
+            }
+            else if (aProperty != null)
+            {
+                args.ReferencedPropertySink.AcceptDereferencedProperty(aProperty);
+            }
         }
 
         bool rgb;

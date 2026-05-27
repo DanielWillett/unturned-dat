@@ -15,8 +15,6 @@
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-    <DefineConstants>$(DefineConstants);EMIT</DefineConstants>
-
     <StrongNameKeyPath>C:\Strong Name Keys\UnturnedAssetSpec\UnturnedAssetSpec.dll.snk</StrongNameKeyPath>
     <GenerateDependencyFile>False</GenerateDependencyFile>
   </PropertyGroup>
@@ -57,7 +55,6 @@
     <PackageReference Include="AssetsTools.NET" Version="3.0.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'" />
     <PackageReference Include="System.Text.Json" Version="4.7.1" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" Condition="$(DefineConstants.Contains('EMIT')) And '$(TargetFramework)' == 'netstandard2.0'" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.4.0" />
     <!--<PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />-->
     <PackageReference Include="Microsoft.Bcl.Numerics" Version="8.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />

@@ -1,39 +1,51 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604
 #pragma warning disable CS8600
 
-partial class MathMatrix
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TInY, TVisitor, TIdealOut>(string inValX, TInY inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
         MultiplyXVisitor<TVisitor, TInY, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueY = inValY;
-        ConvertToNumber<TIdealOut, MultiplyXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, MultiplyXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TInX, TVisitor, TIdealOut>(TInX inValX, string inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
         MultiplyYVisitor<TVisitor, TInX, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueX = inValX;
-        ConvertToNumber<TIdealOut, MultiplyYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, MultiplyYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
 
@@ -42,6 +54,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInY) == typeof(ulong))
             return Multiply(inValX, As<TInY, ulong>(inValY!), ref visitor);
@@ -92,6 +107,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX * inValY)); }
         catch (OverflowException)
@@ -103,6 +121,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX * inValY)); }
         catch (OverflowException)
@@ -114,6 +135,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX * inValY)); }
         catch (OverflowException)
@@ -125,6 +149,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX * inValY)); }
         catch (OverflowException)
@@ -136,6 +163,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -161,6 +191,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -186,6 +219,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -211,6 +247,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -236,18 +275,27 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ulong inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -257,6 +305,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -308,6 +359,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX * inValY)); }
         catch (OverflowException)
@@ -319,6 +373,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         ulong res = (ulong)inValX * inValY;
         if (res <= uint.MaxValue)
@@ -330,6 +387,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         ulong res = (ulong)inValX * inValY;
         if (res <= uint.MaxValue)
@@ -341,6 +401,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         ulong res = (ulong)inValX * inValY;
         if (res <= uint.MaxValue)
@@ -352,6 +415,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -375,6 +441,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -386,6 +455,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -397,6 +469,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -408,6 +483,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((double)inValX * inValY);
         return true;
@@ -415,6 +493,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -422,6 +503,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(uint inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -431,6 +515,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -482,6 +569,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX * inValY)); }
         catch (OverflowException)
@@ -493,6 +583,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         ulong res = (ulong)inValX * inValY;
         if (res <= uint.MaxValue)
@@ -504,6 +597,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX * inValY);
         return true;
@@ -511,6 +607,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX * inValY);
         return true;
@@ -518,6 +617,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -541,6 +643,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * (long)inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -552,6 +657,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -559,6 +667,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -566,6 +677,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -573,6 +687,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -580,6 +697,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(ushort inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -589,6 +709,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -639,6 +762,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX * inValY)); }
         catch (OverflowException)
@@ -650,6 +776,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         ulong res = (ulong)inValX * inValY;
         if (res <= uint.MaxValue)
@@ -661,6 +790,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX * inValY);
         return true;
@@ -668,6 +800,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX * inValY);
         return true;
@@ -675,6 +810,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -698,6 +836,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * (long)inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -709,6 +850,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -716,6 +860,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -723,6 +870,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -730,6 +880,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -737,6 +890,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(byte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -746,6 +902,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -796,6 +955,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -821,6 +983,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -844,6 +1009,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -867,6 +1035,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -890,6 +1061,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -912,6 +1086,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -934,6 +1111,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -956,6 +1136,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -978,18 +1161,27 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(long inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -999,6 +1191,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1051,6 +1246,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -1076,6 +1274,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1087,6 +1288,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = (long)inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1098,6 +1302,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = (long)inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1109,6 +1316,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -1131,6 +1341,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = (long)inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1142,6 +1355,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = (long)inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1153,6 +1369,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = (long)inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1164,6 +1383,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * (double)inValY);
         return true;
@@ -1171,6 +1393,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1178,6 +1403,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(int inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -1187,6 +1415,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1239,6 +1470,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -1264,6 +1498,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1275,6 +1512,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1282,6 +1522,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1289,6 +1532,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -1311,6 +1557,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = (long)inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1322,6 +1571,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1329,6 +1581,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1336,6 +1591,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1343,6 +1601,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1350,6 +1611,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(short inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -1359,6 +1623,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1411,6 +1678,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -1436,6 +1706,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1447,6 +1720,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1454,6 +1730,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1461,6 +1740,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try
         {
@@ -1483,6 +1765,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         long res = (long)inValX * inValY;
         if (res is <= int.MaxValue and >= int.MinValue)
@@ -1494,6 +1779,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1501,6 +1789,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1508,6 +1799,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1515,6 +1809,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1522,6 +1819,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(sbyte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -1531,6 +1831,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1583,12 +1886,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * (double)inValY);
         return true;
@@ -1596,6 +1905,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1603,6 +1915,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1610,12 +1925,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * (double)inValY);
         return true;
@@ -1623,6 +1944,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1630,6 +1954,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1637,6 +1964,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1644,6 +1974,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1651,6 +1984,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(float inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -1660,6 +1996,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1712,12 +2051,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1725,6 +2070,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1732,6 +2080,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1739,12 +2090,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1752,6 +2109,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1759,6 +2119,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1766,6 +2129,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1773,6 +2139,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX * inValY);
         return true;
@@ -1780,6 +2149,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(double inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(new decimal(inValX), inValY, ref visitor);
     }
@@ -1789,6 +2161,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1841,66 +2216,99 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Multiply(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Multiply{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Multiply<TVisitor>(decimal inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(inValX * inValY); }
         catch (OverflowException) { visitor.Accept((double)inValX * (double)inValY); }
@@ -1912,6 +2320,9 @@ partial class MathMatrix
         where TInX : IEquatable<TInX>
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInX) == typeof(string))
         {
@@ -1933,6 +2344,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInX) == typeof(ulong))
@@ -2043,31 +2457,37 @@ partial class MathMatrix
 
     private struct MultiplyXVisitor<TVisitor, TInY, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInY ValueY;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Multiply<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Visitor);
+            Result = Multiply<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 
     private struct MultiplyYVisitor<TVisitor, TInX, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInX ValueX;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Multiply<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Visitor);
+            Result = Multiply<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

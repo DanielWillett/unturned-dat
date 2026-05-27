@@ -33,7 +33,7 @@ internal class ValueNode : AnySourceNode, IValueSourceNode
         return n1.IsQuoted == n2.IsQuoted && string.Equals(n1.Value, n2.Value, StringComparison.Ordinal);
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && EqualsHelper(this, (ValueNode)other);
     }
@@ -64,7 +64,7 @@ internal sealed class CommentedValueNode : ValueNode, ICommentSourceNode
         Comment = comment;
     }
     
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comment.Equals(((CommentedValueNode)other).Comment);
     }

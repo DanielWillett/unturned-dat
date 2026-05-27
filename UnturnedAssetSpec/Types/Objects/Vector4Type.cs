@@ -141,6 +141,11 @@ public sealed class Vector4Type : BaseVectorType<Vector4, Vector4Type>
                 args.ReferencedPropertySink.AcceptReferencedProperty(zProperty);
             if (wProperty != null && queryPropNode != wProperty)
                 args.ReferencedPropertySink.AcceptReferencedProperty(wProperty);
+
+            if (queryPropNode is IPropertySourceNode p && queryPropNode != xProperty && queryPropNode != yProperty && queryPropNode != zProperty && queryPropNode != wProperty)
+            {
+                args.ReferencedPropertySink.AcceptDereferencedProperty(p);
+            }
         }
 
         hadOneComp = true;
@@ -148,24 +153,35 @@ public sealed class Vector4Type : BaseVectorType<Vector4, Vector4Type>
         if (xProperty == null || yProperty == null || zProperty == null || wProperty == null)
         {
             if (xProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(xProperty);
+
             if (yProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, yKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(yProperty);
+
             if (zProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, zKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(zProperty);
+
             if (wProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, wKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(wProperty);
 
             value = default;
             return false;
+        }
+
+        if (args.ReferencedPropertySink != null)
+        {
+            args.ReferencedPropertySink.AcceptReferencedProperty(xProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(yProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(zProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(wProperty);
         }
 
         return VectorTypes.TryParseArg(ref args, out value.X, xProperty)

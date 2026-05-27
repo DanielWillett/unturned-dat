@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
-partial class MathMatrix
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
+unsafe partial class MathMatrix
 {
     // note: most of these functions will fail with very large numbers due to the way decimals are represented
     // see https://stackoverflow.com/questions/66030225/different-results-between-c-and-c-sharp-sin-function-with-large-values
@@ -11,18 +14,26 @@ partial class MathMatrix
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor, TIdealOut>(string inVal, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
         TanDegVisitor<TVisitor, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
-        ConvertToNumber<TIdealOut, TanDegVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, TanDegVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(ulong inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -35,6 +46,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(uint inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -47,6 +61,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(ushort inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -59,6 +76,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(byte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -71,6 +91,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(long inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -83,6 +106,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(int inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -95,6 +121,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(short inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -107,6 +136,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(sbyte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((inVal % 360) switch
         {
@@ -119,6 +151,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(float inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         inVal = (inVal % 360f + 360f) % 360f;
         visitor.Accept(inVal switch
@@ -132,6 +167,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(double inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         inVal = (inVal % 360d + 360d) % 360d;
         visitor.Accept(inVal switch
@@ -145,6 +183,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="TanDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool TanDeg<TVisitor>(decimal inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return TanDeg((double)inVal, ref visitor);
     }
@@ -153,6 +194,9 @@ partial class MathMatrix
     public static bool TanDeg<TIn, TVisitor>(TIn inVal, ref TVisitor visitor)
         where TIn : IEquatable<TIn>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return TanDeg<TIn, TVisitor, TIn>(inVal, ref visitor);
     }
@@ -167,6 +211,9 @@ partial class MathMatrix
         where TIn : IEquatable<TIn>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TIn) == typeof(ulong))
@@ -219,14 +266,17 @@ partial class MathMatrix
 
     private struct TanDegVisitor<TVisitor, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = TanDeg<T, TVisitor, TIdealOut>(value, ref Visitor);
+            Result = TanDeg<T, TVisitor, TIdealOut>(value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

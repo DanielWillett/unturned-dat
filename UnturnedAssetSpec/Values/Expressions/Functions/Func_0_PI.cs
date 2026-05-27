@@ -26,5 +26,5 @@ internal sealed class Pi : ExpressionFunction, IFunctionExpressionNode
     int IFunctionExpressionNode.Count => 0;
     IExpressionFunction IFunctionExpressionNode.Function => this;
     IExpressionNode IFunctionExpressionNode.this[int index] => throw new ArgumentOutOfRangeException(nameof(index));
-    bool IEquatable<IExpressionNode>.Equals(IExpressionNode? other) => other is Pi;
+    bool IEquatable<IExpressionNode?>.Equals(IExpressionNode? other) => other is Pi;
 }

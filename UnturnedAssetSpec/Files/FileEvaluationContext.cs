@@ -1,8 +1,8 @@
-using System;
 using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
 using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using DanielWillett.UnturnedDataFileLspServer.Data.Types;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;

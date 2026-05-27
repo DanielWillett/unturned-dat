@@ -54,7 +54,7 @@ public readonly record struct Comment(CommentPrefix Prefix, string Content, Comm
             return new Comment(CommentPrefix.Default, AdditionalPropertyPrefix + propertyName + ":", CommentPosition.NewLine);
         }
         if (value is not string str)
-            str = value.ToString();
+            str = value.ToString() ?? string.Empty;
 
         return new Comment(CommentPrefix.Default, AdditionalPropertyPrefix + propertyName + ": " + str, CommentPosition.NewLine);
     }
@@ -95,9 +95,12 @@ public readonly record struct Comment(CommentPrefix Prefix, string Content, Comm
             state.TryWrite(span, out _);
         });
 #else
-        Span<char> chars = stackalloc char[Prefix.Length + Content.Length];
-        TryWrite(chars, out _);
-        return chars.ToString();
+        unsafe
+        {
+            Span<char> chars = stackalloc char[Prefix.Length + Content.Length];
+            TryWrite(chars, out _);
+            return chars.ToString();
+        }
 #endif
     }
 

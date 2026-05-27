@@ -26,5 +26,5 @@ internal sealed class Null : ExpressionFunction, IFunctionExpressionNode
     int IFunctionExpressionNode.Count => 0;
     IExpressionFunction IFunctionExpressionNode.Function => this;
     IExpressionNode IFunctionExpressionNode.this[int index] => throw new ArgumentOutOfRangeException(nameof(index));
-    bool IEquatable<IExpressionNode>.Equals(IExpressionNode? other) => other is Null;
+    bool IEquatable<IExpressionNode?>.Equals(IExpressionNode? other) => other is Null;
 }

@@ -1,19 +1,19 @@
 ﻿using DanielWillett.UnturnedDataFileLspServer.Data;
 using DanielWillett.UnturnedDataFileLspServer.Data.Files;
 using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+using DanielWillett.UnturnedDataFileLspServer.Data.Project;
+using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using DanielWillett.UnturnedDataFileLspServer.Data.Values;
 using DanielWillett.UnturnedDataFileLspServer.Files;
 using DanielWillett.UnturnedDataFileLspServer.Protocol;
+using DanielWillett.UnturnedDataFileLspServer.Utility;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Utility;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Handlers.AssetProperties;
 
@@ -99,6 +99,7 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
     private void Execute(IDictionarySourceNode dictionary, AssetDatPropertyPosition position, List<AssetProperty> outputProperties)
     {
         FileEvaluationContext ctx = new FileEvaluationContext(_parsingServices, dictionary.File, position);
+
         DatFileType type = ctx.FileType.Information;
 
         for (DatTypeWithProperties? childType = type; childType != null; childType = childType.BaseType)

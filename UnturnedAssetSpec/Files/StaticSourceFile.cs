@@ -72,7 +72,7 @@ public sealed class StaticSourceFile : IWorkspaceFile
 
         return new StaticSourceFile(filePath, database, fileContents, options, static (file, database, fileContents, options, _) =>
         {
-            SourceNodeTokenizer.RootInfo info = SourceNodeTokenizer.RootInfo.Asset(file, database);
+            SourceNodeTokenizer.RootInfo info = SourceNodeTokenizer.RootInfo.Asset(file, database!);
             using SourceNodeTokenizer tokenizer = new SourceNodeTokenizer(fileContents, options);
             return tokenizer.ReadRootDictionary(info);
         }, null, bundle);
@@ -141,7 +141,7 @@ public sealed class StaticSourceFile : IWorkspaceFile
 
         return new StaticSourceFile(filePath, database, fileContents, options, static (file, database, fileContents, options, state) =>
         {
-            SourceNodeTokenizer.RootInfo info = SourceNodeTokenizer.RootInfo.Localization(file, database, (IAssetSourceFile)state!);
+            SourceNodeTokenizer.RootInfo info = SourceNodeTokenizer.RootInfo.Localization(file, database!, (IAssetSourceFile)state!);
             using SourceNodeTokenizer tokenizer = new SourceNodeTokenizer(fileContents, options);
             return tokenizer.ReadRootDictionary(info);
         }, asset, bundle);
@@ -247,7 +247,7 @@ public sealed class StaticSourceFile : IWorkspaceFile
         if (_fileContentStr != null)
             return _fileContentStr;
 
-        if (MemoryMarshal.TryGetString(_fileContent, out string text, out int start, out int length) && start == 0 && length == text.Length)
+        if (MemoryMarshal.TryGetString(_fileContent, out string? text, out int start, out int length) && start == 0 && length == text.Length)
         {
             _fileContentStr = text;
             return text;

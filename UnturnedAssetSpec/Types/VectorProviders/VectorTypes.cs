@@ -7,10 +7,6 @@ using System.Numerics;
 using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
 using DanielWillett.UnturnedDataFileLspServer.Data.Files;
 using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-#if NET5_0_OR_GREATER
-using System.Diagnostics.CodeAnalysis;
-#endif
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
 

@@ -41,9 +41,10 @@ public class TemplateGroup : IEquatable<TemplateGroup>
     }
 
     public override bool Equals(object? obj) => obj is TemplateGroup g && Equals(g);
-    public bool Equals(TemplateGroup other)
+    public bool Equals(TemplateGroup? other)
     {
-        return Group == other.Group
+        return other is not null
+               && Group == other.Group
                && string.Equals(Name, other.Name, StringComparison.Ordinal)
                && string.Equals(UseValueOf, other.UseValueOf, StringComparison.OrdinalIgnoreCase);
     }
@@ -123,7 +124,7 @@ public class TemplateGroup : IEquatable<TemplateGroup>
                 {
                     if (element.ValueKind != JsonValueKind.String)
                         return false;
-                    uvo = element.GetString();
+                    uvo = element.GetString()!;
                     if (uvo.Length == 0)
                         uvo = null;
                 }

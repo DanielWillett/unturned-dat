@@ -217,24 +217,49 @@ public sealed class Color32Type : BaseVectorType<Color32, Color32Type>
         if (rProperty == null || gProperty == null || bProperty == null || (AllowAlpha && aProperty == null))
         {
             if (rProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, rKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(rProperty);
+
             if (gProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, gKey);
-            }
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(gProperty);
+
             if (bProperty == null)
-            {
                 args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, bKey);
-            }
-            if (AllowAlpha && aProperty == null)
+            else
+                args.ReferencedPropertySink?.AcceptReferencedProperty(bProperty);
+
+            if (AllowAlpha)
             {
-                args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, aKey);
+                if (aProperty == null)
+                    args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, aKey);
+                else
+                    args.ReferencedPropertySink?.AcceptReferencedProperty(aProperty);
+            }
+            else if (aProperty != null)
+            {
+                args.ReferencedPropertySink?.AcceptDereferencedProperty(aProperty);
             }
 
             value = default;
             return false;
+        }
+
+        if (args.ReferencedPropertySink != null)
+        {
+            args.ReferencedPropertySink.AcceptReferencedProperty(rProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(gProperty);
+            args.ReferencedPropertySink.AcceptReferencedProperty(bProperty);
+            if (AllowAlpha)
+            {
+                args.ReferencedPropertySink.AcceptReferencedProperty(aProperty!);
+            }
+            else if (aProperty != null)
+            {
+                args.ReferencedPropertySink.AcceptDereferencedProperty(aProperty);
+            }
         }
 
         bool rgb = VectorTypes.TryParseArg(ref args, out byte r, rProperty)

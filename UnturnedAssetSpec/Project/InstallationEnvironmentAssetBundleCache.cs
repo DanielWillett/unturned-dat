@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 
@@ -20,14 +19,13 @@ internal class InstallationEnvironmentAssetBundleCache
 {
     private readonly InstallationEnvironment _environment;
     private readonly ILoggerFactory _loggerFactory;
-    private readonly ISpecDatabaseCache? _cache;
     private readonly string? _rootDir;
 
     private delegate void EditManifest<TState>(ref TState state, FileStream fs)
 #if NET9_0_OR_GREATER
         where TState : allows ref struct
 #endif
-        ;
+    ;
 
     [field: AllowNull, MaybeNull]
     private ILogger<InstallationEnvironmentAssetBundleCache> Logger
@@ -38,9 +36,9 @@ internal class InstallationEnvironmentAssetBundleCache
     {
         _environment = env;
         _loggerFactory = loggerFactory;
-        _cache = (database.ReadContext as SpecificationFileReader)?.Cache;
+        ISpecDatabaseCache? cache = (database.ReadContext as SpecificationFileReader)?.Cache;
 
-        if (_cache?.RootDirectory is not { Length: > 0 } rootDir)
+        if (cache?.RootDirectory is not { Length: > 0 } rootDir)
         {
             return;
         }
@@ -62,12 +60,16 @@ internal class InstallationEnvironmentAssetBundleCache
             }
             catch (Exception ex)
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 Logger.LogError(ex, "Error writing bundle cache README.");
+#pragma warning restore CS8604
             }
         }
         else
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             Logger.LogWarning("Bundle cache README file not found in assembly.");
+#pragma warning restore CS8604
         }
     }
 

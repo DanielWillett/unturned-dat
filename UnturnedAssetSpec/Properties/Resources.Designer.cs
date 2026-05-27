@@ -673,6 +673,15 @@ namespace DanielWillett.UnturnedDataFileLspServer.Data.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color (0-255, Legacy: 0-1).
+        /// </summary>
+        internal static string Type_Name_Color_ModernIs32Bit {
+            get {
+                return ResourceManager.GetString("Type_Name_Color_ModernIs32Bit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color (0-255).
         /// </summary>
         internal static string Type_Name_Color32 {

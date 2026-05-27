@@ -226,7 +226,7 @@ internal sealed class UnturnedAssetFileLspServer
                 });
         });
 
-        await OnStarted(CancellationToken.None);
+        await OnStartedAsync(CancellationToken.None);
 
         await _server.WaitForExit.ConfigureAwait(false);
 
@@ -236,7 +236,7 @@ internal sealed class UnturnedAssetFileLspServer
         }
     }
 
-    private static async Task OnStarted(CancellationToken token)
+    private static async Task OnStartedAsync(CancellationToken token)
     {
         IConfigurationSection config = _server.Configuration.GetSection(ConfigurationSectionId);
 
@@ -254,7 +254,7 @@ internal sealed class UnturnedAssetFileLspServer
                     _logger.LogTrace($"  {section.Key}: {section.Value ?? "{ ... }"}");
                 }
 
-                await HandleConfigurationReady(config, token);
+                await HandleConfigurationReadyAsync(config, token);
             }
         }
         else
@@ -278,7 +278,7 @@ internal sealed class UnturnedAssetFileLspServer
         _server.SendNotification("unturnedDataFile/ready");
     }
 
-    private static async Task HandleConfigurationReady(IConfigurationSection config, CancellationToken token)
+    private static async Task HandleConfigurationReadyAsync(IConfigurationSection config, CancellationToken token)
     {
 #if DEBUG
         const bool useInternet = false;
@@ -364,7 +364,7 @@ internal sealed class UnturnedAssetFileLspServer
             Percentage = registerFileAssociations || registerDiskCleanupHandler ? 95 : 99
         });
 
-        if (registerFileAssociations)
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && registerFileAssociations)
         {
             workDoneManager.OnNext(new WorkDoneProgressReport
             {
@@ -388,7 +388,7 @@ internal sealed class UnturnedAssetFileLspServer
             _logger.LogTrace("Skipping registering file associations.");
         }
 
-        if (registerDiskCleanupHandler)
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && registerDiskCleanupHandler)
         {
             workDoneManager.OnNext(new WorkDoneProgressReport
             {
@@ -436,7 +436,7 @@ internal sealed class UnturnedAssetFileLspServer
                             return;
                         }
 
-                        SendAdminPrivilegesResponseParams response = tcs.Task.Result;
+                        SendAdminPrivilegesResponseParams response = await tcs.Task;
                         if (!response.Allowed)
                         {
                             _logger.LogWarning("Denied request to register Windows disk cleanup handler.");
@@ -446,7 +446,9 @@ internal sealed class UnturnedAssetFileLspServer
                         _logger.LogInformation("Accepted request to register Windows disk cleanup handler.");
                         try
                         {
+#pragma warning disable CA1416 // windows guard clause isn't working here for some reason
                             result = _diskCleanupUtil.RegisterDiskCleanupHandler(true, out command);
+#pragma warning restore CA1416
                         }
                         catch (Exception ex)
                         {

@@ -206,7 +206,7 @@ internal sealed class SourceNodeIndexComparer : IComparer<ISourceNode>
     static SourceNodeIndexComparer() { }
     private SourceNodeIndexComparer() { }
 
-    public int Compare(ISourceNode x, ISourceNode y)
+    public int Compare(ISourceNode? x, ISourceNode? y)
     {
         if (x == null)
             return y == null ? 0 : -1;

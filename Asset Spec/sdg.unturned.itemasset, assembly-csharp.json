@@ -2109,9 +2109,26 @@
                 {
                     "Key": "BlueprintOwner",
                     "Type":
-                    {
-                        "Type": "AssetReference"
-                    },
+                    [
+                        {
+                            "Case":
+                            {
+                                "Variable": "#This.IsLegacy",
+                                "Operation": "eq",
+                                "Comparand": true
+                            },
+                            "Value":
+                            {
+                                "Type": "BcAssetReference"
+                            }
+                        },
+                        {
+                            "Value":
+                            {
+                                "Type": "AssetReference"
+                            }
+                        }
+                    ],
                     "KeyLegacyExpansionFilter": "Modern",
                     "Alias":
                     {

@@ -5,6 +5,7 @@ using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using DanielWillett.UnturnedDataFileLspServer.Data.Values;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
@@ -114,9 +115,55 @@ public struct TypeParserArgs<T> : IDiagnosticProvider where T : IEquatable<T>
     /// </summary>
     public DatProperty? Property;
 
+    /// <summary>
+    /// The base key of the parse operation. For example, this may be helpful in the following situation:
+    /// <code>
+    /// Turrets 2
+    ///
+    /// # Turrets[0].BaseKey = "Turret_0"
+    /// Turret_0_Seat_Index 0
+    /// Turret_0_Item_ID 38383
+    /// 
+    /// # Turrets[1].BaseKey = "Turret_1"
+    /// Turret_1_Seat_Index 1
+    /// Turret_1_Item_ID 38307
+    /// </code>
+    /// </summary>
+    /// <remarks>
+    /// This doesn't have to be set if it can be assumed from the parent node.
+    /// </remarks>
+    public string? BaseKey;
+
     DatProperty? IDiagnosticProvider.Property => Property;
 
     internal ISourceNode ReferenceNode => (ISourceNode?)ValueNode ?? ParentNode;
+
+    /// <summary>
+    /// Attempts to figure out the base key of the operation from the given information.
+    /// </summary>
+    public bool TryGetBaseKey([NotNullWhen(true)] out string? baseKey)
+    {
+        if (BaseKey != null)
+        {
+            baseKey = BaseKey;
+            return true;
+        }
+
+        if (ParentNode is IPropertySourceNode prop)
+        {
+            baseKey = prop.Key;
+            return true;
+        }
+
+        if (Property != null)
+        {
+            baseKey = Property.Key;
+            return true;
+        }
+
+        baseKey = null;
+        return false;
+    }
 
     /// <summary>
     /// Creates <see cref="TypeParserArgs{TElementType}"/> used to parse sub-values, such as the elements in a list.
@@ -127,7 +174,7 @@ public struct TypeParserArgs<T> : IDiagnosticProvider where T : IEquatable<T>
     /// <param name="parentNode">The parent node of the value being parsed.</param>
     /// <param name="type">The type of value being parsed.</param>
     public void CreateSubTypeParserArgs<TElementType>(
-        out TypeParserArgs<TElementType> args,
+        [UnscopedRef] out TypeParserArgs<TElementType> args,
         IAnyValueSourceNode? valueNode,
         IParentSourceNode parentNode,
         IType<TElementType> type,
@@ -144,6 +191,7 @@ public struct TypeParserArgs<T> : IDiagnosticProvider where T : IEquatable<T>
         args.Property = Property;
         args.MissingValueBehavior = MissingValueBehavior;
         args.Result = TypeParserResult.Failed;
+        args.BaseKey = null;
     }
 
     /// <summary>
@@ -151,7 +199,7 @@ public struct TypeParserArgs<T> : IDiagnosticProvider where T : IEquatable<T>
     /// </summary>
     /// <param name="parseArgs">Arguments to pass to <see cref="ITypeConverter{T}.TryParse"/>.</param>
     /// <param name="text">The text being read.</param>
-    public void CreateTypeConverterParseArgs(out TypeConverterParseArgs<T> parseArgs, string? text = null)
+    public void CreateTypeConverterParseArgs([UnscopedRef] out TypeConverterParseArgs<T> parseArgs, string? text = null)
     {
         parseArgs.Type = Type;
         parseArgs.DiagnosticSink = DiagnosticSink;
@@ -167,7 +215,7 @@ public struct TypeParserArgs<T> : IDiagnosticProvider where T : IEquatable<T>
     /// </summary>
     /// <param name="parseArgs">Arguments to pass to <see cref="ITypeConverter{T}.TryParse"/>.</param>
     /// <param name="text">The text being read.</param>
-    public void CreateTypeConverterParseArgsWithoutDiagnostics(out TypeConverterParseArgs<T> parseArgs, string? text = null)
+    public void CreateTypeConverterParseArgsWithoutDiagnostics([UnscopedRef] out TypeConverterParseArgs<T> parseArgs, string? text = null)
     {
         parseArgs.Type = Type;
         parseArgs.DiagnosticSink = null;
@@ -183,7 +231,7 @@ public struct TypeParserArgs<T> : IDiagnosticProvider where T : IEquatable<T>
     /// </summary>
     /// <param name="parseArgs">Arguments to pass to <see cref="ITypeConverter{TElementType}.TryParse"/>.</param>
     /// <param name="text">The text being read.</param>
-    public void CreateTypeConverterParseArgs<TElementType>(out TypeConverterParseArgs<TElementType> parseArgs, IType<TElementType> type, string? text = null)
+    public void CreateTypeConverterParseArgs<TElementType>([UnscopedRef] out TypeConverterParseArgs<TElementType> parseArgs, IType<TElementType> type, string? text = null)
         where TElementType : IEquatable<TElementType>
     {
         parseArgs.Type = type;
@@ -200,7 +248,7 @@ public struct TypeParserArgs<T> : IDiagnosticProvider where T : IEquatable<T>
     /// </summary>
     /// <param name="parseArgs">Arguments to pass to <see cref="ITypeConverter{TElementType}.TryParse"/>.</param>
     /// <param name="text">The text being read.</param>
-    public void CreateTypeConverterParseArgsWithoutDiagnostics<TElementType>(out TypeConverterParseArgs<TElementType> parseArgs, IType<TElementType> type, string? text = null)
+    public void CreateTypeConverterParseArgsWithoutDiagnostics<TElementType>([UnscopedRef] out TypeConverterParseArgs<TElementType> parseArgs, IType<TElementType> type, string? text = null)
         where TElementType : IEquatable<TElementType>
     {
         parseArgs.Type = type;

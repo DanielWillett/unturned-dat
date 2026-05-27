@@ -91,6 +91,9 @@ public static class ValueExtensions
         /// <returns><see langword="false"/> if the visitor didn't get invoked, otherwise <see langword="true"/>.</returns>
         public unsafe bool VisitConcreteValueGeneric<TVisitor>(ref TVisitor visitor)
             where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+            , allows ref struct
+#endif
         {
             if (value == null)
             {
@@ -117,6 +120,9 @@ public static class ValueExtensions
         /// <returns><see langword="false"/> if the visitor didn't get invoked, otherwise <see langword="true"/>.</returns>
         public unsafe bool VisitValueGeneric<TVisitor>(ref TVisitor visitor, ref FileEvaluationContext ctx)
             where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+            , allows ref struct
+#endif
         {
             if (value == null)
             {
@@ -194,6 +200,9 @@ public static class ValueExtensions
 
     private unsafe struct ValueVisitor<TVisitor> : IValueVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         public TVisitor* Visitor;
         public bool Visited;

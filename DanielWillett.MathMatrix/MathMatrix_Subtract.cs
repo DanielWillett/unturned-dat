@@ -1,39 +1,51 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604
 #pragma warning disable CS8600
 
-partial class MathMatrix
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TInY, TVisitor, TIdealOut>(string inValX, TInY inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
         SubtractXVisitor<TVisitor, TInY, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueY = inValY;
-        ConvertToNumber<TIdealOut, SubtractXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, SubtractXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TInX, TVisitor, TIdealOut>(TInX inValX, string inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
         SubtractYVisitor<TVisitor, TInX, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueX = inValX;
-        ConvertToNumber<TIdealOut, SubtractYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, SubtractYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
 
@@ -42,6 +54,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -93,6 +108,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -111,6 +129,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -129,6 +150,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
             visitor.Accept(inValX - inValY);
@@ -139,6 +163,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
             visitor.Accept(inValX - inValY);
@@ -149,6 +176,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (ulong)-inValY, ref visitor)
@@ -157,6 +187,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (uint)-inValY, ref visitor)
@@ -165,6 +198,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (ushort)-inValY, ref visitor)
@@ -173,6 +209,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (byte)-inValY, ref visitor)
@@ -181,6 +220,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -188,6 +230,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -195,6 +240,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ulong inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -205,6 +253,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInY) == typeof(ulong))
             return Subtract(inValX, As<TInY, ulong>(inValY!), ref visitor);
@@ -255,6 +306,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -273,6 +327,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -291,6 +348,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
             visitor.Accept(inValX - inValY);
@@ -301,6 +361,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
             visitor.Accept(inValX - inValY);
@@ -311,6 +374,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (ulong)-inValY, ref visitor)
@@ -319,6 +385,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (uint)-inValY, ref visitor)
@@ -327,6 +396,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (ushort)-inValY, ref visitor)
@@ -335,6 +407,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (byte)-inValY, ref visitor)
@@ -343,6 +418,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((double)inValX - inValY);
         return true;
@@ -350,6 +428,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -357,6 +438,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(uint inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -367,6 +451,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -418,6 +505,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -436,6 +526,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -454,6 +547,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -461,6 +557,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -468,6 +567,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (ulong)-inValY, ref visitor)
@@ -476,6 +578,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (uint)-inValY, ref visitor)
@@ -484,6 +589,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -491,6 +599,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -498,6 +609,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -505,6 +619,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -512,6 +629,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(ushort inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -522,6 +642,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -572,6 +695,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -590,6 +716,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= inValY)
         {
@@ -608,6 +737,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -615,6 +747,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -622,6 +757,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (ulong)-inValY, ref visitor)
@@ -630,6 +768,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return inValY < 0
             ? Add(inValX, (uint)-inValY, ref visitor)
@@ -638,6 +779,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -645,6 +789,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -652,6 +799,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -659,6 +809,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -666,6 +819,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(byte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -676,6 +832,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -726,6 +885,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -761,6 +923,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -792,6 +957,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -819,6 +987,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -846,6 +1017,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -886,6 +1060,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -926,6 +1103,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -966,6 +1146,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1006,6 +1189,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -1013,6 +1199,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -1020,6 +1209,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(long inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -1030,6 +1222,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1082,6 +1277,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1117,6 +1315,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1148,6 +1349,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1175,6 +1379,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1202,6 +1409,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1242,6 +1452,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1281,6 +1494,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1320,6 +1536,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1359,6 +1578,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - (double)inValY);
         return true;
@@ -1366,6 +1588,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1373,6 +1598,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(int inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -1383,6 +1611,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1435,6 +1666,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1470,6 +1704,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1501,6 +1738,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1508,6 +1748,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1515,6 +1758,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1555,6 +1801,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1594,6 +1843,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1601,6 +1853,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1608,6 +1863,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1615,6 +1873,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1622,6 +1883,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(short inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -1632,6 +1896,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1684,6 +1951,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1719,6 +1989,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1750,6 +2023,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1757,6 +2033,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1764,6 +2043,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1804,6 +2086,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX >= 0)
         {
@@ -1843,6 +2128,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1850,6 +2138,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1857,6 +2148,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1864,6 +2158,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1871,6 +2168,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(sbyte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -1881,6 +2181,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1933,6 +2236,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -1940,6 +2246,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - (double)inValY);
         return true;
@@ -1947,6 +2256,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1954,6 +2266,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1961,6 +2276,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -1968,6 +2286,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - (double)inValY);
         return true;
@@ -1975,6 +2296,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1982,6 +2306,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1989,6 +2316,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -1996,6 +2326,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2003,6 +2336,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(float inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -2013,6 +2349,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -2065,6 +2404,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -2072,6 +2414,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2079,6 +2424,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2086,6 +2434,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2093,6 +2444,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - new decimal(inValY));
         return true;
@@ -2100,6 +2454,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2107,6 +2464,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2114,6 +2474,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2121,6 +2484,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2128,6 +2494,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2135,6 +2504,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(double inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) - inValY);
         return true;
@@ -2145,6 +2517,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -2197,6 +2572,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2204,6 +2582,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2211,6 +2592,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2218,6 +2602,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2225,6 +2612,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2232,6 +2622,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2239,6 +2632,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2246,6 +2642,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2253,6 +2652,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2260,6 +2662,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - new decimal(inValY));
         return true;
@@ -2267,6 +2672,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Subtract{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Subtract<TVisitor>(decimal inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX - inValY);
         return true;
@@ -2277,6 +2685,9 @@ partial class MathMatrix
         where TInX : IEquatable<TInX>
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Subtract<TInX, TInY, TVisitor, TInX>(inValX, inValY, ref visitor);
     }
@@ -2293,6 +2704,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInX) == typeof(ulong))
@@ -2403,31 +2817,37 @@ partial class MathMatrix
 
     private struct SubtractXVisitor<TVisitor, TInY, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInY ValueY;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Subtract<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Visitor);
+            Result = Subtract<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 
     private struct SubtractYVisitor<TVisitor, TInX, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInX ValueX;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Subtract<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Visitor);
+            Result = Subtract<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

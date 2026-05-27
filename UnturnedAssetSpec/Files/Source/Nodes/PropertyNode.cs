@@ -191,7 +191,7 @@ internal class PropertyNode : AnySourceNode, IPropertySourceNode
         return string.Equals(n1.Key, n2.Key, StringComparison.Ordinal) && NodesEqual(n1.Value, n2.Value);
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && EqualsHelper(this, (PropertyNode)other);
     }
@@ -235,7 +235,7 @@ internal sealed class SingleCommentedPropertyNode : PropertyNode, ICommentSource
         Comment = comment;
     }
 
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comment.Equals(((SingleCommentedPropertyNode)other).Comment);
     }
@@ -255,7 +255,7 @@ internal sealed class MultipleCommentedPropertyNode : PropertyNode, ICommentSour
         Comments = comments;
     }
     
-    public override bool Equals(ISourceNode other)
+    public override bool Equals(ISourceNode? other)
     {
         return base.Equals(other) && Comments.Equals(((MultipleCommentedPropertyNode)other).Comments);
     }

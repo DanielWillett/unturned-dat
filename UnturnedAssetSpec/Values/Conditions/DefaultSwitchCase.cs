@@ -70,7 +70,7 @@ public class DefaultSwitchCase : ISwitchCase
     }
 
     /// <inheritdoc />
-    public override string ToString()
+    public override string? ToString()
     {
         return Value.ToString();
     }
@@ -124,7 +124,7 @@ public class DefaultSwitchCase<TResult> : DefaultSwitchCase, ISwitchCase<TResult
     }
 
     /// <inheritdoc />
-    public override string ToString()
+    public override string? ToString()
     {
         return Value.ToString();
     }

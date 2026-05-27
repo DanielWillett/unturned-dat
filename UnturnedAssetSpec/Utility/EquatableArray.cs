@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -159,7 +158,7 @@ public class EquatableArrayConverterFactory : JsonConverterFactory
 
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(typeof(EquatableArrayConverter<>).MakeGenericType(typeToConvert.GetGenericArguments()[0]));
+        return (JsonConverter)Activator.CreateInstance(typeof(EquatableArrayConverter<>).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
     }
 }
 
@@ -170,6 +169,7 @@ public sealed class EquatableArrayConverter<T> : JsonConverter<EquatableArray<T>
         return options.GetConverter(typeof(T)) as JsonConverter<T>;
     }
 
+#nullable disable
     public override EquatableArray<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -182,20 +182,20 @@ public sealed class EquatableArrayConverter<T> : JsonConverter<EquatableArray<T>
             throw new JsonException($"Unexpected token {reader.TokenType} when parsing EquatableArray<{typeof(T).FullName}>.");
         }
 
-        List<T>? list = null;
+        List<T> list = null;
         if (!reader.Read() || reader.TokenType == JsonTokenType.EndArray)
         {
             return EquatableArray<T>.Empty;
         }
 
-        T? oneValue = default;
+        T oneValue = default;
         bool hasOneValue = false;
 
-        JsonConverter<T>? converter = GetConverter(options);
+        JsonConverter<T> converter = GetConverter(options);
 
         do
         {
-            T? value = converter == null
+            T value = converter == null
                 ? JsonSerializer.Deserialize<T>(ref reader, options)
                 : converter.Read(ref reader, typeof(T), options);
             if (!hasOneValue)
@@ -205,7 +205,7 @@ public sealed class EquatableArrayConverter<T> : JsonConverter<EquatableArray<T>
             }
             else if (list == null)
             {
-                list = new List<T>(16) { oneValue!, value };
+                list = new List<T>(16) { oneValue, value };
             }
             else
             {
@@ -220,11 +220,12 @@ public sealed class EquatableArrayConverter<T> : JsonConverter<EquatableArray<T>
 
         if (list == null)
         {
-            return new EquatableArray<T>(new T[] { oneValue! });
+            return new EquatableArray<T>(new T[] { oneValue });
         }
 
         return new EquatableArray<T>(list);
     }
+#nullable restore
 
     public override void Write(Utf8JsonWriter writer, EquatableArray<T> value, JsonSerializerOptions options)
     {

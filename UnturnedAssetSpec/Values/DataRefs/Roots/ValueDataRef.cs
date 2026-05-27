@@ -49,8 +49,8 @@ public sealed class ValueDataRef<TValueType> : RootDataRef<TValueType, ValueData
         [NotNullWhen(true)] out IType<TValueType>? type,
         out Optional<TValueType> value)
     {
-        TypeParserArgs<DatObjectValue> args = DatCustomType.ValueParseInfo.Value;
-        if (args.Type == null)
+        TypeParserArgs<DatObjectValue> parserArgs = DatCustomType.ValueParseInfo.Value;
+        if (parserArgs.Type == null)
         {
             value = Optional<TValueType>.Null;
             type = null;
@@ -59,7 +59,7 @@ public sealed class ValueDataRef<TValueType> : RootDataRef<TValueType, ValueData
 
         type = Type;
 
-        IValueSourceNode valueNode = (IValueSourceNode)args.ValueNode!;
+        IValueSourceNode valueNode = (IValueSourceNode)parserArgs.ValueNode!;
 
         if (typeof(TValueType) == typeof(string))
         {
@@ -70,7 +70,7 @@ public sealed class ValueDataRef<TValueType> : RootDataRef<TValueType, ValueData
         ITypeParser<TValueType> typeParser = Type.Parser;
         if (typeParser is TypeConverterParser<TValueType> { CanUseTypeConverterDirectly: true } typeConverterParser)
         {
-            args.CreateTypeConverterParseArgs(
+            parserArgs.CreateTypeConverterParseArgs(
                 out TypeConverterParseArgs<TValueType> parseArgs,
                 Type,
                 valueNode.Value
@@ -84,12 +84,12 @@ public sealed class ValueDataRef<TValueType> : RootDataRef<TValueType, ValueData
         }
         else
         {
-            args.CreateSubTypeParserArgs(
+            parserArgs.CreateSubTypeParserArgs(
                 out TypeParserArgs<TValueType> parseArgs,
                 valueNode,
-                args.ParentNode,
+                parserArgs.ParentNode,
                 Type,
-                args.KeyFilter
+                parserArgs.KeyFilter
             );
 
             if (typeParser.TryParse(ref parseArgs, ref ctx, out value))

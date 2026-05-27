@@ -4,6 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#if !SUBSEQUENT_COMPILE
+#warning This build doesn't include AssetSpec types.
+#endif
+
+
 [SkipLocalsInit]
 public static partial class MathMatrix
 {
@@ -32,7 +37,7 @@ public static partial class MathMatrix
     /// Attempts to reduce <typeparamref name="T"/> into a common input type for math functions in this class.
     /// If the type is already reduced (or is a vector type), the visitor will be invoked with the input type and value.
     /// <para>
-    /// Reduces <see cref="char"/> (as a digit), <see cref="bool"/>, <see cref="IntPtr"/>, <see cref="UIntPtr"/>, and <see cref="GuidOrId"/> into smaller types.
+    /// Reduces <see cref="char"/> (as a digit), <see cref="bool"/>, <see cref="IntPtr"/>, <see cref="UIntPtr"/>, and <see cref="GuidOrId"/> into numeric types.
     /// </para>
     /// </summary>
     /// <remarks>See <see cref="IsValidMathExpressionInputType{T}"/> for the reduced types.</remarks>
@@ -40,6 +45,9 @@ public static partial class MathMatrix
     public static bool TryReduce<T, TVisitor>(T value, ref TVisitor visitor)
         where T : IEquatable<T>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (IsValidMathExpressionInputType<T>())
         {
@@ -101,6 +109,9 @@ public static partial class MathMatrix
 
     private static void ConvertToNumber<TIdealOut, TVisitor>(string str, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (str == null || str.Equals("NULL", StringComparison.OrdinalIgnoreCase))
         {
@@ -284,7 +295,7 @@ public static partial class MathMatrix
     }
 
 #if SUBSEQUENT_COMPILE
-    private static TTo ConvertVector<TTo, TFrom>(IVectorTypeProvider<TTo> vectorProviderTo, IVectorTypeProvider<TFrom> vectorProviderFrom, TFrom fromVector)
+    private static unsafe TTo ConvertVector<TTo, TFrom>(IVectorTypeProvider<TTo> vectorProviderTo, IVectorTypeProvider<TFrom> vectorProviderFrom, TFrom fromVector)
         where TTo : IEquatable<TTo>
         where TFrom : IEquatable<TFrom>
     {

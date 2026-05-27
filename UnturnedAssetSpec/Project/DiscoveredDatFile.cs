@@ -1,5 +1,6 @@
 using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
 using DanielWillett.UnturnedDataFileLspServer.Data.Files;
+using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
 using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
@@ -10,7 +11,6 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
 
@@ -1612,8 +1612,16 @@ public partial class DiscoveredDatFile : IEquatable<DiscoveredDatFile>, IDisposa
         private IdComparer() { }
 
         /// <inheritdoc />
-        public int Compare(DiscoveredDatFile x, DiscoveredDatFile y)
+        public int Compare(DiscoveredDatFile? x, DiscoveredDatFile? y)
         {
+            if (x == null)
+            {
+                return y == null ? 0 : -1;
+            }
+
+            if (y == null)
+                return 1;
+
             if (x.Id == 0)
             {
                 return y.Id == 0 ? 0 : -1;

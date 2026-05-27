@@ -1,39 +1,51 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604
 #pragma warning disable CS8600
 
-partial class MathMatrix
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TInY, TVisitor, TIdealOut>(string inValX, TInY inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
         Atan2RadXVisitor<TVisitor, TInY, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueY = inValY;
-        ConvertToNumber<TIdealOut, Atan2RadXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, Atan2RadXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TInX, TVisitor, TIdealOut>(TInX inValX, string inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
         Atan2RadYVisitor<TVisitor, TInX, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueX = inValX;
-        ConvertToNumber<TIdealOut, Atan2RadYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, Atan2RadYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
 
@@ -42,6 +54,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -94,6 +109,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -101,6 +119,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -108,6 +129,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -115,6 +139,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -122,6 +149,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -129,6 +159,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -136,6 +169,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -143,6 +179,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -150,6 +189,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -157,6 +199,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -164,6 +209,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ulong inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -174,6 +222,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -226,6 +277,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -233,6 +287,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -240,6 +297,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -247,6 +307,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -254,6 +317,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -261,6 +327,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -268,6 +337,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -275,6 +347,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -282,6 +357,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -289,6 +367,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -296,6 +377,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(uint inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -306,6 +390,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -358,6 +445,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -365,6 +455,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -372,6 +465,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -379,6 +475,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -386,6 +485,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -393,6 +495,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -400,6 +505,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -407,6 +515,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -414,6 +525,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -421,6 +535,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -428,6 +545,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(ushort inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -438,6 +558,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -490,6 +613,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -497,6 +623,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -504,6 +633,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -511,6 +643,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -518,6 +653,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -525,6 +663,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -532,6 +673,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -539,6 +683,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -546,6 +693,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -553,6 +703,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -560,6 +713,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(byte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -570,6 +726,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -622,6 +781,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -629,6 +791,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -636,6 +801,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -643,6 +811,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -650,6 +821,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -657,6 +831,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -664,6 +841,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -671,6 +851,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -678,6 +861,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -685,6 +871,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -692,6 +881,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(long inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -702,6 +894,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -754,6 +949,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -761,6 +959,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -768,6 +969,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -775,6 +979,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -782,6 +989,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -789,6 +999,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -796,6 +1009,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -803,6 +1019,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -810,6 +1029,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -817,6 +1039,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -824,6 +1049,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(int inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -834,6 +1062,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -886,6 +1117,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -893,6 +1127,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -900,6 +1137,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -907,6 +1147,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -914,6 +1157,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -921,6 +1167,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -928,6 +1177,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -935,6 +1187,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -942,6 +1197,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -949,6 +1207,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -956,6 +1217,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(short inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -966,6 +1230,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1018,6 +1285,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1025,6 +1295,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1032,6 +1305,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1039,6 +1315,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1046,6 +1325,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1053,6 +1335,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1060,6 +1345,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1067,6 +1355,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1074,6 +1365,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1081,6 +1375,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1088,6 +1385,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(sbyte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -1098,6 +1398,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1150,6 +1453,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1157,6 +1463,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1164,6 +1473,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1171,6 +1483,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1178,6 +1493,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1185,6 +1503,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1192,6 +1513,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1199,6 +1523,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1206,6 +1533,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(MathF.Atan2(inValX, inValY));
         return true;
@@ -1213,6 +1543,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1220,6 +1553,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(float inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -1230,6 +1566,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1282,6 +1621,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1289,6 +1631,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1296,6 +1641,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1303,6 +1651,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1310,6 +1661,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1317,6 +1671,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1324,6 +1681,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1331,6 +1691,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1338,6 +1701,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1345,6 +1711,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, inValY));
         return true;
@@ -1352,6 +1721,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(double inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2(inValX, (double)inValY));
         return true;
@@ -1362,6 +1734,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1414,6 +1789,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1421,6 +1799,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1428,6 +1809,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1435,6 +1819,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1442,6 +1829,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1449,6 +1839,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1456,6 +1849,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1463,6 +1859,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1470,6 +1869,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1477,6 +1879,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, inValY));
         return true;
@@ -1484,6 +1889,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Atan2Rad{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Atan2Rad<TVisitor>(decimal inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Atan2((double)inValX, (double)inValY));
         return true;
@@ -1494,6 +1902,9 @@ partial class MathMatrix
         where TInX : IEquatable<TInX>
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Atan2Rad<TInX, TInY, TVisitor, TInX>(inValX, inValY, ref visitor);
     }
@@ -1510,6 +1921,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInX) == typeof(ulong))
@@ -1620,31 +2034,37 @@ partial class MathMatrix
 
     private struct Atan2RadXVisitor<TVisitor, TInY, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInY ValueY;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Atan2Rad<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Visitor);
+            Result = Atan2Rad<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 
     private struct Atan2RadYVisitor<TVisitor, TInX, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInX ValueX;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Atan2Rad<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Visitor);
+            Result = Atan2Rad<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

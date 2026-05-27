@@ -1,14 +1,10 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
 using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Numerics;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
@@ -16,102 +12,6 @@ namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
 internal static class JsonHelper
 {
-#if EMIT
-    private static Func<JsonDocument, ReadOnlyMemory<byte>>? _jsonDocumentUtf8JsonDataGetter;
-#endif
-    private static FieldInfo? _jsonDocumentUtf8JsonDataField;
-
-    static JsonHelper()
-    {
-        try
-        {
-            _jsonDocumentUtf8JsonDataField = typeof(JsonDocument).GetField(
-                "_utf8Json",
-                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly
-            );
-
-#if EMIT
-            if (_jsonDocumentUtf8JsonDataField == null)
-                return;
-
-            DynamicMethod method = new DynamicMethod("GetJsonDocumentUtf8",
-                MethodAttributes.Static | MethodAttributes.Public,
-                CallingConventions.Standard,
-                typeof(ReadOnlyMemory<byte>),
-                [ typeof(JsonDocument) ],
-                typeof(JsonHelper),
-                skipVisibility: true
-            );
-
-            ILGenerator emit = method.GetILGenerator(13);
-
-            emit.Emit(OpCodes.Ldarg_0);
-            emit.Emit(OpCodes.Ldfld, _jsonDocumentUtf8JsonDataField);
-            emit.Emit(OpCodes.Ret);
-
-            _jsonDocumentUtf8JsonDataGetter = (Func<JsonDocument, ReadOnlyMemory<byte>>)method.CreateDelegate(typeof(Func<JsonDocument, ReadOnlyMemory<byte>>));
-#endif
-        }
-        catch { /* ignored */ }
-    }
-
-    /// <summary>
-    /// Skips any properties starting with '$'.
-    /// </summary>
-    public static bool ShouldSkipAdditionalProperty([NotNullWhen(false)] string? key)
-    {
-        return string.IsNullOrEmpty(key) || key![0] == '$';
-    }
-
-    public static Utf8JsonReader CreateUtf8JsonReader(JsonDocument document, JsonReaderOptions options)
-    {
-        ReadOnlyMemory<byte> mem;
-
-        while (true)
-        {
-#if EMIT
-            if (_jsonDocumentUtf8JsonDataGetter != null)
-            {
-                try
-                {
-                    mem = _jsonDocumentUtf8JsonDataGetter(document);
-                    break;
-                }
-                catch
-                {
-                    _jsonDocumentUtf8JsonDataGetter = null;
-                }
-            }
-            else
-#endif
-            if (_jsonDocumentUtf8JsonDataField != null)
-            {
-                try
-                {
-                    mem = (ReadOnlyMemory<byte>)_jsonDocumentUtf8JsonDataField.GetValue(document);
-                    break;
-                }
-                catch
-                {
-                    _jsonDocumentUtf8JsonDataField = null;
-                }
-            }
-            else
-            {
-                using MemoryStream ms = new MemoryStream(1024);
-                using Utf8JsonWriter writer = new Utf8JsonWriter(ms);
-                document.WriteTo(writer);
-                writer.Flush();
-
-                ms.TryGetBuffer(out ArraySegment<byte> seg);
-                mem = seg.AsMemory();
-                break;
-            }
-        }
-
-        return new Utf8JsonReader(mem.Span, options);
-    }
-    
     public static bool TryReadGenericValue(in JsonElement reader, out object? obj)
     {
         obj = null;
@@ -179,7 +79,7 @@ internal static class JsonHelper
                     obj = dt;
                 else
                 {
-                    string str = reader.GetString();
+                    string str = reader.GetString()!;
                     if (Guid.TryParse(str, out guid))
                         obj = guid;
                     else
@@ -1173,7 +1073,7 @@ internal static class JsonHelper
             
             Type[] args = [ elementType ];
             ReaderDelegate = (TryReadGenericTypeArrayElementReader)readerMethod.MakeGenericMethod(args).CreateDelegate(typeof(TryReadGenericTypeArrayElementReader));
-            ElementDelegate = (TryReadGenericTypeArrayElementElement)readerMethod.MakeGenericMethod(args).CreateDelegate(typeof(TryReadGenericTypeArrayElementElement));
+            ElementDelegate = (TryReadGenericTypeArrayElementElement)elementMethod.MakeGenericMethod(args).CreateDelegate(typeof(TryReadGenericTypeArrayElementElement));
         }
     }
 

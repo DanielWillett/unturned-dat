@@ -26,7 +26,7 @@ public class TypeDictionaryConverter<TValue> : JsonConverter<Dictionary<Qualifie
             if (!reader.Read())
                 break;
 
-            TValue val = JsonSerializer.Deserialize<TValue>(ref reader, options);
+            TValue val = JsonSerializer.Deserialize<TValue>(ref reader, options)!;
             dict.Add(key, val);
         }
 

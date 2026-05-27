@@ -20,7 +20,6 @@ namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 /// A subclass of <see cref="DatType"/> which defines a specific set of values or a set of flags which can be combined (or'd) into a bitwise value.
 /// </summary>
 public class DatEnumType : DatType,
-    IType<DatEnumValue>,
     ITypeConverter<DatEnumValue>,
     IDatTypeWithStringParseableType<DatEnumValue>,
     IDisposable,

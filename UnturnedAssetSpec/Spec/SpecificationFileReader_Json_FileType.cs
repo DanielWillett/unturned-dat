@@ -1,11 +1,9 @@
 ﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Tracing;
 using System.Text.Json;
-using System.Threading;
-using Microsoft.Extensions.Logging;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 
@@ -110,7 +108,7 @@ partial class SpecificationFileReader
         {
             if (_fileTypeBuilder != null)
             {
-                if (_fileTypeBuilder.TryGetValue(fileType, out DatFileType existing))
+                if (_fileTypeBuilder.TryGetValue(fileType, out DatFileType? existing))
                 {
                     _logger.LogError(
                         "Duplicate file type name in specification: {0} and {1}.",
@@ -126,7 +124,7 @@ partial class SpecificationFileReader
 
             if (_allTypeBuilder != null)
             {
-                if (_allTypeBuilder.TryGetValue(fileType, out DatType existing))
+                if (_allTypeBuilder.TryGetValue(fileType, out DatType? existing))
                 {
                     _logger.LogWarning(
                         "Duplicate type name in specification: ({0} from {1}) and ({2}). They're not conflicting since they're defined in different files but may cause issues.",

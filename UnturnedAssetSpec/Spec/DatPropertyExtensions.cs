@@ -316,14 +316,15 @@ public static class DatPropertyExtensions
         }
     }
 
-    /// <inheritdoc cref="VisitValue{TVisitor}(DatProperty,ref TVisitor,ref FileEvaluationContext,PropertyBreadcrumbs,IDiagnosticSink?,IReferencedPropertySink?,TypeParserMissingValueBehavior)"/>
+    /// <inheritdoc cref="VisitValue{TVisitor}(DatProperty,ref TVisitor,ref FileEvaluationContext,PropertyBreadcrumbs,IDiagnosticSink?,IReferencedPropertySink?,TypeParserMissingValueBehavior,string)"/>
     public static unsafe bool VisitValue<TVisitor>(
         this DatProperty property,
         ref TVisitor visitor,
         ref FileEvaluationContext ctx,
         IDiagnosticSink? diagnosticSink = null,
         IReferencedPropertySink? referencedPropertySink = null,
-        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided)
+        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided,
+        string? baseKey = null)
         where TVisitor : IValueVisitor
 #if NET9_0_OR_GREATER
         , allows ref struct
@@ -339,7 +340,7 @@ public static class DatPropertyExtensions
             return false;
         }
 
-        if (!targetDictionary.TryGetProperty(property, ref ctx, out IPropertySourceNode? propertyNode))
+        if (!targetDictionary.TryGetProperty(property, ref ctx, out IPropertySourceNode? propertyNode, ctx.GetKeyFilter(), baseKey: baseKey))
         {
             IValue? defaultValue = property.DefaultValue;
             return defaultValue != null && defaultValue.VisitValue(ref visitor, ref ctx);
@@ -367,7 +368,6 @@ public static class DatPropertyExtensions
         return v.Visited;
     }
 
-
     /// <summary>
     /// Invokes a visitor with the current value of the given property.
     /// If the property is not included the <see cref="DatProperty.DefaultValue"/> will be visited instead.
@@ -380,6 +380,7 @@ public static class DatPropertyExtensions
     /// <param name="breadcrumbs">Breadcrumbs to the property within a file.</param>
     /// <param name="diagnosticSink">Object which will receive any parse diagnostics.</param>
     /// <param name="referencedPropertySink">Object which will receive any other referenced properties.</param>
+    /// <param name="baseKey">Optional base key which will be prepended to the key, including the underscore if necessary.</param>
     /// <returns>Whether or not the visitor was invoked.</returns>
     public static unsafe bool VisitValue<TVisitor>(
         this DatProperty property,
@@ -388,7 +389,8 @@ public static class DatPropertyExtensions
         PropertyBreadcrumbs breadcrumbs,
         IDiagnosticSink? diagnosticSink = null,
         IReferencedPropertySink? referencedPropertySink = null,
-        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided)
+        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided,
+        string? baseKey = null)
         where TVisitor : IValueVisitor
 #if NET9_0_OR_GREATER
         , allows ref struct
@@ -433,7 +435,7 @@ public static class DatPropertyExtensions
             return false;
         }
 
-        if (!targetDictionary.TryGetProperty(property, ref ctx, out IPropertySourceNode? propertyNode))
+        if (!targetDictionary.TryGetProperty(property, ref ctx, out IPropertySourceNode? propertyNode, ctx.GetKeyFilter(), baseKey))
         {
             IValue? defaultValue = property.DefaultValue;
             return defaultValue != null && defaultValue.VisitValue(ref visitor, ref ctx);
@@ -461,7 +463,7 @@ public static class DatPropertyExtensions
         return v.Visited;
     }
 
-    /// <inheritdoc cref="VisitValue(DatProperty,ref FileEvaluationContext,PropertyBreadcrumbs, out IValue?,out IPropertySourceNode?,IDiagnosticSink?,IReferencedPropertySink?,TypeParserMissingValueBehavior)"/>
+    /// <inheritdoc cref="TryGetValue(DatProperty,ref FileEvaluationContext,PropertyBreadcrumbs, out IValue?,out IPropertySourceNode?,IDiagnosticSink?,IReferencedPropertySink?,TypeParserMissingValueBehavior,string)"/>
     public static unsafe bool TryGetValue(
         this DatProperty property,
         ref FileEvaluationContext ctx,
@@ -469,7 +471,8 @@ public static class DatPropertyExtensions
         out IPropertySourceNode? propertyNode,
         IDiagnosticSink? diagnosticSink = null,
         IReferencedPropertySink? referencedPropertySink = null,
-        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided)
+        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided,
+        string? baseKey = null)
     {
         value = null;
         propertyNode = null;
@@ -484,7 +487,7 @@ public static class DatPropertyExtensions
             return false;
         }
 
-        if (!targetDictionary.TryGetProperty(property, ref ctx, out propertyNode))
+        if (!targetDictionary.TryGetProperty(property, ref ctx, out propertyNode, ctx.GetKeyFilter(), baseKey))
         {
             value = property.DefaultValue;
             propertyNode = null;
@@ -519,21 +522,19 @@ public static class DatPropertyExtensions
         return true;
     }
 
-
     /// <summary>
-    /// Invokes a visitor with the current value of the given property.
+    /// Attempts to compute the current value of the given property.
     /// If the property is not included the <see cref="DatProperty.DefaultValue"/> will be visited instead.
     /// If the property has no value the <see cref="DatProperty.IncludedDefaultValue"/> will be visited.
     /// </summary>
-    /// <typeparam name="TVisitor">A visitor type to invoke <see cref="IValueVisitor.Accept{TValue}"/> on.</typeparam>
     /// <param name="property">The property to evaluate.</param>
-    /// <param name="visitor">A visitor to invoke <see cref="IValueVisitor.Accept{TValue}"/> on.</param>
     /// <param name="ctx">Workspace context for the operation.</param>
     /// <param name="breadcrumbs">Breadcrumbs to the property within a file.</param>
     /// <param name="diagnosticSink">Object which will receive any parse diagnostics.</param>
     /// <param name="referencedPropertySink">Object which will receive any other referenced properties.</param>
-    /// <returns>Whether or not the visitor was invoked.</returns>
-    public static unsafe bool VisitValue(
+    /// <param name="baseKey">Object which will receive any other referenced properties.</param>
+    /// <returns>Whether or not the value could be computed.</returns>
+    public static unsafe bool TryGetValue(
         this DatProperty property,
         ref FileEvaluationContext ctx,
         PropertyBreadcrumbs breadcrumbs,
@@ -541,7 +542,8 @@ public static class DatPropertyExtensions
         out IPropertySourceNode? propertyNode,
         IDiagnosticSink? diagnosticSink = null,
         IReferencedPropertySink? referencedPropertySink = null,
-        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided)
+        TypeParserMissingValueBehavior missingValueBahvior = TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided,
+        string? baseKey = null)
     {
         value = null;
         propertyNode = null;
@@ -579,7 +581,7 @@ public static class DatPropertyExtensions
             return false;
         }
 
-        if (!targetDictionary.TryGetProperty(property, ref ctx, out propertyNode))
+        if (!targetDictionary.TryGetProperty(property, ref ctx, out propertyNode, ctx.GetKeyFilter(), baseKey))
         {
             value = property.DefaultValue;
             propertyNode = null;

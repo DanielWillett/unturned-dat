@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
-partial class MathMatrix
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
+unsafe partial class MathMatrix
 {
     // note: most of these functions will fail with very large numbers due to the way decimals are represented
     // see https://stackoverflow.com/questions/66030225/different-results-between-c-and-c-sharp-sin-function-with-large-values
@@ -11,18 +15,26 @@ partial class MathMatrix
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor, TIdealOut>(string inVal, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
         CosDegVisitor<TVisitor, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
-        ConvertToNumber<TIdealOut, CosDegVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, CosDegVisitor<TVisitor, TIdealOut>>(inVal, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(ulong inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -30,6 +42,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(uint inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -37,6 +52,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(ushort inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -44,6 +62,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(byte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -51,6 +72,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(long inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -58,6 +82,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(int inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -65,6 +92,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(short inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -72,6 +102,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(sbyte inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -79,6 +112,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(float inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(MathF.Cos(inVal * (MathF.PI / 180f)));
         return true;
@@ -86,6 +122,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(double inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos(inVal * (Math.PI / 180)));
         return true;
@@ -93,6 +132,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="CosDeg{TIn,TVisitor,TIdealOut}"/>
     public static bool CosDeg<TVisitor>(decimal inVal, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(Math.Cos((double)inVal * (Math.PI / 180)));
         return true;
@@ -102,6 +144,9 @@ partial class MathMatrix
     public static bool CosDeg<TIn, TVisitor>(TIn inVal, ref TVisitor visitor)
         where TIn : IEquatable<TIn>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return CosDeg<TIn, TVisitor, TIn>(inVal, ref visitor);
     }
@@ -116,6 +161,9 @@ partial class MathMatrix
         where TIn : IEquatable<TIn>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TIn) == typeof(ulong))
@@ -168,14 +216,17 @@ partial class MathMatrix
 
     private struct CosDegVisitor<TVisitor, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = CosDeg<T, TVisitor, TIdealOut>(value, ref Visitor);
+            Result = CosDeg<T, TVisitor, TIdealOut>(value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

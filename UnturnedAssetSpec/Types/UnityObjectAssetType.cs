@@ -89,7 +89,7 @@ public sealed class UnityObjectAssetType : IBundleAssetType, ITypeFactory
         return _type.GetHashCode();
     }
 
-    IType ITypeFactory.CreateType(in JsonElement typeDefinition, string typeId, IDatSpecificationReadContext spec, DatProperty owner, string context = "")
+    IType ITypeFactory.CreateType(in JsonElement typeDefinition, string typeId, IDatSpecificationReadContext spec, DatProperty owner, string context)
     {
         return Create(new QualifiedType(typeId, true));
     }

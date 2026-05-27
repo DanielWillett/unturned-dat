@@ -1,39 +1,51 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604
 #pragma warning disable CS8600
 
-partial class MathMatrix
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TInY, TVisitor, TIdealOut>(string inValX, TInY inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
         ModuloXVisitor<TVisitor, TInY, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueY = inValY;
-        ConvertToNumber<TIdealOut, ModuloXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, ModuloXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TInX, TVisitor, TIdealOut>(TInX inValX, string inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
         ModuloYVisitor<TVisitor, TInX, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueX = inValX;
-        ConvertToNumber<TIdealOut, ModuloYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, ModuloYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
 
@@ -42,6 +54,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInY) == typeof(ulong))
             return Modulo(inValX, As<TInY, ulong>(inValY!), ref visitor);
@@ -91,6 +106,9 @@ partial class MathMatrix
     }
 
     private static bool DivideByZero<TVisitor>(ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(double.NaN);
         return true;
@@ -98,6 +116,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -107,6 +128,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -116,6 +140,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -125,6 +152,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -134,6 +164,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -143,6 +176,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -152,6 +188,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -161,6 +200,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -170,18 +212,27 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ulong inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -191,6 +242,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -242,6 +296,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -251,6 +308,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -260,6 +320,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -269,6 +332,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -278,6 +344,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -287,6 +356,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -296,6 +368,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -305,6 +380,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -314,6 +392,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((double)inValX % inValY);
         return true;
@@ -321,6 +402,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -328,6 +412,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(uint inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -337,6 +424,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -388,6 +478,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -397,6 +490,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -406,6 +502,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -415,6 +514,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -424,6 +526,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -433,6 +538,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -442,6 +550,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -451,6 +562,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -460,6 +574,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -467,6 +584,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -474,6 +594,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(ushort inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -483,6 +606,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -533,6 +659,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -542,6 +671,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -551,6 +683,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -560,6 +695,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -569,6 +707,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -578,6 +719,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -587,6 +731,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -596,6 +743,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -605,6 +755,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -612,6 +765,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -619,6 +775,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(byte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -628,6 +787,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -678,6 +840,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -691,6 +856,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -704,6 +872,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -717,6 +888,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -730,6 +904,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -739,6 +916,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -748,6 +928,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -757,6 +940,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -766,18 +952,27 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(long inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -787,6 +982,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -839,6 +1037,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -852,6 +1053,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -865,6 +1069,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -878,6 +1085,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -891,6 +1101,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -900,6 +1113,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -909,6 +1125,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -918,6 +1137,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -927,6 +1149,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % (double)inValY);
         return true;
@@ -934,6 +1159,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -941,6 +1169,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(int inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -950,6 +1181,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1002,6 +1236,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1015,6 +1252,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1028,6 +1268,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1041,6 +1284,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1054,6 +1300,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1063,6 +1312,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1072,6 +1324,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1081,6 +1336,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1090,6 +1348,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1097,6 +1358,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1104,6 +1368,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(short inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -1113,6 +1380,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1165,6 +1435,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1178,6 +1451,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1191,6 +1467,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1204,6 +1483,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1217,6 +1499,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1226,6 +1511,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1235,6 +1523,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1244,6 +1535,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == 0)
             return DivideByZero(ref visitor);
@@ -1253,6 +1547,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1260,6 +1557,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1267,6 +1567,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(sbyte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -1276,6 +1579,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1328,12 +1634,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % (double)inValY);
         return true;
@@ -1341,6 +1653,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1348,6 +1663,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1355,12 +1673,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % (double)inValY);
         return true;
@@ -1368,6 +1692,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1375,6 +1702,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1382,6 +1712,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1389,6 +1722,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1396,6 +1732,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(float inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -1405,6 +1744,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1457,12 +1799,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1470,6 +1818,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1477,6 +1828,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1484,12 +1838,18 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1497,6 +1857,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1504,6 +1867,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1511,6 +1877,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1518,6 +1887,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX % inValY);
         return true;
@@ -1525,6 +1897,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(double inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(new decimal(inValX), inValY, ref visitor);
     }
@@ -1534,6 +1909,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1586,66 +1964,99 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         return Modulo(inValX, new decimal(inValY), ref visitor);
     }
 
     /// <inheritdoc cref="Modulo{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Modulo<TVisitor>(decimal inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY == decimal.Zero)
             return DivideByZero(ref visitor);
@@ -1658,6 +2069,9 @@ partial class MathMatrix
         where TInX : IEquatable<TInX>
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInX) == typeof(string))
         {
@@ -1679,6 +2093,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInX) == typeof(ulong))
@@ -1789,31 +2206,37 @@ partial class MathMatrix
 
     private struct ModuloXVisitor<TVisitor, TInY, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInY ValueY;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Modulo<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Visitor);
+            Result = Modulo<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 
     private struct ModuloYVisitor<TVisitor, TInX, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInX ValueX;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Modulo<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Visitor);
+            Result = Modulo<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }

@@ -1029,8 +1029,11 @@ public readonly struct OneOrMore<T> : IEquatable<OneOrMore<T>>, IEquatable<T>, I
 
     /// <inheritdoc />
     [Pure]
-    public bool Equals(T other)
+    public bool Equals(T? other)
     {
+        if (other == null)
+            return Values != null ? Values.Length == 1 && Values[0] == null : Value == null;
+
         if (Values == null)
             return EqualityComparer<T>.Default.Equals(Value, other);
 
@@ -1397,7 +1400,7 @@ public static class OneOrMoreExtensions
         };
 
         return stringList.Where(
-            static (string x, in RemoveStringState state) => !string.Equals(x, state.Value, state.Comparison),
+            static (x, in state) => !string.Equals(x, state.Value, state.Comparison),
             state
         );
     }

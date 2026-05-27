@@ -83,7 +83,7 @@ public class DataRefProperty<TProperty> : IDataRef, IEquatable<DataRefProperty<T
         {
             if (_propertiesString == null)
             {
-                OneOrMore<KeyValuePair<string, object>> properties = configurable.Options;
+                OneOrMore<KeyValuePair<string, object?>> properties = configurable.Options;
                 if (properties.Length <= 0)
                 {
                     _propertiesString = string.Empty;
@@ -101,7 +101,7 @@ public class DataRefProperty<TProperty> : IDataRef, IEquatable<DataRefProperty<T
                     writer.WriteStartObject();
                     for (int i = 0; i < properties.Length; i++)
                     {
-                        KeyValuePair<string, object> property = properties[i];
+                        KeyValuePair<string, object?> property = properties[i];
                         writer.WritePropertyName(property.Key);
                         JsonHelper.WriteGenericValue(writer, property.Value);
                     }

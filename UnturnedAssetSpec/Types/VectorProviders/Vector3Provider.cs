@@ -2,9 +2,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
-#if NET5_0_OR_GREATER
-using System.Diagnostics.CodeAnalysis;
-#endif
+
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
 
 #if NET5_0_OR_GREATER

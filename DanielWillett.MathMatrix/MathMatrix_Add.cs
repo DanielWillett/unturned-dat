@@ -1,39 +1,51 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604
 #pragma warning disable CS8600
 
-partial class MathMatrix
+unsafe partial class MathMatrix
 {
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TInY, TVisitor, TIdealOut>(string inValX, TInY inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
         AddXVisitor<TVisitor, TInY, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueY = inValY;
-        ConvertToNumber<TIdealOut, AddXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, AddXVisitor<TVisitor, TInY, TIdealOut>>(inValX, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TInX, TVisitor, TIdealOut>(TInX inValX, string inValY, ref TVisitor visitor)
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
         AddYVisitor<TVisitor, TInX, TIdealOut> visitorProxy;
         visitorProxy.Result = false;
-        visitorProxy.Visitor = visitor;
         visitorProxy.ValueX = inValX;
-        ConvertToNumber<TIdealOut, AddYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
-        visitor = visitorProxy.Visitor;
+        fixed (TVisitor* ptr = &visitor)
+        {
+            visitorProxy.Visitor = ptr;
+            ConvertToNumber<TIdealOut, AddYVisitor<TVisitor, TInX, TIdealOut>>(inValY, ref visitorProxy);
+        }
         return visitorProxy.Result;
     }
 
@@ -42,6 +54,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -93,6 +108,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept(new decimal(inValX) + new decimal(inValY)); }
@@ -101,6 +119,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept(new decimal(inValX) + new decimal(inValY)); }
@@ -109,6 +130,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept(new decimal(inValX) + new decimal(inValY)); }
@@ -117,6 +141,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept(new decimal(inValX) + new decimal(inValY)); }
@@ -125,6 +152,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -146,6 +176,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -167,6 +200,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -188,6 +224,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -209,6 +248,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -216,6 +258,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -223,6 +268,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ulong inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -233,6 +281,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -284,6 +335,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept(new decimal(inValX) + new decimal(inValY)); }
@@ -292,6 +346,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept((ulong)inValX + inValY); }
@@ -300,6 +357,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept((ulong)inValX + inValY); }
@@ -308,6 +368,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept((ulong)inValX + inValY); }
@@ -316,6 +379,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -337,6 +403,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -358,6 +427,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -379,6 +451,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -400,6 +475,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((double)inValX + inValY);
         return true;
@@ -407,6 +485,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -414,6 +495,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(uint inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -424,6 +508,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -475,6 +562,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept(new decimal(inValX) + new decimal(inValY)); }
@@ -483,6 +573,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept((ulong)inValX + inValY); }
@@ -491,6 +584,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX + inValY);
         return true;
@@ -498,6 +594,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX + inValY);
         return true;
@@ -505,6 +604,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -526,6 +628,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -547,6 +652,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -566,6 +674,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -585,6 +696,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -592,6 +706,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -599,6 +716,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(ushort inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -609,6 +729,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -659,6 +782,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept(new decimal(inValX) + new decimal(inValY)); }
@@ -667,6 +793,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         try { visitor.Accept(checked(inValX + inValY)); }
         catch (OverflowException) { visitor.Accept((ulong)inValX + inValY); }
@@ -675,6 +804,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX + inValY);
         return true;
@@ -682,6 +814,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept((uint)inValX + inValY);
         return true;
@@ -689,6 +824,9 @@ partial class MathMatrix
     
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -710,6 +848,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -731,6 +872,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -752,6 +896,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -773,6 +920,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -780,6 +930,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -787,6 +940,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(byte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -797,6 +953,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -847,6 +1006,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -868,6 +1030,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -887,6 +1052,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -906,6 +1074,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -925,6 +1096,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -966,6 +1140,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1007,6 +1184,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1048,6 +1228,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1089,6 +1272,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -1096,6 +1282,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -1103,6 +1292,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(long inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -1113,6 +1305,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1165,6 +1360,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1186,6 +1384,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1207,6 +1408,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1228,6 +1432,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1249,6 +1456,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1290,6 +1500,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1331,6 +1544,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1372,6 +1588,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1413,6 +1632,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + (double)inValY);
         return true;
@@ -1420,6 +1642,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1427,6 +1652,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(int inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -1437,6 +1665,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1489,6 +1720,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1510,6 +1744,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1531,6 +1768,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1538,6 +1778,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1545,6 +1788,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1585,6 +1831,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1626,6 +1875,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1633,6 +1885,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1640,6 +1895,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1647,6 +1905,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1654,6 +1915,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(short inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -1664,6 +1928,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1716,6 +1983,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1737,6 +2007,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValX < 0)
         {
@@ -1758,6 +2031,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1765,6 +2041,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1772,6 +2051,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1812,6 +2094,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (inValY < 0)
         {
@@ -1853,6 +2138,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1860,6 +2148,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1867,6 +2158,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1874,6 +2168,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1881,6 +2178,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(sbyte inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -1891,6 +2191,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -1943,6 +2246,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -1950,6 +2256,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + (double)inValY);
         return true;
@@ -1957,6 +2266,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1964,6 +2276,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1971,6 +2286,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -1978,6 +2296,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + (double)inValY);
         return true;
@@ -1985,6 +2306,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1992,6 +2316,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -1999,6 +2326,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2006,6 +2336,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2013,6 +2346,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(float inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -2023,6 +2359,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -2075,6 +2414,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -2082,6 +2424,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2089,6 +2434,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2096,6 +2444,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2103,6 +2454,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + new decimal(inValY));
         return true;
@@ -2110,6 +2464,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2117,6 +2474,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2124,6 +2484,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2131,6 +2494,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2138,6 +2504,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2145,6 +2514,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(double inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(new decimal(inValX) + inValY);
         return true;
@@ -2155,6 +2527,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInY) == typeof(ulong))
@@ -2207,6 +2582,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, ulong inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2214,6 +2592,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, uint inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2221,6 +2602,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, ushort inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2228,6 +2612,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, byte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2235,6 +2622,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, long inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2242,6 +2632,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, int inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2249,6 +2642,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, short inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2256,6 +2652,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, sbyte inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2263,6 +2662,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, float inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2270,6 +2672,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, double inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + new decimal(inValY));
         return true;
@@ -2277,6 +2682,9 @@ partial class MathMatrix
 
     /// <inheritdoc cref="Add{TInX,TInY,TVisitor,TIdealOut}"/>
     public static bool Add<TVisitor>(decimal inValX, decimal inValY, ref TVisitor visitor) where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         visitor.Accept(inValX + inValY);
         return true;
@@ -2287,6 +2695,9 @@ partial class MathMatrix
         where TInX : IEquatable<TInX>
         where TInY : IEquatable<TInY>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
     {
         if (typeof(TInX) == typeof(string))
         {
@@ -2308,6 +2719,9 @@ partial class MathMatrix
         where TInY : IEquatable<TInY>
         where TIdealOut : IEquatable<TIdealOut>
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
 
     {
         if (typeof(TInX) == typeof(ulong))
@@ -2418,31 +2832,37 @@ partial class MathMatrix
 
     private struct AddXVisitor<TVisitor, TInY, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInY : IEquatable<TInY>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInY ValueY;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Add<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Visitor);
+            Result = Add<T, TInY, TVisitor, TIdealOut>(value, ValueY, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 
     private struct AddYVisitor<TVisitor, TInX, TIdealOut> : IGenericVisitor
         where TVisitor : IGenericVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
         where TIdealOut : IEquatable<TIdealOut>
         where TInX : IEquatable<TInX>
     {
-        public TVisitor Visitor;
+        public TVisitor* Visitor;
         public TInX ValueX;
         public bool Result;
 
         public void Accept<T>(T? value) where T : IEquatable<T>
         {
-            Result = Add<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Visitor);
+            Result = Add<TInX, T, TVisitor, TIdealOut>(ValueX, value, ref Unsafe.AsRef<TVisitor>(Visitor));
         }
     }
 }
