@@ -6,9 +6,9 @@
  /* File created by MIDL compiler version 8.01.0628 */
 /* at Mon Jan 18 22:14:07 2038
  */
-/* Compiler settings for UnturnedAssetFileIconHandler.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0628 
-    protocol : dce , ms_ext, c_ext, robust
+/* Compiler settings for IconHandler.idl:
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0628 
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -35,8 +35,8 @@
 #include "ole2.h"
 #endif /*COM_NO_WINDOWS_H*/
 
-#ifndef __UnturnedAssetFileIconHandler_i_h__
-#define __UnturnedAssetFileIconHandler_i_h__
+#ifndef __IconHandler_i_h__
+#define __IconHandler_i_h__
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
@@ -209,14 +209,14 @@ EXTERN_C const IID IID_IIconHandler;
 
 
 
-#ifndef __UnturnedAssetFileIconHandlerLib_LIBRARY_DEFINED__
-#define __UnturnedAssetFileIconHandlerLib_LIBRARY_DEFINED__
+#ifndef __IconHandlerLib_LIBRARY_DEFINED__
+#define __IconHandlerLib_LIBRARY_DEFINED__
 
-/* library UnturnedAssetFileIconHandlerLib */
+/* library IconHandlerLib */
 /* [version][uuid] */ 
 
 
-EXTERN_C const IID LIBID_UnturnedAssetFileIconHandlerLib;
+EXTERN_C const IID LIBID_IconHandlerLib;
 
 EXTERN_C const CLSID CLSID_IconHandler;
 
@@ -225,7 +225,7 @@ EXTERN_C const CLSID CLSID_IconHandler;
 class DECLSPEC_UUID("4e7807f2-0487-45c5-80a9-e71f7a986bfe")
 IconHandler;
 #endif
-#endif /* __UnturnedAssetFileIconHandlerLib_LIBRARY_DEFINED__ */
+#endif /* __IconHandlerLib_LIBRARY_DEFINED__ */
 
 /* Additional Prototypes for ALL interfaces */
 

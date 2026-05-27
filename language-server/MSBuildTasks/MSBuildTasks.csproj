@@ -6,12 +6,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Release</Configurations>
 
+    <AssemblyName>DanielWillett.UnturnedDat.MSBuildTasks</AssemblyName>
+
     <OutputPath>bin/</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-
-    <!--<Optimize>False</Optimize>
-    <DebugType>Portable</DebugType>-->
 
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 

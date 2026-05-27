@@ -8,7 +8,7 @@
 		<LangVersion>14.0</LangVersion>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-		<RootNamespace>DanielWillett.UnturnedDataFileLspServer</RootNamespace>
+		<RootNamespace>DanielWillett.UnturnedDat.LanguageServer</RootNamespace>
     <StrongNameKeyPath>C:\Strong Name Keys\UnturnedAssetSpec\UnturnedAssetSpec_LspServer.exe.snk</StrongNameKeyPath>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
@@ -26,7 +26,7 @@
 
 	<ItemGroup>
 
-    <ProjectReference Include="../UnturnedAssetFileIconHandler/UnturnedAssetFileIconHandler.vcxproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../IconHandler/IconHandler.vcxproj" ReferenceOutputAssembly="false" />
 
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.9" />
 
@@ -41,12 +41,12 @@
 
     <PackageReference Include="DanielWillett.SpeedBytes" Version="1.1.2" />
 
-    <ProjectReference Include="../UnturnedAssetSpec/UnturnedAssetSpec.csproj" />
+    <ProjectReference Include="../UnturnedDat/UnturnedDat.csproj" />
 	</ItemGroup>
 
   <ItemGroup>
 
-    <Content Include="../x64/$(Configuration)/**" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <Content Include="../IconHandler/x64/$(Configuration)/Build/**" CopyToOutputDirectory="PreserveNewest" Visible="false" />
 
   </ItemGroup>
 

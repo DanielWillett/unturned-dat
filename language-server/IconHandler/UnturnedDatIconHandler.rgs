@@ -2,7 +2,7 @@ HKCR
 {
 	NoRemove CLSID
 	{
-		ForceRemove {4e7807f2-0487-45c5-80a9-e71f7a986bfe} = s 'Unturned Asset File Icon Handler'
+		ForceRemove {4e7807f2-0487-45c5-80a9-e71f7a986bfe} = s 'Unturned Data File Icon Handler'
 		{
 			ForceRemove Programmable
 			InprocServer32 = s '%MODULE%'

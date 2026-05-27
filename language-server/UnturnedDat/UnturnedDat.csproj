@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <UsingTask AssemblyFile="../UnturnedAssetSpecMSBuildTasks/bin/UnturnedAssetSpecMSBuildTasks.dll" TaskName="UnturnedAssetSpecMSBuildTasks.MergeAssetSpecTask" />
+  <UsingTask AssemblyFile="../MSBuildTasks/bin/DanielWillett.UnturnedDat.MSBuildTasks.dll" TaskName="DanielWillett.UnturnedDat.MSBuildTasks.MergeAssetSpecTask" />
 
   <Target Name="MergeAssetSpecFiles" BeforeTargets="Build">
-    <MergeAssetSpecTask Folder="../Asset Spec" OutputFile="../Asset Spec/asset-spec.g.bin" Blacklist="Asset Spec Schema.json" />
+    <MergeAssetSpecTask Folder="../../live-schemas" OutputFile="../../live-schemas/asset-spec.g.bin" Blacklist="Asset Spec Schema.json" />
   </Target>
 
   <PropertyGroup>
@@ -11,7 +11,8 @@
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
 
-    <RootNamespace>DanielWillett.UnturnedDataFileLspServer.Data</RootNamespace>
+    <AssemblyName>DanielWillett.UnturnedDat</AssemblyName>
+    <RootNamespace>DanielWillett.UnturnedDat.Data</RootNamespace>
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
@@ -26,9 +27,8 @@
     <DelaySign>False</DelaySign>
   </PropertyGroup>
 
-
   <ItemGroup>
-    <EmbeddedResource Include="../Asset Spec/**">
+    <EmbeddedResource Include="../../live-schemas/**">
       <Link>%(RecursiveDir)/Asset Spec/%(Filename)%(Extension)</Link>
     </EmbeddedResource>
     <Compile Remove="OldTypes\**" />
@@ -37,12 +37,10 @@
     <EmbeddedResource Remove="../Asset Spec/asset-spec.g.bin" />
   </ItemGroup>
 
-
   <ItemGroup>
     <None Remove="UnturnedAssetSpec.csproj.Backup.tmp" />
-    <None Remove="UnturnedAssetSpec.dll.publickey" />
+    <None Remove="DanielWillett.UnturnedDat.dll.publickey" />
   </ItemGroup>
-
 
   <ItemGroup>
     <EmbeddedResource Include="Project\InstallationEnvironmentAssetBundleCache_README.md" />
@@ -50,7 +48,7 @@
 
   <ItemGroup>
 
-    <ProjectReference Include="../DanielWillett.MathMatrix/DanielWillett.MathMatrix.csproj" Private="False" />
+    <ProjectReference Include="../MathMatrix/MathMatrix.csproj" Private="False" />
 
     <PackageReference Include="AssetsTools.NET" Version="3.0.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'" />

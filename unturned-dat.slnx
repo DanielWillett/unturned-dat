@@ -1,0 +1,36 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="README.md" />
+    <File Path="language-server/test.runsettings" />
+  </Folder>
+  <Folder Name="/Solution Items/assets/">
+    <File Path="assets/Syntax Highlighting.png" />
+  </Folder>
+  <Folder Name="/Extensions/" />
+  <Folder Name="/Extensions/VS Code/">
+    <Project Path="extensions/vscode/unturned-dat/unturned-dat.esproj">
+      <Platform Project="AnyCPU" />
+      <Build />
+      <Deploy />
+    </Project>
+    <Project Path="extensions/vscode/unturned-dat-lite/unturned-dat-lite.esproj">
+      <Platform Project="AnyCPU" />
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/Language Server/">
+    <Project Path="language-server/LanguageServer/LanguageServer.csproj" />
+    <Project Path="language-server/IconHandler/IconHandler.vcxproj" Id="825b89ae-0441-b5eb-2337-3742d3e20fc1" />
+    <Project Path="language-server/UnturnedDat/UnturnedDat.csproj" />
+    <Project Path="language-server/MSBuildTasks/MSBuildTasks.csproj" />
+    <Project Path="language-server/UnturnedDat.Tests/UnturnedDat.Tests.csproj" />
+    <Project Path="language-server/MathMatrix/MathMatrix.csproj" Id="67583d02-e72d-406c-a081-20d53f6a1288" />
+  </Folder>
+</Solution>

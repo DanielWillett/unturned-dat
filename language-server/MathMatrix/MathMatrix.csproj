@@ -5,12 +5,14 @@
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
-    <RootNamespace>DanielWillett.UnturnedDataFileLspServer.Data.Utility</RootNamespace>
+    <RootNamespace>DanielWillett.UnturnedDat.Data.Utility</RootNamespace>
     <StrongNameKeyPath>C:\Strong Name Keys\UnturnedAssetSpec\DanielWillett.MathMatrix.dll.snk</StrongNameKeyPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
+    <AssemblyName>DanielWillett.UnturnedDat.MathMatrix</AssemblyName>
+
     <CircularCompilation>True</CircularCompilation>
-    <CircularCompilation Condition="'$(CircularCompilation)' And !exists('../UnturnedAssetSpec/bin/$(Configuration)/$(TargetFramework)/UnturnedAssetSpec.dll')">False</CircularCompilation>
+    <CircularCompilation Condition="'$(CircularCompilation)' And !exists('../UnturnedDat/bin/$(Configuration)/$(TargetFramework)/DanielWillett.UnturnedDat.dll')">False</CircularCompilation>
     <DefineConstants Condition="'$(CircularCompilation)' == 'True'">$(DefineConstants);SUBSEQUENT_COMPILE</DefineConstants>
     <!--<DepsFileGenerationMode>old</DepsFileGenerationMode>-->
   </PropertyGroup>
@@ -31,9 +33,9 @@
 
   <ItemGroup Condition="'$(CircularCompilation)' == 'True'">
 
-    <Reference Include="UnturnedAssetSpec" Private="False" HintPath="../UnturnedAssetSpec/bin/$(Configuration)/$(TargetFramework)/UnturnedAssetSpec.dll" />
+    <Reference Include="UnturnedDat" Private="False" HintPath="../UnturnedDat/bin/$(Configuration)/$(TargetFramework)/DanielWillett.UnturnedDat.dll" />
 
-    <Using Include="DanielWillett.UnturnedDataFileLspServer.Data.Types"/>
+    <Using Include="DanielWillett.UnturnedDat.Data.Types"/>
 
   </ItemGroup>
 

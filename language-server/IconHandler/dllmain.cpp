@@ -3,10 +3,10 @@
 #include "pch.h"
 #include "framework.h"
 #include "resource.h"
-#include "UnturnedAssetFileIconHandler_i.h"
+#include "IconHandler_i.h"
 #include "dllmain.h"
 
-CUnturnedAssetFileIconHandlerModule _AtlModule;
+CIconHandlerModule _AtlModule;
 
 // DLL Entry Point
 extern "C" BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)

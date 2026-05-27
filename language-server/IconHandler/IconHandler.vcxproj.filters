@@ -31,51 +31,51 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnturnedAssetFileIconHandler_i.h">
+    <ClInclude Include="IconHandler_i.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IconHandler.h">
+    <ClInclude Include="UnturnedDatIconHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="UnturnedAssetFileIconHandler.cpp">
+    <ClCompile Include="IconHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnturnedAssetFileIconHandler_i.c">
+    <ClCompile Include="IconHandler_i.c">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IconHandler.cpp">
+    <ClCompile Include="UnturnedDatIconHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="UnturnedAssetFileIconHandler.rc">
+    <ResourceCompile Include="IconHandler.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="UnturnedAssetFileIconHandler.rgs">
+    <None Include="IconHandler.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="UnturnedAssetFileIconHandler.def">
+    <None Include="IconHandler.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="IconHandler.rgs">
+    <None Include="UnturnedDatIconHandler.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="UnturnedAssetFileIconHandler.idl">
+    <Midl Include="IconHandler.idl">
       <Filter>Source Files</Filter>
     </Midl>
   </ItemGroup>

@@ -1,4 +1,4 @@
-; UnturnedAssetFileIconHandler.def : Declares the module parameters.
+; IconHandler.def : Declares the module parameters.
 
 LIBRARY
 

@@ -9,7 +9,7 @@ HKCR
     NoRemove '.udat' = s 'UnturnedDat'
     {
     }
-    NoRemove UnturnedDat = s 'Unturned Asset File'
+    NoRemove UnturnedDat = s 'Unturned Data File'
     {
         NoRemove ShellEx
         {
@@ -19,7 +19,7 @@ HKCR
     NoRemove '.udatproj' = s 'UnturnedDatProject'
     {
     }
-    NoRemove UnturnedDatProject = s 'Unturned Asset Project File'
+    NoRemove UnturnedDatProject = s 'Unturned Data Project File'
     {
         NoRemove ShellEx
         {

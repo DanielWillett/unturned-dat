@@ -1,10 +1,10 @@
-// UnturnedAssetFileIconHandler.cpp : Implementation of DLL Exports.
+// IconHandler.cpp : Implementation of DLL Exports.
 
 
 #include "pch.h"
 #include "framework.h"
 #include "resource.h"
-#include "UnturnedAssetFileIconHandler_i.h"
+#include "IconHandler_i.h"
 #include "dllmain.h"
 
 

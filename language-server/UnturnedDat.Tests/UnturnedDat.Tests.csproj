@@ -10,12 +10,15 @@
 
     <LangVersion>14.0</LangVersion>
 
+    <AssemblyName>DanielWillett.UnturnedDat.Tests</AssemblyName>
+
     <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
     <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
     
     <RunSettingsFilePath>$(MSBuildProjectDirectory)\..\test.runsettings</RunSettingsFilePath>
     
     <AppDesignerFolder>FileProperties</AppDesignerFolder>
+    <RootNamespace>DanielWillett.UnturnedDat.Tests</RootNamespace>
 
     <StrongNameKeyPath>C:\Strong Name Keys\UnturnedAssetSpec\UnturnedAssetSpec_Tests.dll.snk</StrongNameKeyPath>
     <TestLsp>False</TestLsp>
@@ -23,7 +26,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
 
     <TestLsp>True</TestLsp>
     <DefineConstants>$(DefineConstants);TEST_LSP</DefineConstants>
@@ -58,13 +61,13 @@
 
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.5" />
 
-    <ProjectReference Include="../DanielWillett.MathMatrix/DanielWillett.MathMatrix.csproj" />
-    <ProjectReference Include="../UnturnedAssetSpec/UnturnedAssetSpec.csproj" />
+    <ProjectReference Include="../MathMatrix/MathMatrix.csproj" />
+    <ProjectReference Include="../UnturnedDat/UnturnedDat.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TestLsp)">
 
-    <ProjectReference Include="../LspServer/LspServer.csproj" />
+    <ProjectReference Include="../LanguageServer/LanguageServer.csproj" />
 
   </ItemGroup>
 

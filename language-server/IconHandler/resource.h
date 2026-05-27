@@ -1,10 +1,10 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by UnturnedAssetFileIconHandler.rc
+// Used by IconHandler.rc
 //
 #define IDS_PROJNAME                    100
-#define IDR_UNTURNEDASSETFILEICONHANDLER 101
-#define IDR_ICONHANDLER                 106
+#define IDR_ICONHANDLER                 101
+#define IDR_UNTURNEDDATICONHANDLER      106
 #define IDI_ICON1                       201
 
 // Next default values for new objects

@@ -1,4 +1,4 @@
-// IconHandler.h : Declaration of the CIconHandler
+// UnturnedDatIconHandler.h : Declaration of the CUnturnedDatIconHandler
 // Code adapted from https://scorpiosoftware.net/2021/12/11/icon-handler-with-atl/
 
 #pragma once
@@ -7,7 +7,7 @@
 
 
 
-#include "UnturnedAssetFileIconHandler_i.h"
+#include "IconHandler_i.h"
 
 
 
@@ -18,23 +18,23 @@
 using namespace ATL;
 
 
-// CIconHandler
+// CUnturnedDatIconHandler
 
-class ATL_NO_VTABLE CIconHandler :
+class ATL_NO_VTABLE CUnturnedDatIconHandler :
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CIconHandler, &CLSID_IconHandler>,
+	public CComCoClass<CUnturnedDatIconHandler, &CLSID_IconHandler>,
 	public IPersistFile,
 	public IExtractIcon
 {
 public:
-	CIconHandler()
+	CUnturnedDatIconHandler()
 	{
 	}
 
 	DECLARE_REGISTRY_RESOURCEID(106)
 
 
-	BEGIN_COM_MAP(CIconHandler)
+	BEGIN_COM_MAP(CUnturnedDatIconHandler)
 		COM_INTERFACE_ENTRY(IPersistFile)
 		COM_INTERFACE_ENTRY(IExtractIcon)
 	END_COM_MAP()
@@ -69,4 +69,4 @@ private:
 	WCHAR s_ModulePath[MAX_PATH]{ };
 };
 
-OBJECT_ENTRY_AUTO(__uuidof(IconHandler), CIconHandler)
+OBJECT_ENTRY_AUTO(__uuidof(IconHandler), CUnturnedDatIconHandler)
