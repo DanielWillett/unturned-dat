@@ -33,7 +33,7 @@ namespace UnturnedDat.LanguageServer;
 internal sealed class UnturnedDatLanguageServer
 {
     public const string LanguageId = "unturned-dat";
-    public const string ConfigurationSectionId = "unturned-data-file-lsp";
+    public const string ConfigurationSectionId = "unturned-data-file-langserver";
     public const string DiagnosticSource = "unturned-dat";
 
     private static ILogger<UnturnedDatLanguageServer> _logger = null!;
