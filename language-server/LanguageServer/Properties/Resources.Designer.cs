@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DanielWillett.UnturnedDat.LanguageServer.Properties {
+namespace UnturnedDat.LanguageServer.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace DanielWillett.UnturnedDat.LanguageServer.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DanielWillett.UnturnedDat.LanguageServer.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("UnturnedDat.LanguageServer.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// A time or time span.

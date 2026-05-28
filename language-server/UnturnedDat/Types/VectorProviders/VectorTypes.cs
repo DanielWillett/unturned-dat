@@ -1,14 +1,14 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// Keeps track of <see cref="IVectorTypeProvider{TVector}"/> registrations for each vector type.

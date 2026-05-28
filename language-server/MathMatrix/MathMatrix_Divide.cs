@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 // ReSharper disable IntVariableOverflowInUncheckedContext
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 #pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 #pragma warning disable CS8604

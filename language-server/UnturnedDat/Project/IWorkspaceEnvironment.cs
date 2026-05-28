@@ -1,7 +1,7 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
 using System;
+using UnturnedDat.Data.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
 public interface IWorkspaceEnvironment
 {

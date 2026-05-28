@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
-using System;
+﻿using System;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Values.Expressions;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 /// <summary>
 /// A data-ref that can be extended by another data-ref that implements <see cref="IDataRefProperty"/>.

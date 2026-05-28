@@ -1,7 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+﻿using UnturnedDat.Data.Diagnostics;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 public ref partial struct SourceNodeTokenizer
 {

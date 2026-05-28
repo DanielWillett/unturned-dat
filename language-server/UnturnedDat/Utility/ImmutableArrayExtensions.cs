@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 /// <summary>
 /// Back-ported utilities for <see cref="ImmutableArray{T}"/>.

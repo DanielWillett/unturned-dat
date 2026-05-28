@@ -1,13 +1,13 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using System;
+﻿using System;
 using System.Text.Json;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// Base interface for a parsable property type.

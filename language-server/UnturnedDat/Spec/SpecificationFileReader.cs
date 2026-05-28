@@ -1,7 +1,4 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -13,9 +10,12 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Handles reading asset files into a <see cref="IAssetSpecDatabase"/>.

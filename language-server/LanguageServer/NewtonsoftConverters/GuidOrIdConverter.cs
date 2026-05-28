@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Globalization;
+using UnturnedDat.Data;
 
-namespace DanielWillett.UnturnedDataFileLspServer.NewtonsoftConverters;
+namespace UnturnedDat.LanguageServer.NewtonsoftConverters;
 
 [JsonConverter(typeof(GuidOrId))]
 public sealed class GuidOrIdConverter : JsonConverter<GuidOrId>

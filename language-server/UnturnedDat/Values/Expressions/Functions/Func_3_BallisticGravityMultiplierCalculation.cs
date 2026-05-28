@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
 using System.Numerics;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
+namespace UnturnedDat.Data.Values.Expressions;
 
 internal sealed class BallisticGravityMultiplierCalculation : ExpressionFunction
 {

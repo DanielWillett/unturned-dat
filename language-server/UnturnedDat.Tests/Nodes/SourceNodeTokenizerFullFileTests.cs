@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+﻿using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
 
-namespace UnturnedAssetSpecTests.Nodes;
+namespace UnturnedDat.Tests.Nodes;
 
 public class SourceNodeTokenizerFullFileTests
 {

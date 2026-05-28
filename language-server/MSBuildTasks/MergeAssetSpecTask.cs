@@ -9,7 +9,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading;
 
-namespace UnturnedAssetSpecMSBuildTasks;
+namespace UnturnedDat.MSBuildTasks;
 
 /// <summary>
 /// Merges all the asset spec JSON files into one file so it's quicker to download.

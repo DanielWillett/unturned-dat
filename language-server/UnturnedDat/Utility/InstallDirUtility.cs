@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 /// <summary>
 /// Utility to find the install directory for Steam games.

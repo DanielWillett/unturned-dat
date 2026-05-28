@@ -1,14 +1,14 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 partial class SpecificationFileReader
 {
@@ -26,6 +26,10 @@ partial class SpecificationFileReader
         }
 
         ReadOnlySpan<char> typeNameSpan = typeName.Type.AsSpan();
+        if (_typeRoot.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
         int typeCount = _typeRoot.GetArrayLength();
         ImmutableDictionary<QualifiedType, DatType>.Builder? ownerTypes = owner.Owner.TypesBuilder;
         if (ownerTypes == null)

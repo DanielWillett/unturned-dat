@@ -1,10 +1,10 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Values;
 
-namespace UnturnedAssetSpecTests.Expressions;
+namespace UnturnedDat.Tests.Expressions;
 
 [TestFixture]
 public class DataRefParseTests

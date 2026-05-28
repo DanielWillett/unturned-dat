@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 /// <summary>
 /// Data-ref referencing the current property.
@@ -61,18 +61,21 @@ public sealed class SelfDataRef : RootDataRef<SelfDataRef>
     protected override bool AcceptProperty(in IsLegacyProperty property, ref FileEvaluationContext ctx, out bool value)
     {
         value = false;
-        if (!Owner.Type.TryEvaluateType(out IType? type, ref ctx))
-        {
-            return false;
-        }
-
-        if (type is not ILegacyCompatibleType legacyCompatibleType)
-        {
-            return true;
-        }
+        // NOTE: CAUSES STACK OVERFLOW
+        // if (!Owner.Type.TryEvaluateType(out IType? type, ref ctx))
+        // {
+        //     return false;
+        // }
+        // 
+        // if (type is not ILegacyCompatibleType legacyCompatibleType)
+        // {
+        //     return true;
+        // }
 
         // todo
-        return legacyCompatibleType.TryGetPropertyLegacyStatus(Owner, null, PropertyBreadcrumbs.Root, ref ctx, out value);
+        // return legacyCompatibleType.TryGetPropertyLegacyStatus(Owner, null, PropertyBreadcrumbs.Root, ref ctx, out value);
+        value = false;
+        return false;
     }
 
     protected override bool AcceptProperty(in ValueTypeProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out string? value)

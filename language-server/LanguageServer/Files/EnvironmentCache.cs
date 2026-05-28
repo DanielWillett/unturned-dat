@@ -1,11 +1,11 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Files;
+namespace UnturnedDat.LanguageServer.Files;
 
 // TODO: https://learn.microsoft.com/en-us/windows/win32/lwef/disk-cleanup#using-the-datadrivencleaner-object
 internal class EnvironmentCache : ISpecDatabaseCache
@@ -48,7 +48,7 @@ internal class EnvironmentCache : ISpecDatabaseCache
             }
         }
 
-        _cacheDir ??= Path.Combine(UnturnedAssetFileLspServer.DataPath, "Cache");
+        _cacheDir ??= Path.Combine(UnturnedDatLanguageServer.DataPath, "Cache");
 
         _cacheMetaFile = Path.Combine(_cacheDir, CacheMetaName);
 

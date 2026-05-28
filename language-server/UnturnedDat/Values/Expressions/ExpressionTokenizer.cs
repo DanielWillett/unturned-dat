@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
+namespace UnturnedDat.Data.Values.Expressions;
 
 
 /// <summary>

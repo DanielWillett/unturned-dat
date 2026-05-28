@@ -21,7 +21,7 @@
             {
                 "Type": "TypeReference",
                 "BaseType": "SDG.Unturned.Asset, Assembly-CSharp",
-                "EnumType": "DanielWillett.UnturnedDataFileLspServer.Data.Types.AssetTypeAlias, UnturnedAssetSpec"
+                "EnumType": "UnturnedDat.Data.Types.AssetTypeAlias, DanielWillett.UnturnedDat"
             },
             "Description": "Type of Asset to create.",
             "Required": true,
@@ -372,7 +372,7 @@
             "Type": "SDG.Unturned.ENPCLogicType, Assembly-CSharp",
             "DisplayName": "Logic Operation",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html",
-            "StringParseableType": "DanielWillett.UnturnedDataFileLspServer.Data.Parsing.ENPCLogicTypeConverter, UnturnedAssetSpec",
+            "StringParseableType": "UnturnedDat.Data.Parsing.ENPCLogicTypeConverter, DanielWillett.UnturnedDat",
             "Values":
             [
                 {

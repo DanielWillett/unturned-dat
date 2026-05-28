@@ -1,15 +1,15 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using OrderInfo = (DanielWillett.UnturnedDataFileLspServer.Data.Project.OrderedPropertyReference[] Order, int[] ReverseOrder, int AlternateOffset);
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using OrderInfo = (UnturnedDat.Data.Project.OrderedPropertyReference[] Order, int[] ReverseOrder, int AlternateOffset);
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
 /// <summary>
 /// A single orderfile, defining the order of properties in udat files.

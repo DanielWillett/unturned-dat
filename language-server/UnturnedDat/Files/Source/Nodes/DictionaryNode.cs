@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 [DebuggerDisplay("{ToString(),nq}")]
 internal class DictionaryNode : AnySourceNode, IDictionarySourceNode

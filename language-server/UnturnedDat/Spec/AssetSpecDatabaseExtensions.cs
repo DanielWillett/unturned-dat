@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Extensions for <see cref="IAssetSpecDatabase"/> implementations.

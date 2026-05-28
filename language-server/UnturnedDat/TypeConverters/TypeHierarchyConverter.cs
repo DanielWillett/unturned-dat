@@ -1,11 +1,11 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Json;
+namespace UnturnedDat.Data.Json;
 
 public class TypeHierarchyConverter : JsonConverter<TypeHierarchy?>
 {

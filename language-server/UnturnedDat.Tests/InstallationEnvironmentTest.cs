@@ -1,11 +1,11 @@
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Diagnostics;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
 
-namespace UnturnedAssetSpecTests;
+namespace UnturnedDat.Tests;
 
 #pragma warning disable VSTHRD103
 #pragma warning disable VSTHRD200

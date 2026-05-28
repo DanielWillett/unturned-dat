@@ -1,10 +1,10 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data;
+namespace UnturnedDat.Data;
 
 /// <summary>
 /// A pair of speciality and skill index.

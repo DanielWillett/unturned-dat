@@ -1,14 +1,14 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
 
 #pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 /// <summary>
 /// A weakly-typed case within a switch value or another case.

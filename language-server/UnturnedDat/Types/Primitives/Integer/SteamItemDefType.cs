@@ -1,12 +1,12 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
 using System.Text.Json;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// A 32 bit integer representing a SteamItemDef_t value (Steam inventory item ID).

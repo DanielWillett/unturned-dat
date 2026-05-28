@@ -1,10 +1,10 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Extension methods for the various subclasses of <see cref="DatType"/>.

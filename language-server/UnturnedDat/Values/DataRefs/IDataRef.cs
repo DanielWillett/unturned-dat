@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
-using System;
+﻿using System;
 using System.Text;
+using UnturnedDat.Data.Values.Expressions;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 /// <summary>
 /// Weakly-typed data-ref.

@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
+﻿using UnturnedDat.Data.Files;
 
-namespace UnturnedAssetSpecTests.Nodes;
+namespace UnturnedDat.Tests.Nodes;
 
 public partial class SourceNodeTokenizerTests
 {

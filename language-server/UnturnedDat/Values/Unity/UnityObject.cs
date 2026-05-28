@@ -1,17 +1,17 @@
 ﻿using AssetsTools.NET;
 using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 /// <summary>
 /// An object from a unity bundle at a given path.

@@ -1,12 +1,12 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 // Allowing concrete parsing would give the impression that context doesn't matter.
 // It does in fact matter, it's just being accessed through a static ThreadLocal<string>

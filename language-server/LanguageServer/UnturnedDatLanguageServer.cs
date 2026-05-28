@@ -1,18 +1,5 @@
 #define ALLOW_TRACE
 
-using DanielWillett.UnturnedDataFileLspServer.Data.CodeFixes;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Files;
-using DanielWillett.UnturnedDataFileLspServer.Handlers;
-using DanielWillett.UnturnedDataFileLspServer.Handlers.AssetProperties;
-using DanielWillett.UnturnedDataFileLspServer.Project;
-using DanielWillett.UnturnedDataFileLspServer.Protocol;
-using DanielWillett.UnturnedDataFileLspServer.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileSystemGlobbing;
@@ -26,17 +13,30 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using OmniSharp.Extensions.JsonRpc;
+using UnturnedDat.Data;
+using UnturnedDat.Data.CodeFixes;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.LanguageServer.Diagnostics;
+using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Handlers;
+using UnturnedDat.LanguageServer.Handlers.AssetProperties;
+using UnturnedDat.LanguageServer.Project;
+using UnturnedDat.LanguageServer.Protocol;
+using UnturnedDat.LanguageServer.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer;
+namespace UnturnedDat.LanguageServer;
 
-internal sealed class UnturnedAssetFileLspServer
+internal sealed class UnturnedDatLanguageServer
 {
     public const string LanguageId = "unturned-dat";
     public const string ConfigurationSectionId = "unturned-data-file-lsp";
     public const string DiagnosticSource = "unturned-dat";
 
-    private static ILogger<UnturnedAssetFileLspServer> _logger = null!;
+    private static ILogger<UnturnedDatLanguageServer> _logger = null!;
     private static DiskCleanupRegistrationUtility? _diskCleanupUtil;
 
     private static readonly TaskCompletionSource<SendAdminPrivilegesResponseParams>?[] AdminPrompts
@@ -98,7 +98,7 @@ internal sealed class UnturnedAssetFileLspServer
         }
 #endif
 
-        _server = await LanguageServer.From(bldr =>
+        _server = await OmniSharp.Extensions.LanguageServer.Server.LanguageServer.From(bldr =>
         {
 #if ALLOW_TRACE
             bldr.OnSetTrace(trace =>
@@ -149,7 +149,7 @@ internal sealed class UnturnedAssetFileLspServer
                 //.WithHandler<DocumentDiagnosticHandler>()
                 .WithServerInfo(new ServerInfo
                 {
-                    Name = "Unturned Data File LSP",
+                    Name = "Unturned Data File Language Server",
                     Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(4)
                 })
                 .WithConfigurationSection(ConfigurationSectionId)
@@ -197,7 +197,7 @@ internal sealed class UnturnedAssetFileLspServer
 #endif
                     ClientProcessId = request.ProcessId;
 
-                    _logger = server.Services.GetRequiredService<ILogger<UnturnedAssetFileLspServer>>();
+                    _logger = server.Services.GetRequiredService<ILogger<UnturnedDatLanguageServer>>();
                 })
                 .OnInitialized((server, _, _, _) =>
                 {
@@ -206,6 +206,11 @@ internal sealed class UnturnedAssetFileLspServer
 #else
                     _logger.LogInformation("LSP initialized.");
 #endif
+
+                    foreach (string resx in typeof(QualifiedType).Assembly.GetManifestResourceNames())
+                    {
+                        _logger.LogInformation(resx);
+                    }
 
                     if (ClientProcessId.HasValue)
                     {

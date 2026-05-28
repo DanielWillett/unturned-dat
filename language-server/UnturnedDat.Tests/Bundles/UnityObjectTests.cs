@@ -1,15 +1,15 @@
 ﻿using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
 using Microsoft.Extensions.Logging;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
-namespace UnturnedAssetSpecTests.Bundles;
+namespace UnturnedDat.Tests.Bundles;
 
 [TestFixture]
 //[Ignore("Slow")]

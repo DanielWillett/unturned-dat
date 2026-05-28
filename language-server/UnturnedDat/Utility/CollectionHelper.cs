@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 internal static class CollectionHelper
 {

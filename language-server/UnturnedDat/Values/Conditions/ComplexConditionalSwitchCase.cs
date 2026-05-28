@@ -1,12 +1,12 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Text.Json;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 /// <summary>
 /// A weakly-typed switch-case that defines either and 'And' or 'Or' property that contains multiple cases that must be met for this case to apply.

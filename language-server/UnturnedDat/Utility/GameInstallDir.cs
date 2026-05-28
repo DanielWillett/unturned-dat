@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 /// <summary>
 /// Information about where the game is installed on the host PC.

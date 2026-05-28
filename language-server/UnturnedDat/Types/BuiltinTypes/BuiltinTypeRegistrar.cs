@@ -1,7 +1,7 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 internal static class BuiltinTypeRegistrar
 {

@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using System;
+﻿using System;
 using System.IO;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 internal class ReferencedWorkspaceFile : IWorkspaceFile
 {

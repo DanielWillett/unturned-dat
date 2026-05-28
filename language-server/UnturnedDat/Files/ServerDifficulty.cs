@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+﻿namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// The difficulty of a <see cref="T:SDG.Unturned.ConfigData"/> config file.

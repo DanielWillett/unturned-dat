@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.NewtonsoftConverters;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using OmniSharp.Extensions.LanguageServer.Protocol.Serialization;
+using UnturnedDat.LanguageServer.NewtonsoftConverters;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Protocol;
+namespace UnturnedDat.LanguageServer.Protocol;
 internal class UnturnedLspSerializer : LspSerializer
 {
     protected override void AddOrReplaceConverters(ICollection<JsonConverter> converters)

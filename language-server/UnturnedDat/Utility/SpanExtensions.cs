@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 internal static class SpanExtensions
 {

@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Types;
+﻿using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
+namespace UnturnedDat.Data.Values.Expressions;
 
 internal sealed class Replace : ExpressionFunction
 {

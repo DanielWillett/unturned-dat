@@ -1,10 +1,10 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
+﻿using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
+using UnturnedDat.Data.Values.Expressions;
 
-namespace UnturnedAssetSpecTests.Expressions;
+namespace UnturnedDat.Tests.Expressions;
 
 [TestFixture]
 public class EvaluationTests

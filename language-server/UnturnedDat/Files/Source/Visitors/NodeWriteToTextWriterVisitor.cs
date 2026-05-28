@@ -7,7 +7,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 #endif
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 internal class NodeWriteToTextWriterVisitor : OrderedNodeVisitor, IDisposable
 {

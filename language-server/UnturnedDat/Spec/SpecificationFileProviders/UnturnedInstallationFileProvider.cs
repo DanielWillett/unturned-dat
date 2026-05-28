@@ -1,12 +1,12 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Pulls files from an available Unturned installation.

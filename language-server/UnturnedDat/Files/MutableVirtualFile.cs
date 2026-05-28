@@ -1,7 +1,7 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using System;
+﻿using System;
+using UnturnedDat.Data.Project;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// Records changes to a file without actually applying them.

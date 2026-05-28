@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data;
+namespace UnturnedDat.Data;
 
 /// <summary>
 /// A case-insensitive key-value-pair used by <see cref="DictionarySpecPropertyType{TElementType}"/>.

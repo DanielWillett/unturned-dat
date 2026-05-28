@@ -4,7 +4,7 @@ using OmniSharp.Extensions.JsonRpc;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Protocol;
+namespace UnturnedDat.LanguageServer.Protocol;
 
 
 [Parallel, Method("unturnedDataFile/getAddProperty", Direction.ClientToServer)]

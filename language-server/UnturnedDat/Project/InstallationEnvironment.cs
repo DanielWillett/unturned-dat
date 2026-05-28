@@ -1,6 +1,4 @@
 using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,9 +8,11 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
 /// <summary>
 /// Keeps track of all asset files in the game installation.

@@ -1,9 +1,5 @@
 ﻿using AssetsTools.NET;
 using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -12,9 +8,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using Microsoft.Extensions.Logging;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
 /// <summary>
 /// A Bundle or MasterBundle file.

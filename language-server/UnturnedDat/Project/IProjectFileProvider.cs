@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
 /// <summary>
 /// Provides access to all active project files given the context of a file.

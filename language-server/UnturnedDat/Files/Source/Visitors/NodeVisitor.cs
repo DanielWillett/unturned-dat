@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// A base class for node visitors.

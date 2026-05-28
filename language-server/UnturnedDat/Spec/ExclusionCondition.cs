@@ -1,15 +1,15 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
 // ReSharper disable InconsistentNaming
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Exclusion condition that states that the given property must not exist if this property exists.

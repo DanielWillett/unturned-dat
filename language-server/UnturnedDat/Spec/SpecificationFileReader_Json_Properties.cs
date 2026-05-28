@@ -1,14 +1,14 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text.Json;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 partial class SpecificationFileReader
 {

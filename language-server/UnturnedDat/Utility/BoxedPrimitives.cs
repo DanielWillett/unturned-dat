@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 internal static class BoxedPrimitives
 {

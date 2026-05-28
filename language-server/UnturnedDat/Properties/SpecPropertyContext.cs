@@ -1,4 +1,4 @@
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+namespace UnturnedDat.Data.Properties;
 
 public enum SpecPropertyContext
 {

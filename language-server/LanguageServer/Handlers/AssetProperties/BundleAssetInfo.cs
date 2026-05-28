@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers.AssetProperties;
+namespace UnturnedDat.LanguageServer.Handlers.AssetProperties;
 
 public class BundleAssetInfo
 {

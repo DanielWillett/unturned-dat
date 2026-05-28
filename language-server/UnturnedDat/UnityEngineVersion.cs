@@ -1,10 +1,10 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Json;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Json;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data;
+namespace UnturnedDat.Data;
 
 /// <summary>
 /// A comparable data structure storing information about a UnityEngine version number.

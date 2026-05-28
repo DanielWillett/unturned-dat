@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.IO.Hashing;
 using System.Runtime.InteropServices;
 #pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 /// <summary>
 /// Case-sensitivity tools for file paths depending on the operating system.

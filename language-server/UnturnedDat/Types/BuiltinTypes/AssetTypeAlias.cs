@@ -1,14 +1,14 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json;
 using System.Threading.Tasks;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// The auto-generated enum type for the asset type property (<c>Asset.Type</c>).
@@ -19,7 +19,7 @@ namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
 #endif
 public sealed class AssetTypeAlias : DatEnumType
 {
-    public const string TypeId = "DanielWillett.UnturnedDataFileLspServer.Data.Types.AssetTypeAlias, UnturnedAssetSpec";
+    public const string TypeId = "UnturnedDat.Data.Types.AssetTypeAlias, UnturnedAssetSpec";
 
     /// <summary>
     /// Factory method for the <see cref="AssetTypeAlias"/> type.

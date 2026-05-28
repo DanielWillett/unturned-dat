@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Operations;
+namespace UnturnedDat.Data.Values.Operations;
 
 internal sealed class Matches : ConditionOperation<Matches>
 {

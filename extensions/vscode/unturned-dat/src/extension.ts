@@ -21,7 +21,7 @@ import { RequestAdminPrivileges, SendAdminPrivilegesResponse } from "./jsonrpc/r
 
 
 export const languageId = "unturned-dat";
-export const configSection = "unturned-data-file-lsp";
+export const configSection = "unturned-data-file-langserver";
 export const fileMatcher = "{**/*.dat,**/*.asset,**/*.udatproj,**/Config_*Difficulty.txt,**/Config.txt}";
 export const dotnetVersion = 10;
 
@@ -90,7 +90,7 @@ async function logAndError(msg: string) : Promise<void>
 export async function activate(context: ExtensionContext): Promise<void>
 {
     let dllPath: string;
-    const relativeFilePath = context.asAbsolutePath(join('..', 'LspServer', 'bin', 'Debug', 'net10.0'));
+    const relativeFilePath = context.asAbsolutePath(join('..', '..', '..', 'language-server', 'LanguageServer', 'bin', 'Debug', 'net10.0'));
 
     output = window.createOutputChannel("unturned-dat", { log: true });
     registrations.push(output);
@@ -148,21 +148,21 @@ export async function activate(context: ExtensionContext): Promise<void>
     if (useExeFile)
     {
         // run exe directly on windows, otherwise use the dotnet cli to run it
-        dllPath = join(relativeFilePath, 'LspServer.exe');
+        dllPath = join(relativeFilePath, 'DanielWillett.UnturnedDat.LanguageServer.exe');
     }
     else
     {
-        dllPath = join(relativeFilePath, 'LspServer.dll');
+        dllPath = join(relativeFilePath, 'DanielWillett.UnturnedDat.LanguageServer.dll');
     }
 
     if (!existsSync(dllPath))
     {
-        await logAndError(`LSP executable not found at "${dllPath}".`);
+        await logAndError(`Language Server executable not found at "${dllPath}".`);
         client = undefined;
     }
     else if (!_tryAccessSync(dllPath, constants.R_OK))
     {
-        await logAndError(`LSP executable not accessible at "${dllPath}".`);
+        await logAndError(`Language Server executable not accessible at "${dllPath}".`);
         client = undefined;
     }
     else if (!skipLsp)
@@ -202,7 +202,7 @@ export async function activate(context: ExtensionContext): Promise<void>
             cwd: relativeFilePath
         };
 
-        output.info(`Launching LSP with command: '${command}', args: [ '${args.join("', '")}'' ]. Create shell? ${useShell}.`);
+        output.info(`Launching Language Server with command: '${command}', args: [ '${args.join("', '")}'' ]. Create shell? ${useShell}.`);
 
         const operation = { command: command, args: args, options: options };        
         const serverOptions: ServerOptions = { run: operation, debug: operation };
@@ -227,7 +227,7 @@ export async function activate(context: ExtensionContext): Promise<void>
             }
         };
 
-        client = new LanguageClient(configSection, "Unturned Data File format LSP", serverOptions, clientOptions);
+        client = new LanguageClient(configSection, "Unturned Data File", serverOptions, clientOptions);
     }
 
     assetPropertiesViewProvider = new AssetPropertiesViewProvider();

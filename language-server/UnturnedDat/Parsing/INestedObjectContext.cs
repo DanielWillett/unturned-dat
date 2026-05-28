@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+﻿using UnturnedDat.Data.Properties;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+namespace UnturnedDat.Data.Parsing;
 
 /// <summary>
 /// Provides context about the current object.

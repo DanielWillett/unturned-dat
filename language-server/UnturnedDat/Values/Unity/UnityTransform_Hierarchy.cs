@@ -1,15 +1,15 @@
 ﻿using AssetsTools.NET;
 using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 partial class UnityTransform : IEnumerable<UnityTransform>
 {

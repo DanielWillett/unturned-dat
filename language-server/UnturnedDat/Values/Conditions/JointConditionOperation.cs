@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+﻿namespace UnturnedDat.Data.Values;
 
 /// <summary>
 /// An operation of a <see cref="SpecDynamicSwitchCaseValue"/> condition list.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
+namespace UnturnedDat.Data.Values.Expressions;
 
 internal sealed class Null : ExpressionFunction, IFunctionExpressionNode
 {

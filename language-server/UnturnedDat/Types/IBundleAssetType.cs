@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Values;
+﻿using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// A UnityEngine Object type for a bundle asset.

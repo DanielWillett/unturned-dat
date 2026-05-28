@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Used to allow lookup of other types while reading type info from JSON.

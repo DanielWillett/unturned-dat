@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+﻿using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Operations;
+namespace UnturnedDat.Data.Values.Operations;
 
 internal sealed class Equal : ConditionOperation<Equal>
 {

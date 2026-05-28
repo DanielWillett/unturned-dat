@@ -1,7 +1,7 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+namespace UnturnedDat.Data.Parsing;
 
 /// <summary>
 /// Singleton instances of common type converters.

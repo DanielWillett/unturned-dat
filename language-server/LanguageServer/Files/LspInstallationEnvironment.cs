@@ -1,9 +1,9 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using Microsoft.Extensions.Logging;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Files;
+namespace UnturnedDat.LanguageServer.Files;
 
 internal class LspInstallationEnvironment : InstallationEnvironment
 {

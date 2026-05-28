@@ -1,14 +1,14 @@
 ﻿using System;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Text.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 [SpecificationType(FactoryMethod = nameof(Create))]
 #if NET5_0_OR_GREATER
@@ -16,8 +16,8 @@ namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
 #endif
 public class ProjectFileType : DatFileType
 {
-    public const string TypeId = "DanielWillett.UnturnedDataFileLspServer.Data.Types.ProjectFileType, UnturnedAssetSpec";
-    public const string GuidStyleTypeId = "DanielWillett.UnturnedDataFileLspServer.Data.Types.ProjectFile+GuidStyle, UnturnedAssetSpec";
+    public const string TypeId = "UnturnedDat.Data.Types.ProjectFileType, UnturnedAssetSpec";
+    public const string GuidStyleTypeId = "UnturnedDat.Data.Types.ProjectFile+GuidStyle, UnturnedAssetSpec";
 
     internal static GuidStyle[] StyleEnumMap =
     [

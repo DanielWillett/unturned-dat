@@ -2,10 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
-using System.Threading;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// Utility for gathering relational data about a value node in a source file.

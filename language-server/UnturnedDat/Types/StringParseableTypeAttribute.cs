@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// Indicates that a type can be used to implement custom logic for parsing enums or custom types.

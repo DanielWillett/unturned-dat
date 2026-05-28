@@ -1,14 +1,4 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using DanielWillett.UnturnedDataFileLspServer.Files;
-using DanielWillett.UnturnedDataFileLspServer.Protocol;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers.AssetProperties;
+﻿namespace UnturnedDat.LanguageServer.Handlers.AssetProperties;
 
 #if false
 internal class GetAssetPropertyAddLocationHandler : IGetAssetPropertyAddLocationHandler

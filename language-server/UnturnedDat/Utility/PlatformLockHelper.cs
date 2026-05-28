@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+﻿namespace UnturnedDat.Data.Utility;
 
 internal static class PlatformLockHelper
 {

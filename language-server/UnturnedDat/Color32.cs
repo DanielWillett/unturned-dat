@@ -1,10 +1,10 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using System;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Json;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data;
+namespace UnturnedDat.Data;
 
 /// <summary>
 /// A 32-bit color with values ranged 0 to 255.

@@ -1,10 +1,10 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using System;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Json;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data;
+namespace UnturnedDat.Data;
 
 /// <summary>
 /// Comparable assembly-qualified type with proper equality checking.

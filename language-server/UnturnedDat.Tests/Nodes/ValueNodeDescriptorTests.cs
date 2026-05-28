@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
 
-namespace UnturnedAssetSpecTests.Nodes;
+namespace UnturnedDat.Tests.Nodes;
 
 [TestFixture]
 public class ValueNodeDescriptorTests

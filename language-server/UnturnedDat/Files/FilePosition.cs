@@ -1,6 +1,6 @@
 using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// Position of a character in a file.

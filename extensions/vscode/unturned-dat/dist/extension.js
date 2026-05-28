@@ -22610,7 +22610,7 @@ var SendAdminPrivilegesResponse = new import_vscode_languageclient6.Notification
 
 // src/extension.ts
 var languageId = "unturned-dat";
-var configSection = "unturned-data-file-lsp";
+var configSection = "unturned-data-file-langserver";
 var fileMatcher = "{**/*.dat,**/*.asset,**/*.udatproj,**/Config_*Difficulty.txt,**/Config.txt}";
 var dotnetVersion = 10;
 var client;
@@ -22653,7 +22653,7 @@ async function logAndError(msg) {
 }
 async function activate(context) {
   let dllPath;
-  const relativeFilePath = context.asAbsolutePath((0, import_path2.join)("..", "LspServer", "bin", "Debug", "net10.0"));
+  const relativeFilePath = context.asAbsolutePath((0, import_path2.join)("..", "..", "..", "language-server", "LanguageServer", "bin", "Debug", "net10.0"));
   output = import_vscode5.window.createOutputChannel("unturned-dat", { log: true });
   registrations.push(output);
   output.info("Unturned Data File (Full) by DanielWillett loading...");
@@ -22695,15 +22695,15 @@ async function activate(context) {
   }
   const useExeFile = isWindows && !useShell && !dotnetLoc;
   if (useExeFile) {
-    dllPath = (0, import_path2.join)(relativeFilePath, "LspServer.exe");
+    dllPath = (0, import_path2.join)(relativeFilePath, "DanielWillett.UnturnedDat.LanguageServer.exe");
   } else {
-    dllPath = (0, import_path2.join)(relativeFilePath, "LspServer.dll");
+    dllPath = (0, import_path2.join)(relativeFilePath, "DanielWillett.UnturnedDat.LanguageServer.dll");
   }
   if (!(0, import_fs.existsSync)(dllPath)) {
-    await logAndError(`LSP executable not found at "${dllPath}".`);
+    await logAndError(`Language Server executable not found at "${dllPath}".`);
     client = void 0;
   } else if (!_tryAccessSync(dllPath, import_fs.constants.R_OK)) {
-    await logAndError(`LSP executable not accessible at "${dllPath}".`);
+    await logAndError(`Language Server executable not accessible at "${dllPath}".`);
     client = void 0;
   } else if (!skipLsp) {
     const isDebug = process.env.UNTURNED_LSP_DEBUG === "1";
@@ -22729,7 +22729,7 @@ async function activate(context) {
       shell: useShell,
       cwd: relativeFilePath
     };
-    output.info(`Launching LSP with command: '${command}', args: [ '${args.join("', '")}'' ]. Create shell? ${useShell}.`);
+    output.info(`Launching Language Server with command: '${command}', args: [ '${args.join("', '")}'' ]. Create shell? ${useShell}.`);
     const operation = { command, args, options };
     const serverOptions = { run: operation, debug: operation };
     const clientOptions = {
@@ -22752,7 +22752,7 @@ async function activate(context) {
         maxRestartCount: 0
       }
     };
-    client = new import_node.LanguageClient(configSection, "Unturned Data File format LSP", serverOptions, clientOptions);
+    client = new import_node.LanguageClient(configSection, "Unturned Data File", serverOptions, clientOptions);
   }
   assetPropertiesViewProvider = new AssetPropertiesViewProvider();
   if (!skipLsp) {

@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+﻿using UnturnedDat.Data.Parsing;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// An included or excluded value. Just the presence of the property counts as a <see langword="true"/> value, even if the value is set to 'False'.

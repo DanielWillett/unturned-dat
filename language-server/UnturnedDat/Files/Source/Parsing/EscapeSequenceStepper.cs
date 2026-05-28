@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Text;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 internal ref struct EscapeSequenceStepper
 {

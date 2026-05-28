@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Files;
+﻿using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.LanguageServer.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Project;
+namespace UnturnedDat.LanguageServer.Project;
 
 internal class LspProjectFileProvider : IProjectFileProvider
 {

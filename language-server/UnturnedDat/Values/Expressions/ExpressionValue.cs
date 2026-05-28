@@ -1,11 +1,11 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
 using System.Text;
 using System.Text.Json;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
+namespace UnturnedDat.Data.Values.Expressions;
 
 /// <summary>
 /// An expression value, which is read from any value starting with an equals sign.

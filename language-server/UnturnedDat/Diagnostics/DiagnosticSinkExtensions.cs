@@ -1,17 +1,17 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
 // ReSharper disable InconsistentNaming
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
+namespace UnturnedDat.Data.Diagnostics;
 
 /// <summary>
 /// Methods for reporting diagnostics using preset strings.

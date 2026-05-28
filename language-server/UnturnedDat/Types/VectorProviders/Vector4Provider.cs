@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using UnturnedDat.Data.Parsing;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 #if NET5_0_OR_GREATER
 [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]

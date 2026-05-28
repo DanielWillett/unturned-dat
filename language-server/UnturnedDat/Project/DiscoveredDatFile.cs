@@ -1,9 +1,3 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,10 +5,16 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
-[DebuggerDisplay("{Name} [{DanielWillett.UnturnedDataFileLspServer.Data.AssetCategory.Instance.Values[Category],nq}]")]
+[DebuggerDisplay("{Name} [{UnturnedDat.Data.AssetCategory.Instance.Values[Category],nq}]")]
 public partial class DiscoveredDatFile : IEquatable<DiscoveredDatFile>, IDisposable
 {
     private readonly int _nameIndexStart, _nameLength;

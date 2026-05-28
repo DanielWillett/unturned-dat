@@ -1,6 +1,3 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Files;
-using DanielWillett.UnturnedDataFileLspServer.Protocol;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
@@ -9,8 +6,11 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Protocol;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers;
+namespace UnturnedDat.LanguageServer.Handlers;
 
 internal class UnturnedAssetFileSyncHandler : ITextDocumentSyncHandler
 {
@@ -42,20 +42,20 @@ internal class UnturnedAssetFileSyncHandler : ITextDocumentSyncHandler
         _cacheProvider = cacheProvider;
         _changeRegistrationOptions = new TextDocumentChangeRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector,
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector,
             SyncKind = syncKind
         };
         _openRegistrationOptions = new TextDocumentOpenRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector
         };
         _closeRegistrationOptions = new TextDocumentCloseRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector
         };
         _saveRegistrationOptions = new TextDocumentSaveRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector,
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector,
             IncludeText = true // todo: do i need this?
         };
     }
@@ -91,7 +91,7 @@ internal class UnturnedAssetFileSyncHandler : ITextDocumentSyncHandler
     /// <inheritdoc />
     public TextDocumentAttributes GetTextDocumentAttributes(DocumentUri uri)
     {
-        return new TextDocumentAttributes(uri, UnturnedAssetFileLspServer.LanguageId);
+        return new TextDocumentAttributes(uri, UnturnedDatLanguageServer.LanguageId);
     }
 
     /// <inheritdoc />

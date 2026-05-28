@@ -1,12 +1,12 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.CodeFixes;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnturnedDat.Data.CodeFixes;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// Visits all valid properties in order in an asset file, associating them with their resolved property definitions.

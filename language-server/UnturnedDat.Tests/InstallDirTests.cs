@@ -1,6 +1,6 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using UnturnedDat.Data.Utility;
 
-namespace UnturnedAssetSpecTests;
+namespace UnturnedDat.Tests;
 
 public class InstallDirTests
 {

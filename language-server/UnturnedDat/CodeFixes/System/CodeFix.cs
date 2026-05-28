@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Project;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.CodeFixes;
+namespace UnturnedDat.Data.CodeFixes;
 
 /// <summary>
 /// A code fix expresses an action that can be performed ( ex. remove redundant parenthesis, etc ).

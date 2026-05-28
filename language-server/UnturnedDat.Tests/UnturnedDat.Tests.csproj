@@ -11,6 +11,7 @@
     <LangVersion>14.0</LangVersion>
 
     <AssemblyName>DanielWillett.UnturnedDat.Tests</AssemblyName>
+    <RootNamespace>UnturnedDat.Tests</RootNamespace>
 
     <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
     <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
@@ -18,7 +19,6 @@
     <RunSettingsFilePath>$(MSBuildProjectDirectory)\..\test.runsettings</RunSettingsFilePath>
     
     <AppDesignerFolder>FileProperties</AppDesignerFolder>
-    <RootNamespace>DanielWillett.UnturnedDat.Tests</RootNamespace>
 
     <StrongNameKeyPath>C:\Strong Name Keys\UnturnedAssetSpec\UnturnedAssetSpec_Tests.dll.snk</StrongNameKeyPath>
     <TestLsp>False</TestLsp>

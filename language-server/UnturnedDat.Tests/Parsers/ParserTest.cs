@@ -1,15 +1,15 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Globalization;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
 
-namespace UnturnedAssetSpecTests.Parsers;
+namespace UnturnedDat.Tests.Parsers;
 
 public class ParserTest<T> : IDisposable, IDiagnosticSink, IReferencedPropertySink
     where T : IEquatable<T>

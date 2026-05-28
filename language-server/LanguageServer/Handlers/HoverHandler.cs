@@ -1,20 +1,20 @@
 
-using System.Runtime.CompilerServices;
-using System.Text;
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using DanielWillett.UnturnedDataFileLspServer.Files;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using System.Runtime.CompilerServices;
+using System.Text;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
+using UnturnedDat.LanguageServer.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers;
+namespace UnturnedDat.LanguageServer.Handlers;
 
 internal class HoverHandler : IHoverHandler
 {
@@ -26,7 +26,7 @@ internal class HoverHandler : IHoverHandler
     {
         return new HoverRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector
         };
     }
 

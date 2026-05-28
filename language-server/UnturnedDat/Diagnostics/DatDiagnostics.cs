@@ -1,6 +1,6 @@
 // ReSharper disable InconsistentNaming
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
+namespace UnturnedDat.Data.Diagnostics;
 
 /// <summary>
 /// Common diagnostics.

@@ -146,7 +146,7 @@
             [
                 {
                     "Key": "Type",
-                    "Type": "DanielWillett.UnturnedDataFileLspServer.Data.Types.VendorSellingBaseType, UnturnedAssetSpec",
+                    "Type": "UnturnedDat.Data.Types.VendorSellingBaseType, DanielWillett.UnturnedDat",
                     "DefaultValue": "Item",
                     "Description": "Whether this vendor listing is for an item or vehicle."
                 },
@@ -453,7 +453,7 @@
             ]
         },
         {
-            "Type": "DanielWillett.UnturnedDataFileLspServer.Data.Types.VendorSellingBaseType, UnturnedAssetSpec",
+            "Type": "UnturnedDat.Data.Types.VendorSellingBaseType, DanielWillett.UnturnedDat",
             "DisplayName": "Vendor Listing Type",
             "Values":
             [

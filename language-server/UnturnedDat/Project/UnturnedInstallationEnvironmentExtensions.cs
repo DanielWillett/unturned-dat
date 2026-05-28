@@ -1,9 +1,9 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 public static class UnturnedInstallationEnvironmentExtensions
 {
     public struct UnturnedDirectorySearchOptions

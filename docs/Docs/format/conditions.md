@@ -1,7 +1,7 @@
 # Conditions
 Conditions are used to toggle functionality based on a certain operation.
 
-Conditions are represented by the [SpecCondition](../api/DanielWillett.UnturnedDataFileLspServer.Data.Logic.SpecCondition.yml) struct.
+Conditions are represented by the [SpecCondition](../api/UnturnedDat.Data.Logic.SpecCondition.yml) struct.
 
 ```json
 {

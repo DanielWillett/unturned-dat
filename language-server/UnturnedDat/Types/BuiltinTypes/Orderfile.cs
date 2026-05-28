@@ -1,18 +1,18 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// An Orderfile defines the ideal order of properties in asset files.
@@ -28,7 +28,7 @@ public sealed class Orderfile : DatFileType
     /// </summary>
     internal const string? OrderfileDocs = null; // TODO
 
-    public const string TypeId = "DanielWillett.UnturnedDataFileLspServer.Data.Types.Orderfile, UnturnedAssetSpec";
+    public const string TypeId = "UnturnedDat.Data.Types.Orderfile, UnturnedAssetSpec";
 
     internal Orderfile(IAssetSpecDatabase database)
         : base(new QualifiedType(TypeId, isCaseInsensitive: true), null, default)
@@ -198,7 +198,7 @@ internal sealed class OrderfileListElementType : BaseType<string, OrderfileListE
         : _type is DatTypeWithProperties props ? props.PropertiesBuilder : null;
 
     /// <inheritdoc />
-    public override string Id => "DanielWillett.UnturnedDataFileLspServer.Data.Types.OrderfileListElementType, UnturnedAssetSpec";
+    public override string Id => "UnturnedDat.Data.Types.OrderfileListElementType, UnturnedAssetSpec";
 
     /// <inheritdoc />
     public override string DisplayName => Resources.Type_Name_OrderfilePropertyReference;

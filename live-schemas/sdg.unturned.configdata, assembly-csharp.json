@@ -281,7 +281,7 @@
             ]
         },
         {
-            "Type": "DanielWillett.UnturnedDataFileLspServer.Data.Types.KnownSteamBetaNames, UnturnedAssetSpec",
+            "Type": "UnturnedDat.Data.Types.KnownSteamBetaNames, DanielWillett.UnturnedDat",
             "DisplayName": "Known Steam Beta Names",
             "Values":
             [
@@ -490,7 +490,7 @@
                 },
                 {
                     "Key": "Update_Steam_Beta_Name",
-                    "Type": "DanielWillett.UnturnedDataFileLspServer.Data.Types.KnownSteamBetaNames, UnturnedAssetSpec",
+                    "Type": "UnturnedDat.Data.Types.KnownSteamBetaNames, DanielWillett.UnturnedDat",
                     "Description": "If @Enable_Update_Shutdown is true, we check for updates to this branch of the game.",
                     "DefaultValue": "public"
                 },

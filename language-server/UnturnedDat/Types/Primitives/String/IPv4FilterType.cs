@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+﻿namespace UnturnedDat.Data.Types;
 
 // ReSharper disable InconsistentNaming
 

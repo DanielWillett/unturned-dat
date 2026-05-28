@@ -1,7 +1,5 @@
 ﻿using AssetsTools.NET;
 using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -12,8 +10,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
 internal class InstallationEnvironmentAssetBundleCache
 {
@@ -50,7 +50,7 @@ internal class InstallationEnvironmentAssetBundleCache
             return;
 
         Directory.CreateDirectory(_rootDir);
-        Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("DanielWillett.UnturnedDataFileLspServer.Data.Project.InstallationEnvironmentAssetBundleCache_README.md");
+        Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("UnturnedDat.Data.Project.InstallationEnvironmentAssetBundleCache_README.md");
         if (stream != null)
         {
             try

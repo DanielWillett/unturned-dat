@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <UsingTask AssemblyFile="../MSBuildTasks/bin/DanielWillett.UnturnedDat.MSBuildTasks.dll" TaskName="DanielWillett.UnturnedDat.MSBuildTasks.MergeAssetSpecTask" />
+  <UsingTask AssemblyFile="../MSBuildTasks/bin/DanielWillett.UnturnedDat.MSBuildTasks.dll" TaskName="UnturnedDat.MSBuildTasks.MergeAssetSpecTask" />
 
   <Target Name="MergeAssetSpecFiles" BeforeTargets="Build">
     <MergeAssetSpecTask Folder="../../live-schemas" OutputFile="../../live-schemas/asset-spec.g.bin" Blacklist="Asset Spec Schema.json" />
@@ -12,7 +12,7 @@
     <LangVersion>preview</LangVersion>
 
     <AssemblyName>DanielWillett.UnturnedDat</AssemblyName>
-    <RootNamespace>DanielWillett.UnturnedDat.Data</RootNamespace>
+    <RootNamespace>UnturnedDat.Data</RootNamespace>
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 

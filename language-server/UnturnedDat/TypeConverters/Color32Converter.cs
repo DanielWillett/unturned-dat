@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System;
+﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Json;
+namespace UnturnedDat.Data.Json;
 
 public sealed class Color32Converter : JsonConverter<Color32>
 {

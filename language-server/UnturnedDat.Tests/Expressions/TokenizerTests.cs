@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
+﻿using UnturnedDat.Data.Values.Expressions;
 
-namespace UnturnedAssetSpecTests.Expressions;
+namespace UnturnedDat.Tests.Expressions;
 
 [TestFixture]
 public class TokenizerTests

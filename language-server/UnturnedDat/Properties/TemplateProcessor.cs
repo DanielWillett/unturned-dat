@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Text;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+namespace UnturnedDat.Data.Properties;
 
 public sealed class TemplateProcessor
 {

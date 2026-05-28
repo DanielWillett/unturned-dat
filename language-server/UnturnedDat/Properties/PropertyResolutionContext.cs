@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+﻿namespace UnturnedDat.Data.Properties;
 
 /// <summary>
 /// Differentiates between a legacy and modern context for filtered keys and aliases.

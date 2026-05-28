@@ -1,13 +1,13 @@
-﻿using System;
-using AssetsTools.NET;
+﻿using AssetsTools.NET;
 using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 internal static class BundleUtility
 {

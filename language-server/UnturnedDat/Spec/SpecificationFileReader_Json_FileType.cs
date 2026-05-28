@@ -1,11 +1,11 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json;
+using UnturnedDat.Data.Properties;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 partial class SpecificationFileReader
 {

@@ -1,12 +1,12 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using UnturnedDat.Data.Properties;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Pulls specification files from the assembly's embedded resources.
@@ -15,7 +15,7 @@ public sealed class EmbeddedResourceSpecificationFileProvider : ISpecificationFi
 {
     private readonly ILogger<EmbeddedResourceSpecificationFileProvider> _logger;
 
-    internal const string EmbeddedResourceLocation = "DanielWillett.UnturnedDataFileLspServer.Data..Asset_Spec.{0}";
+    internal const string EmbeddedResourceLocation = "UnturnedDat.Data..Asset_Spec.{0}";
 
     public int Priority => 0;
 

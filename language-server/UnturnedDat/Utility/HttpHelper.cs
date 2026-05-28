@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 internal static class HttpHelper
 {

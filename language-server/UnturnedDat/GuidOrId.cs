@@ -1,10 +1,10 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Json;
 using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Json;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data;
+namespace UnturnedDat.Data;
 
 /// <summary>
 /// A GUID or Legacy ID reference to an asset.

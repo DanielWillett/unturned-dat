@@ -1,18 +1,18 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.CodeFixes;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Files;
-using OmniSharp.Extensions.LanguageServer.Protocol;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using UnturnedDat.Data.CodeFixes;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.LanguageServer.Files;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers;
+namespace UnturnedDat.LanguageServer.Handlers;
 
 internal class CodeActionRequestHandler : CodeActionHandlerBase
 {
@@ -40,7 +40,7 @@ internal class CodeActionRequestHandler : CodeActionHandlerBase
         return new CodeActionRegistrationOptions
         {
             CodeActionKinds = new Container<CodeActionKind>(CodeActionKind.Refactor, CodeActionKind.QuickFix),
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector,
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector,
             ResolveProvider = true
         };
     }

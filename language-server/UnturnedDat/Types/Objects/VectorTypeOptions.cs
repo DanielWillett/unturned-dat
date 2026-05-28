@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// Defines what syntaxes of vector properties can be parsed.

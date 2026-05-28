@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Json;
+namespace UnturnedDat.Data.Json;
 
 public sealed class UnityEngineVersionConverter : JsonConverter<UnityEngineVersion>
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// Accepts every node in a tree in order, not including the visited node.

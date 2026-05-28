@@ -7,6 +7,7 @@
     <Configurations>Release</Configurations>
 
     <AssemblyName>DanielWillett.UnturnedDat.MSBuildTasks</AssemblyName>
+    <RootNamespace>UnturnedDat.MSBuildTasks</RootNamespace>
 
     <OutputPath>bin/</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

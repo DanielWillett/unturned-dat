@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using System;
+﻿using System;
+using UnturnedDat.Data.Files;
 
 #pragma warning disable IDE0130
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+namespace UnturnedDat.Data.Values;
 
 #pragma warning restore IDE0130
 

@@ -1,15 +1,15 @@
 ﻿using System;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// A special type of <see cref="SwitchValue"/> that represents a property type that changes depending on the context.
@@ -27,7 +27,7 @@ public class TypeSwitch : SwitchValue<IType>, IPropertyType
     /// <summary>
     /// The ID of the type used for <see cref="IType"/> values.
     /// </summary>
-    public const string ValueTypeId = "DanielWillett.UnturnedDataFileLspServer.Data.Types.TypeOfType, UnturnedAssetSpec";
+    public const string ValueTypeId = "UnturnedDat.Data.Types.TypeOfType, UnturnedAssetSpec";
 
     /// <inheritdoc />
     public PropertySearchTrimmingBehavior TrimmingBehavior { get; }

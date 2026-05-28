@@ -1,10 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Utility;
+namespace UnturnedDat.LanguageServer.Utility;
 
 internal static class JsonHelper
 {

@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+﻿namespace UnturnedDat.Data.Files;
 
 public interface ISourceNodeVisitor
     : ISourceNodePropertyVisitor,

@@ -1,8 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data;
-using System.Net;
+﻿using System.Net;
+using UnturnedDat.Data;
+
 // ReSharper disable InconsistentNaming
 
-namespace UnturnedAssetSpecTests.Parsing;
+namespace UnturnedDat.Tests.Parsing;
 
 [TestFixture]
 public class IPv4FilterTests

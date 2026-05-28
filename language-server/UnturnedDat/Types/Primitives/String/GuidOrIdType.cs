@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// A 128-bit globally unique identifier (<see cref="Guid"/>) or 16-bit unsigned integer (<see cref="ushort"/>). Not an asset reference.

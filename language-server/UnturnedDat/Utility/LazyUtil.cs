@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 internal static class LazyUtil
 {

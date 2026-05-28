@@ -1,9 +1,9 @@
 # Dynamic Values
-All property values are represented by the [ISpecDynamicValue](/api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.ISpecDynamicValue.html) interface.
+All property values are represented by the [ISpecDynamicValue](/api/UnturnedDat.Data.Properties.ISpecDynamicValue.html) interface.
 
 This interface supports dynamic values such as [Switch Statements](./switch-statements.md), [Expressions](./expressions.md), [Data-Refs](./data-refs.md), [Property References](./property-refs.md), [Custom Types](./custom-types.md), and concrete values.
 
-Certain properties may specify a default type, such as [Condition Variables](/api/DanielWillett.UnturnedDataFileLspServer.Data.Logic.SpecCondition.html#DanielWillett_UnturnedDataFileLspServer_Data_Logic_SpecCondition_Variable) which default to a property, but usually the default will be a concrete value.
+Certain properties may specify a default type, such as [Condition Variables](/api/UnturnedDat.Data.Logic.SpecCondition.html#UnturnedDat_Data_Logic_SpecCondition_Variable) which default to a property, but usually the default will be a concrete value.
 
 
 ## Concrete Values
@@ -12,12 +12,12 @@ Unless another default is specified, this is the default type of value to parse.
 Concrete values also includes <b>Enumeration</b> (enum) values, which are special text values which have a set number of options. An example of this would be the `Action` property for guns, which includes various values such as `Trigger`, `Rocket`, `Bolt`, `String`, etc. Read more [here](./enums.md).
 
 Concrete values are generally represented by one of the following classes:
-* [SpecDynamicConcreteValue&lt;T&gt;](/api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.SpecDynamicConcreteValue`1.html) - for other values
-    * [SpecDynamicValue](/api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.SpecDynamicValue.html) contains static helper methods for creating common types.
+* [SpecDynamicConcreteValue&lt;T&gt;](/api/UnturnedDat.Data.Properties.SpecDynamicConcreteValue`1.html) - for other values
+    * [SpecDynamicValue](/api/UnturnedDat.Data.Properties.SpecDynamicValue.html) contains static helper methods for creating common types.
 
-* [SpecDynamicConcreteNullValue](/api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.SpecDynamicConcreteNullValue.html) - for null values
+* [SpecDynamicConcreteNullValue](/api/UnturnedDat.Data.Properties.SpecDynamicConcreteNullValue.html) - for null values
 
-* [SpecDynamicConcreteEnumValue](/api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.SpecDynamicConcreteEnumValue.html) - for enums
+* [SpecDynamicConcreteEnumValue](/api/UnturnedDat.Data.Properties.SpecDynamicConcreteEnumValue.html) - for enums
 
 When values aren't the default type, they can be prefixed with a `%` character to indicate a concrete value.
 

@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Parsing;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 internal class ColorVectorProvider : IVectorTypeProvider<Color>
 {

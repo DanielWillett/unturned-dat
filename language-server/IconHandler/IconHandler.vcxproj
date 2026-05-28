@@ -70,6 +70,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)language-server\IconHandler\$(Platform)\$(Configuration)\Build\</OutDir>
+    <TargetName>DanielWillett.UnturnedDat.IconHandler</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -83,6 +85,7 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)language-server\IconHandler\$(Platform)\$(Configuration)\Build\</OutDir>
+    <TargetName>DanielWillett.UnturnedDat.IconHandler</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

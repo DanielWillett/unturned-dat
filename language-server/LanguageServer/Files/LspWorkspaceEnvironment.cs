@@ -1,12 +1,4 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Handlers;
-using DanielWillett.UnturnedDataFileLspServer.Project;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
@@ -17,10 +9,18 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.LanguageServer.Handlers;
+using UnturnedDat.LanguageServer.Project;
 using FileSystemWatcher = OmniSharp.Extensions.LanguageServer.Protocol.Models.FileSystemWatcher;
 // ReSharper disable InconsistentlySynchronizedField
 
-namespace DanielWillett.UnturnedDataFileLspServer.Files;
+namespace UnturnedDat.LanguageServer.Files;
 
 internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<WorkspaceFolderChange>, IDisposable, IDidChangeWatchedFilesHandler
 {
@@ -332,9 +332,9 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
                     pattern = new GlobPattern(new RelativePattern
                     {
                         BaseUri = tracker.Folder != null ? new WorkspaceFolderOrUri(tracker.Folder) : new WorkspaceFolderOrUri(tracker.Uri),
-                        Pattern = UnturnedAssetFileLspServer.FileWatcherGlobPattern
+                        Pattern = UnturnedDatLanguageServer.FileWatcherGlobPattern
                     });
-                    _logger.LogInformation("Client is watching \"{0}\" in \"{1}\".", UnturnedAssetFileLspServer.FileWatcherGlobPattern, tracker.Uri);
+                    _logger.LogInformation("Client is watching \"{0}\" in \"{1}\".", UnturnedDatLanguageServer.FileWatcherGlobPattern, tracker.Uri);
                 }
                 else
                 {
@@ -344,9 +344,9 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
 
                     fullPath = DocumentUri.File(fullPath).ToUnencodedString();
                     if (fullPath.EndsWith('/'))
-                        fullPath += UnturnedAssetFileLspServer.FileWatcherGlobPattern;
+                        fullPath += UnturnedDatLanguageServer.FileWatcherGlobPattern;
                     else
-                        fullPath += "/" + UnturnedAssetFileLspServer.FileWatcherGlobPattern;
+                        fullPath += "/" + UnturnedDatLanguageServer.FileWatcherGlobPattern;
 
                     pattern = new GlobPattern(fullPath);
                     _logger.LogInformation("Client is watching \"{0}\".", fullPath);

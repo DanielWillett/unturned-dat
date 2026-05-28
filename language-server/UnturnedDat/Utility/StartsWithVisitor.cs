@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #endif
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 public struct StartsWithVisitor<TSet> : IGenericVisitor, IEquatableArrayVisitor
     where TSet : IEquatable<TSet>

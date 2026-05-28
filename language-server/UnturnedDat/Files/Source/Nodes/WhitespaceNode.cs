@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 [DebuggerDisplay("{ToString(),nq}")]
 internal class WhitespaceNode : AnySourceNode, IWhiteSpaceSourceNode

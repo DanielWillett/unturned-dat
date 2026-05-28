@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// A date-time parsed as a <see cref="DateTimeOffset"/> with an optional time-zone (assumed UTC).

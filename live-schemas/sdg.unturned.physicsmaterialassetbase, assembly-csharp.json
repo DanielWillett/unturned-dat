@@ -11,7 +11,7 @@
             "Type":
             {
                 "Type": "Dictionary",
-                "KeyType": "DanielWillett.UnturnedDataFileLspServer.Data.Types.PhysicsMaterialAudioDef, UnturnedAssetSpec",
+                "KeyType": "UnturnedDat.Data.Types.PhysicsMaterialAudioDef, DanielWillett.UnturnedDat",
                 "ValueType":
                 {
                     "Type": "MasterBundleReference",
@@ -28,7 +28,7 @@
     "Types":
     [
         {
-            "Type": "DanielWillett.UnturnedDataFileLspServer.Data.Types.PhysicsMaterialAudioDef, UnturnedAssetSpec",
+            "Type": "UnturnedDat.Data.Types.PhysicsMaterialAudioDef, DanielWillett.UnturnedDat",
             "DisplayName": "Known Physics Material Audio Def ID",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/physics-material-asset.html#properties",
             "Values":

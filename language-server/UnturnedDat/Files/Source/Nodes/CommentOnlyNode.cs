@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
 using System.Diagnostics;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 [DebuggerDisplay("{ToString(),nq}")]
 internal sealed class CommentOnlyNode : AnySourceNode, ICommentSourceNode

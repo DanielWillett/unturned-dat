@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Values;
+﻿namespace UnturnedDat.Data.Values;
 
 internal class UnresolvedPropertyReference
 {

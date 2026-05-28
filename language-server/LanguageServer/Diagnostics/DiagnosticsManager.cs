@@ -1,17 +1,17 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Files;
-using DanielWillett.UnturnedDataFileLspServer.Handlers;
-using Microsoft.Extensions.FileSystemGlobbing;
+﻿using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using System.Collections.Concurrent;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Handlers;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Diagnostics;
+namespace UnturnedDat.LanguageServer.Diagnostics;
 
 /// <summary>
 /// Handles keeping track of active files and publishing diagnostics.
@@ -101,7 +101,7 @@ internal class DiagnosticsManager : IDisposable
         return new Diagnostic
         {
             Code = new DiagnosticCode(msg.Diagnostic.ErrorId),
-            Source = UnturnedAssetFileLspServer.DiagnosticSource,
+            Source = UnturnedDatLanguageServer.DiagnosticSource,
             Message = msg.Message,
             Range = msg.Range.ToRange(),
             Tags = msg.Diagnostic == DatDiagnostics.UNT1018 ? new Container<DiagnosticTag>(DiagnosticTag.Deprecated) : null,
@@ -324,7 +324,7 @@ internal class DiagnosticsManager : IDisposable
                 return;
             }
 
-            PatternMatchingResult result = UnturnedAssetFileLspServer.FileWatcherMatcher.Execute(
+            PatternMatchingResult result = UnturnedDatLanguageServer.FileWatcherMatcher.Execute(
                 new DirectoryInfoWrapper(new DirectoryInfo(workItem.FilePath))
             );
 

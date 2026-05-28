@@ -2,9 +2,9 @@ using System;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Json;
+namespace UnturnedDat.Data.Json;
 
 public sealed class GuidOrIdConverter : JsonConverter<GuidOrId>
 {

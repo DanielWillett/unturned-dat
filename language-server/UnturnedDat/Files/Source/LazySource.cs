@@ -1,7 +1,7 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using System;
+﻿using System;
+using UnturnedDat.Data.Diagnostics;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 internal struct LazySource
 {

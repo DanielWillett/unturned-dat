@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data;
+﻿namespace UnturnedDat.Data;
 
 /// <summary>
 /// Specifies a filter on which aliases can be used with each legacy expansion type.

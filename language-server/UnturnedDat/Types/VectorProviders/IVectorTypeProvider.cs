@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+using UnturnedDat.Data.Parsing;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// Defines operation for vectors of type <typeparamref name="TVector"/>.

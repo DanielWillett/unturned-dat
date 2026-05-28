@@ -28,7 +28,7 @@
             "Type":
             {
                 "Type": "List",
-                "ElementType": "DanielWillett.UnturnedDataFileLspServer.Data.Types.ServerListCurationLabel, UnturnedAssetSpec"
+                "ElementType": "UnturnedDat.Data.Types.ServerListCurationLabel, DanielWillett.UnturnedDat"
             },
             "DefaultValue": [ ],
             "Description": "Defines a list of labels that can be applied by rules.",
@@ -51,7 +51,7 @@
     "Types":
     [
         {
-            "Type": "DanielWillett.UnturnedDataFileLspServer.Data.Types.ServerListCurationLabel, UnturnedAssetSpec",
+            "Type": "UnturnedDat.Data.Types.ServerListCurationLabel, DanielWillett.UnturnedDat",
             "DisplayName": "Curated Server List Label",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/servers/server-browser-curation.html#labels-list-of-dictionaries",
             "ListReferenceProperty": "Name",

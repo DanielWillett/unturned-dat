@@ -1,12 +1,11 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
+﻿using UnturnedDat.Data;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
 
 // ReSharper disable RawStringCanBeSimplified
 
-namespace UnturnedAssetSpecTests.Parsers;
+namespace UnturnedDat.Tests.Parsers;
 
 [TestFixture]
 public class ParserTest_ENPCLogicType

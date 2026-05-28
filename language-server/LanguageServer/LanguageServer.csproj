@@ -8,9 +8,11 @@
 		<LangVersion>14.0</LangVersion>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-		<RootNamespace>DanielWillett.UnturnedDat.LanguageServer</RootNamespace>
+		<RootNamespace>UnturnedDat.LanguageServer</RootNamespace>
     <StrongNameKeyPath>C:\Strong Name Keys\UnturnedAssetSpec\UnturnedAssetSpec_LspServer.exe.snk</StrongNameKeyPath>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+
+    <AssemblyName>DanielWillett.UnturnedDat.LanguageServer</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="exists($(StrongNameKeyPath))">

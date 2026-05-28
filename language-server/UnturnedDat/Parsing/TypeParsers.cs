@@ -1,16 +1,16 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 #if NET5_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #endif
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+namespace UnturnedDat.Data.Parsing;
 
 /// <summary>
 /// Singleton instances of common type parsers.

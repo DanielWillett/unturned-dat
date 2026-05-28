@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text.Json;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 internal class UnturnedUgcUtility
 {

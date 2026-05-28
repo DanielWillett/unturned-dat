@@ -1,7 +1,7 @@
-using DanielWillett.UnturnedDataFileLspServer.Data;
 using Newtonsoft.Json;
+using UnturnedDat.Data;
 
-namespace DanielWillett.UnturnedDataFileLspServer.NewtonsoftConverters;
+namespace UnturnedDat.LanguageServer.NewtonsoftConverters;
 
 public sealed class UnityEngineVersionConverter : JsonConverter<UnityEngineVersion>
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// Accepts every node that is a direct child of the visited node.

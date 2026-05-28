@@ -1,14 +1,14 @@
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
 using System.Collections.Immutable;
 using System.Numerics;
 using System.Text.Json;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
-namespace UnturnedAssetSpecTests;
+namespace UnturnedDat.Tests;
 
 public class MatchingSwitches
 {
@@ -25,7 +25,7 @@ public class MatchingSwitches
                     ImmutableArray.Create<IValue<bool>>
                     (
                         new Condition<bool>(new LocalPropertyReferenceValue(in pref, null!, offline),
-                            DanielWillett.UnturnedDataFileLspServer.Data.Values.Operations.Equal.Instance, true, false)
+                            Data.Values.Operations.Equal.Instance, true, false)
                     ),
                     JointConditionOperation.Or,
                     Value.Type(Float32Type.Instance)

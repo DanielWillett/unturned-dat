@@ -1,21 +1,21 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
-using DanielWillett.UnturnedDataFileLspServer.Files;
-using DanielWillett.UnturnedDataFileLspServer.Protocol;
-using DanielWillett.UnturnedDataFileLspServer.Utility;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
+using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Protocol;
+using UnturnedDat.LanguageServer.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers.AssetProperties;
+namespace UnturnedDat.LanguageServer.Handlers.AssetProperties;
 
 internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
 {

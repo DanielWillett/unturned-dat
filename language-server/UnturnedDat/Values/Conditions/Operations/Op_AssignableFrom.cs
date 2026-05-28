@@ -1,7 +1,7 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+﻿using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Values.Operations;
+namespace UnturnedDat.Data.Values.Operations;
 
 internal sealed class AssignableFrom : ConditionOperation<AssignableFrom>
 {

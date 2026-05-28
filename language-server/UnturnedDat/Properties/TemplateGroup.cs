@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+namespace UnturnedDat.Data.Properties;
 
 public class TemplateGroup : IEquatable<TemplateGroup>
 {

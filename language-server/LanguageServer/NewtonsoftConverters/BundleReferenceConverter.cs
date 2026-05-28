@@ -1,8 +1,8 @@
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using Newtonsoft.Json;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.NewtonsoftConverters;
+namespace UnturnedDat.LanguageServer.NewtonsoftConverters;
 
 public sealed class BundleReferenceConverter : JsonConverter<BundleReference>
 {

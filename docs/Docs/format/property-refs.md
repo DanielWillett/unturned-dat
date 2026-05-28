@@ -1,8 +1,8 @@
 # Property References
 
-Property references are used to reference the value from another property. Property references are prefixed with a `@` unless the place you're entering it defaults to a property reference, like [Condition Variables](/api/DanielWillett.UnturnedDataFileLspServer.Data.Logic.SpecCondition.html#DanielWillett_UnturnedDataFileLspServer_Data_Logic_SpecCondition_Variable).
+Property references are used to reference the value from another property. Property references are prefixed with a `@` unless the place you're entering it defaults to a property reference, like [Condition Variables](/api/UnturnedDat.Data.Logic.SpecCondition.html#UnturnedDat_Data_Logic_SpecCondition_Variable).
 
-Property references are represented by the [PropertyRef](/api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.PropertyRef.yml) class.
+Property references are represented by the [PropertyRef](/api/UnturnedDat.Data.Properties.PropertyRef.yml) class.
 
 ## Format
 

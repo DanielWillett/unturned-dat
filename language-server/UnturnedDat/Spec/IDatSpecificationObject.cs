@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Any object defined in the file type specification.

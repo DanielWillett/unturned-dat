@@ -1,6 +1,4 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Files;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Globalization;
@@ -9,8 +7,10 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.Text;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.LanguageServer.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Utility;
+namespace UnturnedDat.LanguageServer.Utility;
 
 internal class DiskCleanupRegistrationUtility
 {

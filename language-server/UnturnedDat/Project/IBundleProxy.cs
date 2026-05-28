@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+﻿namespace UnturnedDat.Data.Project;
 
 /// <summary>
 /// A reference to a bundle through the eyes of an asset file, applying the asset's path when searching for objects.

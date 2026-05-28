@@ -1,9 +1,9 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using System.Collections.Concurrent;
+using UnturnedDat.Data.Parsing;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Files;
+namespace UnturnedDat.LanguageServer.Files;
 
 internal class OpenedFileTracker : IDisposable
 {

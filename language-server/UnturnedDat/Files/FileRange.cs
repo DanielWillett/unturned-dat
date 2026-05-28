@@ -1,6 +1,6 @@
 using System;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Files;
+namespace UnturnedDat.Data.Files;
 
 /// <summary>
 /// Range of a selection in a file.

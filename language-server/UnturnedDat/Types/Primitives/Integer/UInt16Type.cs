@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+﻿namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// An unsigned 16-bit integer.

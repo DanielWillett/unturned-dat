@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Values.Expressions;
-using System.Text;
-using DanielWillett.UnturnedDataFileLspServer.Data.Values;
+﻿using System.Text;
+using UnturnedDat.Data.Values;
+using UnturnedDat.Data.Values.Expressions;
 
-namespace UnturnedAssetSpecTests.Expressions;
+namespace UnturnedDat.Tests.Expressions;
 
 [TestFixture]
 public class ParserAndFormatterTests

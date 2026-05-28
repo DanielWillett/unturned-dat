@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+﻿namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// A 128-bit high precision decimal value.

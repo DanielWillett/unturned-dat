@@ -1,11 +1,11 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using System.Globalization;
+﻿using System.Globalization;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Types;
 
 // ReSharper disable RawStringCanBeSimplified
 
-namespace UnturnedAssetSpecTests.Parsers;
+namespace UnturnedDat.Tests.Parsers;
 
 [TestFixture]
 public class ParserTest_DateTimeOffset

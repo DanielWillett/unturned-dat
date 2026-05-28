@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using OmniSharp.Extensions.JsonRpc;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Protocol;
+namespace UnturnedDat.LanguageServer.Protocol;
 
 [Parallel, Method("unturnedDataFile/requestAdminPrivileges", Direction.ServerToClient)]
 public class RequestAdminPrivilegesParams : INotification

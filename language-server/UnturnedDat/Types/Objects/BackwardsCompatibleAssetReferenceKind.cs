@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+﻿namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// Kind of backwards-compatible asset reference.

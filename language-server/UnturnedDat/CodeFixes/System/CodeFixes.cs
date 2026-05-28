@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.CodeFixes;
+namespace UnturnedDat.Data.CodeFixes;
 
 public sealed class GlobalCodeFixes
 {

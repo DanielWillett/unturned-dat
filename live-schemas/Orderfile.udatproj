@@ -1,4 +1,4 @@
-// udat-type: DanielWillett.UnturnedDataFileLspServer.Data.Types.Orderfile, UnturnedAssetSpec
+// udat-type: UnturnedDat.Data.Types.Orderfile, UnturnedAssetSpec
 
 // Format:
 //   Each type has a list of property names. An unqoted '_' indicates a blank line.
@@ -2922,7 +2922,7 @@
 
 /* === SERVER BROWSER CURATION === */
 // Server curation label
-"DanielWillett.UnturnedDataFileLspServer.Data.Types.ServerListCurationLabel, UnturnedAssetSpec"
+"UnturnedDat.Data.Types.ServerListCurationLabel, DanielWillett.UnturnedDat"
 [
     Name
     Text

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using OmniSharp.Extensions.JsonRpc;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Protocol;
+namespace UnturnedDat.LanguageServer.Protocol;
 
 [Parallel, Method("unturnedDataFile/getDocumentContent", Direction.ServerToClient)]
 public class GetDocumentContentParams : IRequest<GetDocumentContentResponse>

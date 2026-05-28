@@ -1,4 +1,4 @@
-﻿namespace DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+﻿namespace UnturnedDat.Data.Properties;
 
 /// <summary>
 /// Controls how this type may expand to other properties.

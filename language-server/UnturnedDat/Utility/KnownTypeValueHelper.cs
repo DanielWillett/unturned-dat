@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Types;
+namespace UnturnedDat.Data.Types;
 
 /// <summary>
 /// Various methods to parse primitive types in the same manner as Unturned does.

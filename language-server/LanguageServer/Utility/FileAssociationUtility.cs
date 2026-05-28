@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Versioning;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Utility;
+namespace UnturnedDat.LanguageServer.Utility;
 
 /// <summary>
 /// Utility for configuring file icons and associations on Windows.
@@ -18,9 +18,11 @@ internal class FileAssociationUtility
     public const string AssetProgId = "UnturnedDat";
     public const string ProjectProgId = "UnturnedDatProject";
 
+    private const string IconHandlerAssemblyName = "DanielWillett.UnturnedDat.IconHandler.dll";
+
     public string? AssetCommand { get; set; }
     public string? ProjectCommand { get; set; }
-    public int FileAssocVersion { get; set; } = 1;
+    public int FileAssocVersion { get; set; } = 2;
 
     public FileAssociationUtility(ILogger<FileAssociationUtility> logger)
     {
@@ -90,7 +92,7 @@ internal class FileAssociationUtility
             }
 
             int? exitCode = null;
-            string args = $@"/n /s /i:user ""{Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, @"UnturnedAssetFileIconHandler.dll")}""";
+            string args = $@"/n /s /i:user ""{Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, IconHandlerAssemblyName)}""";
             try
             {
                 _logger.LogDebug($"EXECUTE: '\"{regsvr32}\" {args}'");
@@ -140,6 +142,7 @@ internal class FileAssociationUtility
 
             if (assetCommand == null || projectCommand == null)
             {
+                // TODO: support a different editor
                 string? vscode = FindVsCodeLocation();
                 if (vscode == null)
                 {

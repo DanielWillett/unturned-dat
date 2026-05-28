@@ -1,9 +1,8 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Files;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.LanguageServer.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Completions;
+namespace UnturnedDat.LanguageServer.Completions;
 
 public struct KeyCompletionState
 {

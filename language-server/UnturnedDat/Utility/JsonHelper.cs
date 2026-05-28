@@ -1,4 +1,3 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,8 +6,9 @@ using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 internal static class JsonHelper
 {

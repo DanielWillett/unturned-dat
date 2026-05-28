@@ -1080,7 +1080,7 @@
             "Type": "SDG.Unturned.BlueprintSupply, Assembly-CSharp",
             "DisplayName": "Blueprint Supply",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/blueprints_inputitem.html",
-            "StringParseableType": "DanielWillett.UnturnedDataFileLspServer.Data.Parsing.BlueprintItemTypeConverter, UnturnedAssetSpec",
+            "StringParseableType": "UnturnedDat.Data.Parsing.BlueprintItemTypeConverter, DanielWillett.UnturnedDat",
             "Properties":
             [
                 {
@@ -1229,7 +1229,7 @@
             "Type": "SDG.Unturned.BlueprintOutput, Assembly-CSharp",
             "DisplayName": "Blueprint Output",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/blueprints_outputitem.html",
-            "StringParseableType": "DanielWillett.UnturnedDataFileLspServer.Data.Parsing.BlueprintItemTypeConverter, UnturnedAssetSpec",
+            "StringParseableType": "UnturnedDat.Data.Parsing.BlueprintItemTypeConverter, DanielWillett.UnturnedDat",
             "Properties":
             [
                 {
@@ -1457,7 +1457,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -1574,7 +1574,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -1626,7 +1626,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -1641,7 +1641,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -1680,7 +1680,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -1695,7 +1695,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -1817,7 +1817,7 @@
                             "And":
                             [
                                 {
-                                    "Variable": "#Self.IsLegacy",
+                                    "Variable": "#This.IsLegacy",
                                     "Operation": "eq",
                                     "Comparand": true
                                 },
@@ -1833,7 +1833,7 @@
                             "And":
                             [
                                 {
-                                    "Variable": "#Self.IsLegacy",
+                                    "Variable": "#This.IsLegacy",
                                     "Operation": "eq",
                                     "Comparand": false
                                 },
@@ -1885,7 +1885,7 @@
                             "And":
                             [
                                 {
-                                    "Variable": "#Self.IsLegacy",
+                                    "Variable": "#This.IsLegacy",
                                     "Operation": "eq",
                                     "Comparand": true
                                 },
@@ -2278,7 +2278,7 @@
                     "ValueTemplateGroupReference": "#(SDG.Unturned.ItemAsset, Assembly-CSharp::Blueprints).Indices[0]",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/items/actions.html#action-blueprint-index-uint8-0",
                     "KeyLegacyExpansionFilter": "Legacy",
-                    "Deprecated": "=SUB(1 #Self.IsLegacy)",
+                    "Deprecated": "=SUB(1 #This.IsLegacy)",
                     "DefaultValue":
                     [
                         {

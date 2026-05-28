@@ -1,11 +1,11 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Project;
+﻿using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Collections.Immutable;
-using Microsoft.Extensions.Logging;
+using UnturnedDat.LanguageServer.Project;
 using FileSystemWatcher = System.IO.FileSystemWatcher;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Files;
+namespace UnturnedDat.LanguageServer.Files;
 
 internal class WorkspaceFolderTracker : IDisposable
 {

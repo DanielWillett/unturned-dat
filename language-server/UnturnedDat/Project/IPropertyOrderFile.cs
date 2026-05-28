@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+﻿using UnturnedDat.Data.Properties;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Project;
+namespace UnturnedDat.Data.Project;
 
 /// <summary>
 /// Shared interface between <see cref="PropertyOrderFile"/> and <see cref="ScaffoldedPropertyOrderFile"/>.

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Utility;
+namespace UnturnedDat.LanguageServer.Utility;
 
 internal static class EnvironmentHelper
 {

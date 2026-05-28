@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Project;
+﻿using UnturnedDat.Data.Project;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Project;
+namespace UnturnedDat.LanguageServer.Project;
 
 internal class LspProjectFile(string filePath, string folderPath) : ProjectFile(filePath)
 {

@@ -1,6 +1,3 @@
-using AssetsTools.NET.Extra;
-using DanielWillett.UnturnedDataFileLspServer.Data.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +6,10 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Json;
+using UnturnedDat.Data.Utility;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+namespace UnturnedDat.Data.Spec;
 
 /// <summary>
 /// Contains generic information about asset types.

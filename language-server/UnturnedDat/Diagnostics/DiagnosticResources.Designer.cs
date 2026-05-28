@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics {
+namespace UnturnedDat.Data.Diagnostics {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics.DiagnosticResources", typeof(DiagnosticResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("UnturnedDat.Data.Diagnostics.DiagnosticResources", typeof(DiagnosticResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

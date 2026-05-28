@@ -1,9 +1,9 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Utility;
 
-namespace UnturnedAssetSpecTests.Parsing;
+namespace UnturnedDat.Tests.Parsing;
 
 public class ParseEnumFlagsTests
 {

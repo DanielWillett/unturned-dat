@@ -268,7 +268,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -283,7 +283,7 @@
                         {
                             "Case":
                             {
-                                "Variable": "#Self.IsLegacy",
+                                "Variable": "#This.IsLegacy",
                                 "Operation": "eq",
                                 "Comparand": true
                             },
@@ -344,7 +344,7 @@
                                     "Or":
                                     [
                                         {
-                                            "Variable": "#Self.IsLegacy",
+                                            "Variable": "#This.IsLegacy",
                                             "Operation": "eq",
                                             "Comparand": false
                                         },

@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Values;
+﻿using UnturnedDat.Data.Values;
 
-namespace UnturnedAssetSpecTests.Bundles;
+namespace UnturnedDat.Tests.Bundles;
 
 [TestFixture]
 public class UnityPropertyPathEnumeratorTests

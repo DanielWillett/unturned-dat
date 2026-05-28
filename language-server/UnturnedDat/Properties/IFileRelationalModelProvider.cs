@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
+using UnturnedDat.Data.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Properties;
+namespace UnturnedDat.Data.Properties;
 
 public interface IFileRelationalModelProvider
 {

@@ -1,7 +1,7 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
 using System.Text.Json;
+using UnturnedDat.Data.Spec;
 
-namespace UnturnedAssetSpecTests;
+namespace UnturnedDat.Tests;
 
 #pragma warning disable VSTHRD200
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+namespace UnturnedDat.Data.Utility;
 
 /// <summary>
 /// Doesn't allocate anything for low array sizes (lte 64).

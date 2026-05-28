@@ -1,15 +1,15 @@
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
-using DanielWillett.UnturnedDataFileLspServer.Files;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.LanguageServer.Files;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers;
+namespace UnturnedDat.LanguageServer.Handlers;
 
 /// <summary>
 /// Handles specifying the symbol tree for the client.
@@ -25,7 +25,7 @@ internal class DocumentSymbolHandler : IDocumentSymbolHandler
     {
         return new DocumentSymbolRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector
         };
     }
 

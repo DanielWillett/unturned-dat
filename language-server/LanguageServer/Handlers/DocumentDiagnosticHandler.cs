@@ -1,17 +1,17 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
-using DanielWillett.UnturnedDataFileLspServer.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Files;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.Data.Types;
+using UnturnedDat.LanguageServer.Diagnostics;
+using UnturnedDat.LanguageServer.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers;
+namespace UnturnedDat.LanguageServer.Handlers;
 
 internal class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
 {
@@ -41,7 +41,7 @@ internal class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
     {
         return new DiagnosticsRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector,
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector,
             InterFileDependencies = true,
             WorkspaceDiagnostics = false
         };

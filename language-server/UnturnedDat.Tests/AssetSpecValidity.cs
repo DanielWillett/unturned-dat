@@ -1,14 +1,15 @@
-﻿using System.Collections.Immutable;
-using DanielWillett.UnturnedDataFileLspServer.Data;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+﻿
 using Microsoft.Extensions.Logging;
+using System.Collections.Immutable;
+using UnturnedDat.Data;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
 #if TEST_LSP
-using DanielWillett.UnturnedDataFileLspServer.Files;
+using UnturnedDat.LanguageServer.Files;
 #endif
 
-namespace UnturnedAssetSpecTests;
+namespace UnturnedDat.Tests;
 
 public class AssetSpecValidity
 {

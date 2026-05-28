@@ -1,7 +1,7 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
 
-namespace UnturnedAssetSpecTests;
+namespace UnturnedDat.Tests;
 
 #pragma warning disable VSTHRD200
 

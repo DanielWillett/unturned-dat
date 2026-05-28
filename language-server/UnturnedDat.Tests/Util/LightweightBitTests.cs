@@ -1,6 +1,6 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+﻿using UnturnedDat.Data.Utility;
 
-namespace UnturnedAssetSpecTests.Util;
+namespace UnturnedDat.Tests.Util;
 
 public class LightweightBitTests
 {

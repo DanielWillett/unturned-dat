@@ -1,7 +1,7 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using System;
+﻿using System;
+using UnturnedDat.Data.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data.Parsing;
+namespace UnturnedDat.Data.Parsing;
 
 /// <summary>
 /// Allows parsers to indicate that they are dependant on another property.

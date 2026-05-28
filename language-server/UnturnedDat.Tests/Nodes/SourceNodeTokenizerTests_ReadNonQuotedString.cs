@@ -1,8 +1,8 @@
-﻿using DanielWillett.UnturnedDataFileLspServer.Data.Diagnostics;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
+using UnturnedDat.Data.Diagnostics;
+using UnturnedDat.Data.Files;
 
-namespace UnturnedAssetSpecTests.Nodes;
+namespace UnturnedDat.Tests.Nodes;
 
 public partial class SourceNodeTokenizerTests
 {

@@ -4,7 +4,7 @@ They are similar to the switch expressions in C#.
 
 [Examples](./switch-statements.md#examples) are below.
 
-Switch Statements are represented by the [SpecDynamicSwitchValue](../api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.SpecDynamicSwitchValue.yml) dynamic value class.
+Switch Statements are represented by the [SpecDynamicSwitchValue](../api/UnturnedDat.Data.Properties.SpecDynamicSwitchValue.yml) dynamic value class.
 
 ## Format
 Switches are formatted as an array of [Switch Cases](./switch-statements.md#case-format).
@@ -54,7 +54,7 @@ switch (this.Type)
 
 # Case Format
 
-Switch Cases are represented by the [SpecDynamicSwitchCaseValue](../api/DanielWillett.UnturnedDataFileLspServer.Data.Properties.SpecDynamicSwitchCaseValue.yml) class.
+Switch Cases are represented by the [SpecDynamicSwitchCaseValue](../api/UnturnedDat.Data.Properties.SpecDynamicSwitchCaseValue.yml) class.
 
 There are three valid formats for a switch case:
 

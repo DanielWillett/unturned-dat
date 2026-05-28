@@ -2,11 +2,11 @@
 
 'Data-Refs' are a special type of property-ref used to reference metadata about a target. They are defined using the `#` character.
 
-Data-ref properties all implement [IDataRefProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IDataRefProperty.yml). Note that data-ref targets are not the same thing as data-ref properties. Indexable Data-Ref properties implement [IIndexableDataRefProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IIndexableDataRefProperty.yml) and properties with settings implement [IConfigurableDataRefProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IConfigurableDataRefProperty.yml).
+Data-ref properties all implement [IDataRefProperty](/api/UnturnedDat.Data.Values.IDataRefProperty.yml). Note that data-ref targets are not the same thing as data-ref properties. Indexable Data-Ref properties implement [IIndexableDataRefProperty](/api/UnturnedDat.Data.Values.IIndexableDataRefProperty.yml) and properties with settings implement [IConfigurableDataRefProperty](/api/UnturnedDat.Data.Values.IConfigurableDataRefProperty.yml).
 
 ## Targets
 
-All Data-Ref targets implement [IDataRefTarget](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IDataRefTarget.yml).
+All Data-Ref targets implement [IDataRefTarget](/api/UnturnedDat.Data.Values.IDataRefTarget.yml).
 
 | Target     | Description                                                |
 | ---------- | ---------------------------------------------------------- | 
@@ -32,7 +32,7 @@ Data-Ref targets can use the following properties:
 | Difficulty | The contextual difficulty of the current file. | `This` |
 | IsSingleplayer | Whether or not the current config file refers to a singleplayer config. | `This` |
 | Indices | Array of indices used to get the target's index within a list or it's key within a dictionary. | any |
-| IsLegacy | Whether or not the currently parsing property is being parsed in the legacy format (ex. with blueprints, spawn tables, etc using the v1 format). | `Self`, `@Property` |
+| IsLegacy | Whether or not the currently parsing property is being parsed in the legacy format (ex. with blueprints, spawn tables, etc using the v1 format). | `Self`, `This`, `@Property` |
 | ValueType | Which type of value this property provides: 'Value', 'List', or 'Dictionary'. | `Self`, `@Property` |
 | Count | Number of elements in a list or dictionary. | `Self`, `@Property` |
 
@@ -43,7 +43,7 @@ Returns a boolean indicating whether or not the target is not included in the fi
 
 When used on `This` it targets the current property.
 
-Represented by the class: [ExcludedProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.ExcludedProperty.yml).
+Represented by the class: [ExcludedProperty](/api/UnturnedDat.Data.Values.ExcludedProperty.yml).
 
 *No properties, not indexable*
 
@@ -52,7 +52,7 @@ Returns a boolean indicating whether or not the target is included in the file.
 
 When used on `This` it targets the current property.
 
-Represented by the class: [IncludedProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IncludedProperty.yml).
+Represented by the class: [IncludedProperty](/api/UnturnedDat.Data.Values.IncludedProperty.yml).
 
 *No properties, not indexable*
 
@@ -63,7 +63,7 @@ When used with `This` as a target, refers to the current object's key.
 
 `#This.Key` can be used as a key to specify an empty key name, which is used for properties in legacy objects which are the same as the base property. For example, the localization property for dialogue responses use this because the key is just `Response_#`, as opposed to a property that may be `Response_#_Dialogue`.
 
-Represented by the class: [KeyProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.KeyProperty.yml).
+Represented by the class: [KeyProperty](/api/UnturnedDat.Data.Values.KeyProperty.yml).
 
 *No properties, not indexable*
 
@@ -72,7 +72,7 @@ Returns the internal name of the currently opened asset (`Asset.name`), which is
 
 Only valid with `This` as a target, which targets the current file.
 
-Represented by the class: [AssetNameProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.AssetNameProperty.yml).
+Represented by the class: [AssetNameProperty](/api/UnturnedDat.Data.Values.AssetNameProperty.yml).
 
 *No properties, not indexable*
 
@@ -99,7 +99,7 @@ Note that the difficulty is usually cached and may not auto-update in some cases
 
 Not affected by the target, use `This` for consistancy.
 
-Represented by the class: [DifficultyProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.DifficultyProperty.yml).
+Represented by the class: [DifficultyProperty](/api/UnturnedDat.Data.Values.DifficultyProperty.yml).
 
 *No properties, not indexable*
 
@@ -117,7 +117,7 @@ If the `singleplayer` additional file property is provided, that value will be u
 
 Not affected by the target, use `This` for consistancy.
 
-Represented by the class: [IsSingleplayerProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IsSingleplayerProperty.yml).
+Represented by the class: [IsSingleplayerProperty](/api/UnturnedDat.Data.Values.IsSingleplayerProperty.yml).
 
 *No properties, not indexable*
 
@@ -153,14 +153,14 @@ List
 ]
 ```
 
-Represented by the class: [IndicesProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IndicesProperty.yml).
+Represented by the class: [IndicesProperty](/api/UnturnedDat.Data.Values.IndicesProperty.yml).
 
 *No properties, indexable with one argument*
 
 ### IsLegacy
 Equal to `true` if the target is in a type such as the `LegacyCompatibleList` and the legacy (v1) format is being used.
 
-This property can not target cross-referenced properties or `#This`.
+This property can not target cross-referenced properties, because it doesn't really make sense to need to know the legacy state of another file's object.
 
 Example:
 ```properties
@@ -195,7 +195,7 @@ Tables
 ]
 ```
 
-Represented by the class: [IsLegacyProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.IsLegacyProperty.yml).
+Represented by the class: [IsLegacyProperty](/api/UnturnedDat.Data.Values.IsLegacyProperty.yml).
 
 *No properties, not indexable*
 
@@ -206,7 +206,7 @@ This property can not target cross-referenced properties or `#This`.
 
 By default 'Value' will be returned if the property isn't present or doesn't have any kind of value.
 
-Represented by the class: [ValueTypeProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.ValueTypeProperty.yml).
+Represented by the class: [ValueTypeProperty](/api/UnturnedDat.Data.Values.ValueTypeProperty.yml).
 
 *No properties, not indexable*
 
@@ -215,7 +215,7 @@ Returns the number of elements in a list or dictionary.
 
 This property can not target `#This`.
 
-Represented by the class: [CountProperty](/api/DanielWillett.UnturnedDataFileLspServer.Data.Values.CountProperty.yml).
+Represented by the class: [CountProperty](/api/UnturnedDat.Data.Values.CountProperty.yml).
 
 *No properties, not indexable*
 

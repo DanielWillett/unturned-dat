@@ -1,17 +1,13 @@
-using DanielWillett.UnturnedDataFileLspServer.Completions;
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Data.Project;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
-using DanielWillett.UnturnedDataFileLspServer.Files;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.LanguageServer.Files;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Handlers;
+namespace UnturnedDat.LanguageServer.Handlers;
 
 internal class KeyCompletionHandler : ICompletionHandler
 {
@@ -40,7 +36,7 @@ internal class KeyCompletionHandler : ICompletionHandler
         _installationEnvironment = installationEnvironment;
         _completionRegistrationOptions = new CompletionRegistrationOptions
         {
-            DocumentSelector = UnturnedAssetFileLspServer.AssetFileSelector,
+            DocumentSelector = UnturnedDatLanguageServer.AssetFileSelector,
             CompletionItem = new CompletionRegistrationCompletionItemOptions
             {
                 LabelDetailsSupport = false

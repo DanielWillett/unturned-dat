@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
-using DanielWillett.UnturnedDataFileLspServer.Data.Properties;
-using DanielWillett.UnturnedDataFileLspServer.Data.Utility;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Utility;
 
-namespace UnturnedAssetSpecTests.Util;
+namespace UnturnedDat.Tests.Util;
 
 [TestFixture]
 public class TemplateProcessorTests

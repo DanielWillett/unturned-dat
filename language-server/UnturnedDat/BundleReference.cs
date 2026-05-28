@@ -1,9 +1,9 @@
-using DanielWillett.UnturnedDataFileLspServer.Data.Json;
-using DanielWillett.UnturnedDataFileLspServer.Data.Types;
 using System;
 using System.Text.Json.Serialization;
+using UnturnedDat.Data.Json;
+using UnturnedDat.Data.Types;
 
-namespace DanielWillett.UnturnedDataFileLspServer.Data;
+namespace UnturnedDat.Data;
 
 /// <summary>
 /// A data structure containg a bundle name and file path within the bundle.

@@ -1,37 +1,53 @@
 ﻿#if TEST_LSP
-using DanielWillett.UnturnedDataFileLspServer.Data.Files;
-using DanielWillett.UnturnedDataFileLspServer.Files;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Spec;
+using UnturnedDat.LanguageServer.Files;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using System.Text;
-using DanielWillett.UnturnedDataFileLspServer.Data.Spec;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Project;
+using UnturnedDat.Tests.Bundles;
 
 // ReSharper disable HeapView.CanAvoidClosure
 
-namespace UnturnedAssetSpecTests;
+namespace UnturnedDat.Tests;
 
 public class OpenedFileTests
 {
 #nullable disable
     
     private ILogger _logger;
-    private ILoggerFactory _loggerFactory;
-    private IAssetSpecDatabase _database;
+    private IParsingServices _parsingServices;
 
     [SetUp]
     public async Task SetUp()
     {
-        _loggerFactory = LoggerFactory.Create(l => l.AddSimpleConsole());
-        _logger = _loggerFactory.CreateLogger<OpenedFileTests>();
-        _database = AssetSpecDatabase.FromOffline();
-        await _database.InitializeAsync();
+        ILoggerFactory loggerFactory = LoggerFactory.Create(l => l.AddSimpleConsole());
+
+        IAssetSpecDatabase database = AssetSpecDatabase.FromOffline(
+            useInstallDir: true,
+            loggerFactory: loggerFactory,
+            cache: new TestCache()
+        );
+
+        _parsingServices = new ParsingServiceProvider(
+            database,
+            loggerFactory,
+            new StaticSourceFileWorkspaceEnvironment(false, new Lazy<IParsingServices>(() => _parsingServices)),
+            database.UnturnedInstallDirectory,
+            new InstallationEnvironment(database, loggerFactory),
+            new NilProjectFileProvider(database)
+        );
+
+        await database.InitializeAsync();
+        _logger = _parsingServices.CreateLogger<OpenedFileTests>();
     }
 
     [TearDown]
     public void TearDown()
     {
-        _loggerFactory.Dispose();
-        if (_database is IDisposable d)
+        if (_parsingServices is IDisposable d)
             d.Dispose();
     }
 
@@ -40,7 +56,7 @@ public class OpenedFileTests
     [Test]
     public void ValidIndex([Values(true, false)] bool trailingNewLine, [Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(trailingNewLine, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(trailingNewLine, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.AssertFileHasValidIndex();
     }
@@ -48,7 +64,7 @@ public class OpenedFileTests
     [Test]
     public void GetPosition([Values(true, false)] bool trailingNewLine, [Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(trailingNewLine, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(trailingNewLine, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         // start of document
         FilePosition pos = runner.GetPosition(0, clampCharacter: false);
@@ -78,7 +94,7 @@ public class OpenedFileTests
     [Test]
     public void UpdateText([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -99,7 +115,7 @@ public class OpenedFileTests
     [Test]
     public void StitchOneLine([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -117,7 +133,7 @@ public class OpenedFileTests
     [Test]
     public void StitchOneLineFromBegin([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -135,7 +151,7 @@ public class OpenedFileTests
     [Test]
     public void StitchOneLineFromEnd([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -153,7 +169,7 @@ public class OpenedFileTests
     [Test]
     public void StitchTwoLines([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -172,7 +188,7 @@ public class OpenedFileTests
     [Test]
     public void StitchTwoLinesEmptyStart([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -191,7 +207,7 @@ public class OpenedFileTests
     [Test]
     public void StitchTwoLinesEmptyEnd([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -210,7 +226,7 @@ public class OpenedFileTests
     [Test]
     public void RemoveOneEmptyLineByRemovingSameLineNewline([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -228,7 +244,7 @@ public class OpenedFileTests
     [Test]
     public void RemoveOneEmptyLineByRemovingPreviousLineNewline([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -246,7 +262,7 @@ public class OpenedFileTests
     [Test]
     public void StitchManyLines([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -264,7 +280,7 @@ public class OpenedFileTests
     [Test]
     public void StitchManyLinesEmptyStart([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -282,7 +298,7 @@ public class OpenedFileTests
     [Test]
     public void StitchManyLinesEmptyEnd([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -300,7 +316,7 @@ public class OpenedFileTests
     [Test]
     public void RemoveTwoEmptyLines([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -318,7 +334,7 @@ public class OpenedFileTests
     [Test]
     public void RemoveManyEmptyLines([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -336,7 +352,7 @@ public class OpenedFileTests
     [Test]
     public void InsertTextToOneLine([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -354,7 +370,7 @@ public class OpenedFileTests
     [Test]
     public void InsertTextToOneLineAtBegin([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -372,7 +388,7 @@ public class OpenedFileTests
     [Test]
     public void InsertTextToOneLineAtEnd([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -390,7 +406,7 @@ public class OpenedFileTests
     [Test]
     public void InsertTwoLines([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -408,7 +424,7 @@ public class OpenedFileTests
     [Test]
     public void InsertTwoLinesBeginEmpty([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -426,7 +442,7 @@ public class OpenedFileTests
     [Test]
     public void InsertTwoLinesEndEmpty([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -444,7 +460,7 @@ public class OpenedFileTests
     [Test]
     public void InsertManyLines([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -462,7 +478,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceOneLine([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -489,7 +505,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceBeginningOfLine([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -516,7 +532,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceEndOfLine([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -543,7 +559,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceFullLine([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -570,7 +586,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceOneLineToTwo([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -588,7 +604,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceOneLineToMany([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -606,7 +622,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceTwoLinesToOne([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -624,7 +640,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceManyLinesToOne([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -642,7 +658,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceManyLinesToTwo([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -660,7 +676,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceWithNewLineBefore([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -678,7 +694,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceWithNewLineAfter([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -696,7 +712,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceManyLinesToMany([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -714,7 +730,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceTwoLinesToTwo([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -732,7 +748,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceTwoLinesToMany([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -750,7 +766,7 @@ public class OpenedFileTests
     [Test]
     public void ReplaceWholeFile([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), WriteBasicDatFile(true, newLine), _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -767,7 +783,7 @@ public class OpenedFileTests
     [Test]
     public void InsertOnOneLineFile()
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), "a", _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), "a", _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -784,7 +800,7 @@ public class OpenedFileTests
     [Test]
     public void InsertOnNewLine([Values("\n", "\r\n")] string newLine)
     {
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), "a", _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), "a", _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -862,7 +878,7 @@ public class OpenedFileTests
 
         file = file.Replace("\r", string.Empty).Replace("\n", newLine);
 
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), file, _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), file, _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
@@ -905,7 +921,7 @@ public class OpenedFileTests
 
         file = file.Replace("\r", string.Empty).Replace("\n", newLine);
 
-        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), file, _logger, _database, obsessivelyValidate: true);
+        using OpenedFile runner = new OpenedFile(DocumentUri.File("C:\\test.dat"), file, _logger, _parsingServices, obsessivelyValidate: true);
 
         runner.UpdateText(file =>
         {
