@@ -11,30 +11,30 @@ In the mean-time, a 'lite' version of the extension is available for download wh
 * C#/.NET
 * [OmniSharp Language Server](https://github.com/OmniSharp/csharp-language-server-protocol)
 * TypeScript ([vscode](https://www.npmjs.com/package/@types/vscode))
-* [TextMate Grammars](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/unturned-dat/syntaxes/unturned-dat.tmLanguage.json)
+* [TextMate Grammars](https://github.com/DanielWillett/unturned-dat/blob/master/extensions/vscode/unturned-dat/syntaxes/unturned-dat.tmLanguage.json)
 * Complex type and value system using generics for performance.
 * File parse trees.
 * High-performance parallel file scanning.
 * Dynamically resolved values
-  * [Concrete Values](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Values/Concrete)
-  * [Expressions](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Values/Expressions)
-  * [Property References](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Values/PropertyRefs)
-  * [Metadata References](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Values/DataRefs)
+  * [Concrete Values](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Values/Concrete)
+  * [Expressions](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Values/Expressions)
+  * [Property References](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Values/PropertyRefs)
+  * [Metadata References](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Values/DataRefs)
 * [docfx](https://dotnet.github.io/docfx/index.html)
 
 ## Browse the Code
 
 ### VS Code Extensions
-* [Full Version](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/unturned-dat)
-* [Lite Version](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/unturned-dat-lite)
+* [Full Version](https://github.com/DanielWillett/unturned-dat/tree/master/extensions/vscode/unturned-dat)
+* [Lite Version](https://github.com/DanielWillett/unturned-dat/tree/master/extensions/vscode/unturned-dat-lite)
 
-### [Asset Spec](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/Asset%20Spec)
+### [Asset Spec](https://github.com/DanielWillett/unturned-dat/tree/master/live-schemas)
 Contains JSON files that are kept up to date so the extension doesn't have to be updated when new properties are added.
 
-See [the docs](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/Docs/format) for how these files are formatted if you'd like to contribute (if I miss an update).
+See [the docs](https://github.com/DanielWillett/unturned-dat/tree/master/docs/Docs/format) for how these files are formatted if you'd like to contribute (if I miss an update).
 
 `asset-spec.g.bin` contains all the files combined together so only one web request has to be made to download them all.
-See [GitHubSpecificationFileProvider](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Spec/SpecificationFileProviders/GitHubSpecificationFileProvider.cs#L174) for how to split the file up.
+See [GitHubSpecificationFileProvider](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Spec/SpecificationFileProviders/GitHubSpecificationFileProvider.cs#L173) for how to split the file up.
 
 Basic format for a property includes a key, data type, default value, basic metadata, and information about it's relationship to other properties. To see a full list of properties use an IDE that supports JSON schemas (VS Code does) and read through the docs.
 ```json
@@ -113,79 +113,79 @@ This example shows a default value of `Math.Ceiling((double)Splatters / Splatter
 }
 ```
 
-### [MSBuild Tasks](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpecMSBuildTasks)
+### [MSBuild Tasks](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/MSBuildTasks)
 Automatically creates the `asset-spec.g.bin` file on build. It also compresses the files by removing indentation and white space. In the future a 'zip' compression method could be used but may slow down the build.
 
-### [Types](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Types)
-Contains implementations of [`IType<TValue>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/IType.cs) for every property type in the game.
+### [Types](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Types)
+Contains implementations of [`IType<TValue>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/IType.cs) for every property type in the game.
 
-Almost all types derive from [`BaseType<TValue>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/BaseType.cs) or [`PrimitiveType<TValue>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/Primitives/PrimitiveType.cs).
+Almost all types derive from [`BaseType<TValue>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/BaseType.cs) or [`PrimitiveType<TValue>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/Primitives/PrimitiveType.cs).
 
 #### Type Factories
-`ITypeFactory` is used to read types from their JSON object (using the `JsonDocument` STJ API). Some types are their own factory like [`AssetReferenceType`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/Objects/AssetReferenceType.cs), and some define separate factories like [`ListType<TCountType, TElementType>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/Containers/ListType.cs). Type factories are currently registered in [`CommonTypes`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/CommonTypes.cs).
+`ITypeFactory` is used to read types from their JSON object (using the `JsonDocument` STJ API). Some types are their own factory like [`AssetReferenceType`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/Objects/AssetReferenceType.cs), and some define separate factories like [`ListType<TCountType, TElementType>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/Containers/ListType.cs). Type factories are currently registered in [`CommonTypes`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/CommonTypes.cs).
 
-#### [Type Converters](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Parsing/TypeConverters)
+#### [Type Converters](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Parsing/TypeConverters)
 Type converters are responible for parsing values from strings or JSON values, and converting values to strings. They can optionally emit diagnostics but usually that's left up to the parser. (i.e. the boolean converter emits diagnositcs if a captial 'Y' is used, where Unturned only parses a lowercase 'y')
 
-#### [Type Parsers](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Parsing/TypeParsers)
-Type parsers are responible for parsing values from data files and emitting diagnostics. Most primitive types use the [`TypeConverterParser<T>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Parsing/TypeParsers/TypeConverterParser.cs) type, which parses only string values using a `ITypeConverter<TValue>`.
+#### [Type Parsers](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Parsing/TypeParsers)
+Type parsers are responible for parsing values from data files and emitting diagnostics. Most primitive types use the [`TypeConverterParser<T>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Parsing/TypeParsers/TypeConverterParser.cs) type, which parses only string values using a `ITypeConverter<TValue>`.
 
-`IType<TValeus>` defines `ITypeParser<TValue> Parser { get; }` to allow types to share parser implementations, but a lot of complex types use `this` as a parser, such as [`AssetReferenceType`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/Objects/AssetReferenceType.cs).
+`IType<TValeus>` defines `ITypeParser<TValue> Parser { get; }` to allow types to share parser implementations, but a lot of complex types use `this` as a parser, such as [`AssetReferenceType`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/Objects/AssetReferenceType.cs).
 
 #### Specially-defined types
-* [`AssetCategory`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/AssetCategory.cs) - Defined in code as it's used a lot in various areas of the code-base.
-* [`SpecificationTypeAttribute`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Types/SpecificationTypeAttribute.cs) - Marks a type as able to be instantiated from JSON given it's assembly-qualified name.
-  * Allows special-handling of some values, especially used with the `StringParseableType` property (See [Built-in Types](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Types/BuiltinTypes)).
+* [`AssetCategory`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/AssetCategory.cs) - Defined in code as it's used a lot in various areas of the code-base.
+* [`SpecificationTypeAttribute`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Types/SpecificationTypeAttribute.cs) - Marks a type as able to be instantiated from JSON given it's assembly-qualified name.
+  * Allows special-handling of some values, especially used with the `StringParseableType` property (See [Built-in Types](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Types/BuiltinTypes)).
 
-### [Values](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Types)
-Contains implementations of [`IValue<TValue>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Values/IValue.cs) for different kinds of statically or dynamically resolved values.
+### [Values](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Values)
+Contains implementations of [`IValue<TValue>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Values/IValue.cs) for different kinds of statically or dynamically resolved values.
 
 This includes concrete values, expressions, property-refs, and data-refs (metadata references).
 
-#### [Vector Providers](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Types/VectorProviders)
+#### [Vector Providers](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Types/VectorProviders)
 Some values are considered vectors, i.e. values with multiple numeric components. This includes `Color[32]` and the `Vector{1,2,3,4}` types.
 
 `IVectorProvider`s allow for conversion to and from vectors and math operations between them.
 
-### [MathMatrix](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/DanielWillett.MathMatrix)
+### [MathMatrix](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/MathMatrix)
 This is definately one of the more rediculous parts of the codebase but it contains implementations for every combination of types for each math operation, accounting for overflows. It takes advantage of JIT branch cancelling to map generic methods to non-generic ones quickly.
 
 The reasoning behind this is it would be very difficult to support different integer types without just doing all math with decimal values, which gets a bit difficult to keep the type correct, and has issues with division.
 
 It has a circular dependency with `UnturnedAssetSpec` so it has to be built twice to get all the features.
 
-### [Code Fixes](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/CodeFixes)
-Code fixes and quick actions are defined in this folder. [`IPerPropertyCodeFix`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/CodeFixes/System/PerPropertyCodeFix.cs) is a kind of code fix that operates on each property, which provides an optimization where we only have to enumerate all properties once instead of for each code fix that needs it.
+### [Code Fixes](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/CodeFixes)
+Code fixes and quick actions are defined in this folder. [`IPerPropertyCodeFix`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/CodeFixes/System/PerPropertyCodeFix.cs) is a kind of code fix that operates on each property, which provides an optimization where we only have to enumerate all properties once instead of for each code fix that needs it.
 
-### [Diagnositcs](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Diagnostics/DatDiagnostics.cs)
+### [Diagnostics](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Diagnostics/DatDiagnostics.cs)
 Contains a definition for all diagnostics.
 
-Localized resources for the diagnostics are defined in a [resx file](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Diagnostics/DiagnosticResources.resx).
+Localized resources for the diagnostics are defined in a [resx file](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Diagnostics/DiagnosticResources.resx).
 
-To emit diagnostics, extension methods are usually created in [DiagnosticSinkExtensions](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Diagnostics/DiagnosticSinkExtensions.cs) to format the message consistantly and remove clutter from type parsers. The methods should stay in order by their number.
+To emit diagnostics, extension methods are usually created in [DiagnosticSinkExtensions](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Diagnostics/DiagnosticSinkExtensions.cs) to format the message consistantly and remove clutter from type parsers. The methods should stay in order by their number.
 
 ### Utilities
-* [`OneOrMore<T>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/OneOrMore.cs) - An effecient array implementation that doesn't create an array for just one element. Despite being named one-or-more it can contain zero elements.
+* [`OneOrMore<T>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/OneOrMore.cs) - An effecient array implementation that doesn't create an array for just one element. Despite being named one-or-more it can contain zero elements.
   * It's important to remember that the `default` value of this struct is not an empty array, use `OneOrMore<T>.None` instead. A default value is an array with length 1 where the first element is the `default` value of that type.
-* [`EquatableArray<T>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/EquatableArray.cs) - An array wrapper implementing `IEquatable<T>`.
-* [`InstallDirUtility`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/InstallDirUtility.cs) - Used to locate the current user's Unturned installation path by looking in common areas, then falling back on a full search. On Windows, the installation directory can be found by looking at the Registry. 
-* [`JsonHelper.TryGetGuid`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/JsonHelper.cs#L363) - System.Text.Json will not parse GUIDs unless they use dashes, so this function has to be used to parse GUIDs from JSON.
-* [`KnownTypeValueHelper`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/KnownTypeValueHelper.cs) - Contains a bunch of parse methods that are semantically the exact same as how Unturned parses values.
+* [`EquatableArray<T>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/EquatableArray.cs) - An array wrapper implementing `IEquatable<T>`.
+* [`InstallDirUtility`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/InstallDirUtility.cs) - Used to locate the current user's Unturned installation path by looking in common areas, then falling back on a full search. On Windows, the installation directory can be found by looking at the Registry. 
+* [`JsonHelper.TryGetGuid`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/JsonHelper.cs) - System.Text.Json will not parse GUIDs unless they use dashes, so this function has to be used to parse GUIDs from JSON.
+* [`KnownTypeValueHelper`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/KnownTypeValueHelper.cs) - Contains a bunch of parse methods that are semantically the exact same as how Unturned parses values.
 * Visitor Utilities
-  * [`ComparerVisitor<TValue>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/ComparerVisitor.cs) - Compares the relationship between a value to some other generic value. Returns an integer determining whether a value is greather than, less than, or equal to another generic value.
-  * [`ConvertVisitor<TResult>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/ConvertVisitor.cs) - Converts a value to the given type.
-  * [`EqualityVisitor<TValue>`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Utility/EqualityVisitor.cs) - Checks the equality of value to some other generic value.
+  * [`ComparerVisitor<TValue>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/ComparerVisitor.cs) - Compares the relationship between a value to some other generic value. Returns an integer determining whether a value is greather than, less than, or equal to another generic value.
+  * [`ConvertVisitor<TResult>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/ConvertVisitor.cs) - Converts a value to the given type.
+  * [`EqualityVisitor<TValue>`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Utility/EqualityVisitor.cs) - Checks the equality of value to some other generic value.
 
 ### File parsing and in-memory representations
-* [`DatTokenizer`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Files/DatTokenizer.cs) - Tokenizes a data file without creating nodes. Useful for low-allocation reading of a file to quickly read one property, ex. reading the GUID and ID from a file.
-* [`SourceNodeTokenizer`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Files/Source/Parsing/SourceNodeTokenizer.cs) - Tokenizes a data file into a [`ISourceFile`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Files/Source/ISourceFile.cs). Can optionally read property values lazily and read metadata like comments and whitespace.
-* [Source Nodes](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Files/Source/Nodes) - Used to construct a parse tree from a data file.
-* [Node Visitors](https://github.com/DanielWillett/unturned-asset-file-vscode/tree/master/UnturnedAssetSpec/Files/Source/Visitors) - Various visitors used to enumerate all nodes in a file.
-  * [`OrderedNodeVisitor`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Files/Source/Visitors/OrderedNodeVisitor.cs) can be extended to enumerate nodes in 'vertical' order.
-  * [`ResolvedPropertyNodeVisitor`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Files/Source/Visitors/ResolvedPropertyNodeVisitor.cs) can be used to enumerate properties with their `DatProperty` information already fetched.
-* [`OpenedFile`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/LspServer/Files/OpenedFile.cs) - Part of the Language Server, allows for incremental file changes to be tracked correctly. Implementation of `IWorkspaceFile` that represents an open file in the IDE.
-* [`MutableVirtualFile`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Files/MutableVirtualFile.cs) - Tracks changes made via the `IMutableWorkspaceFile` interface. Used for diagnostics to display pending changes in the IDE.
-* [`StaticSourceFile`](https://github.com/DanielWillett/unturned-asset-file-vscode/blob/master/UnturnedAssetSpec/Files/StaticSourceFile.cs) - Implementation of the `IWorkspaceFile` interface that reads a file from the disk.
+* [`DatTokenizer`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Files/DatTokenizer.cs) - Tokenizes a data file without creating nodes. Useful for low-allocation reading of a file to quickly read one property, ex. reading the GUID and ID from a file.
+* [`SourceNodeTokenizer`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Files/Source/Parsing/SourceNodeTokenizer.cs) - Tokenizes a data file into a [`ISourceFile`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Files/Source/ISourceFile.cs). Can optionally read property values lazily and read metadata like comments and whitespace.
+* [Source Nodes](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Files/Source/Nodes) - Used to construct a parse tree from a data file.
+* [Node Visitors](https://github.com/DanielWillett/unturned-dat/tree/master/language-server/UnturnedDat/Files/Source/Visitors) - Various visitors used to enumerate all nodes in a file.
+  * [`OrderedNodeVisitor`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Files/Source/Visitors/OrderedNodeVisitor.cs) can be extended to enumerate nodes in 'vertical' order.
+  * [`ResolvedPropertyNodeVisitor`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Files/Source/Visitors/ResolvedPropertyNodeVisitor.cs) can be used to enumerate properties with their `DatProperty` information already fetched.
+* [`OpenedFile`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/LanguageServer/Files/OpenedFile.cs) - Part of the Language Server, allows for incremental file changes to be tracked correctly. Implementation of `IWorkspaceFile` that represents an open file in the IDE.
+* [`MutableVirtualFile`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Files/MutableVirtualFile.cs) - Tracks changes made via the `IMutableWorkspaceFile` interface. Used for diagnostics to display pending changes in the IDE.
+* [`StaticSourceFile`](https://github.com/DanielWillett/unturned-dat/blob/master/language-server/UnturnedDat/Files/StaticSourceFile.cs) - Implementation of the `IWorkspaceFile` interface that reads a file from the disk.
 
 ## Contributing
 ### Asset Spec
