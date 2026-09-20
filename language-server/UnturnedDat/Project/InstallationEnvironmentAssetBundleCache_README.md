@@ -1,6 +1,6 @@
 ﻿# What is this?
 This folder contains decompressed versions of any masterbundles or legacy bundles
-accessed by the **Unturned Data File** VS Code extension. Any files in here can be safely deleted.
+accessed by the **Unturned Data File** language server. Any files in here can be safely deleted.
 
 Some decompressed bundles can use quite a bit of storage, so if this becomes a problem this folder can be moved, or interacting with bundles can be turned off completely, through the extension settings.
 
@@ -12,3 +12,9 @@ The `.toc` (table-of-contents) files keep track of absolute paths of bundles to 
 The first 8 bytes keep track of the next index. From the 9th byte and onwards, each line contains the path to the bundle, a NUL character, and a path to the unpacked bundle, followed by a newline.
 
 Text is encoded using UTF-8.
+
+
+# Cleanup
+Bundles not accessed within the last month are deleted automatically when the extension starts.
+
+If you accept the popup, the extension will also register this folder with the Disk Cleanup utility on Windows, however this requires elevated permissions.

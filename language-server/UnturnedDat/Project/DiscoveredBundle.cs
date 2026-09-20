@@ -311,15 +311,17 @@ public sealed class DiscoveredBundle : IDisposable, IEquatable<DiscoveredBundle>
     [MemberNotNull(nameof(_buildVersion))]
     internal void UpdateBuildVersion()
     {
+        UnityEngineVersion version = default;
         try
         {
             UnityAssetBundleHeader header = UnityAssetBundleHeader.FromFile(BundleFile, out _);
-            _buildVersion = header.EngineVersion;
+            version = header.EngineVersion;
         }
-        catch (FormatException)
-        {
-            _buildVersion = default(UnityEngineVersion);
-        }
+        catch (FileNotFoundException) { }
+        catch (DirectoryNotFoundException) { }
+        catch (FormatException) { }
+
+        _buildVersion = version;
     }
 
     internal void ApplyBundleFileChanges()

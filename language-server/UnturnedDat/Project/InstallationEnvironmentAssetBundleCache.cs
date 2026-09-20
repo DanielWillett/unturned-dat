@@ -17,6 +17,9 @@ namespace UnturnedDat.Data.Project;
 
 internal class InstallationEnvironmentAssetBundleCache
 {
+    private static readonly DateTime ReadmeLastModified = new DateTime(2026, 9, 20, 10, 00, 00, DateTimeKind.Utc);
+    private static readonly TimeSpan BundlesKeepCacheTime = TimeSpan.FromDays(31);
+
     private readonly InstallationEnvironment _environment;
     private readonly ILoggerFactory _loggerFactory;
     private readonly string? _rootDir;
@@ -45,8 +48,21 @@ internal class InstallationEnvironmentAssetBundleCache
 
         _rootDir = Path.Combine(rootDir, "Bundles");
 
+        CheckForOutdatedCaches();
+
+        Directory.CreateDirectory(_rootDir);
+
+        WriteReadme();
+    }
+
+    private void WriteReadme()
+    {
+        if (_rootDir == null)
+            return;
+
         string readmePath = Path.Combine(_rootDir, "README.md");
-        if (File.Exists(readmePath))
+
+        if (File.Exists(readmePath) && FileHelper.GetLastWriteTimeUTCSafe(readmePath, DateTime.MinValue) >= ReadmeLastModified)
             return;
 
         Directory.CreateDirectory(_rootDir);
@@ -70,6 +86,33 @@ internal class InstallationEnvironmentAssetBundleCache
 #pragma warning disable CS8604 // Possible null reference argument.
             Logger.LogWarning("Bundle cache README file not found in assembly.");
 #pragma warning restore CS8604
+        }
+    }
+
+    private void CheckForOutdatedCaches()
+    {
+        if (_rootDir == null || !Directory.Exists(_rootDir))
+            return;
+
+        DateTime now = DateTime.UtcNow;
+        foreach (string file in Directory.GetFiles(_rootDir, "*.unity3d", SearchOption.TopDirectoryOnly))
+        {
+            DateTime lastAccessTime = FileHelper.GetLastWriteTimeUTCSafe(file, DateTime.MinValue);
+            if (lastAccessTime == DateTime.MinValue)
+                continue;
+
+            if (now - lastAccessTime < BundlesKeepCacheTime)
+                continue;
+
+            try
+            {
+                File.Delete(file);
+                Logger.LogDebug("Deleted stale cache file \"{0}\" last accessed {1}.", Path.GetFileName(file), lastAccessTime.ToLocalTime());
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error deleting stale cache file: {0}.", Path.GetFileName(file));
+            }
         }
     }
 
@@ -163,6 +206,15 @@ internal class InstallationEnvironmentAssetBundleCache
                     file.file.Unpack(writer);
 
                     writer.Dispose();
+                }
+
+                try
+                {
+                    File.SetLastAccessTimeUtc(cacheLocation, DateTime.UtcNow);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogDebug(ex, "Failed to update last access time for {0}.", cacheLocation);
                 }
 
                 FileStream readFs = new FileStream(

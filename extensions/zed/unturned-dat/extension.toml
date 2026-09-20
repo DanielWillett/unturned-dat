@@ -1,0 +1,15 @@
+id = "unturned-dat"
+name = "Unturned Data File"
+version = "0.0.1"
+schema_version = 1
+authors = ["Daniel Willett <dannywill8@gmail.com>"]
+description = "Language Server provider for the Unturned Data File format."
+repository = "https://github.com/DanielWillett/unturned-dat"
+
+[grammars.unturneddat]
+repository = "file:///a:/repos/tree-sitter-unturneddat"
+rev = "1a625dfd34c401a941f475c83996a75a7aedbcdc"
+
+[language_servers.unturned-dat]
+name = "Unturned Data File"
+languages = ["Unturned Data File"]

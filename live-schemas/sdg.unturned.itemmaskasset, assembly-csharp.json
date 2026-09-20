@@ -23,6 +23,18 @@
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/mask-asset.html#mask-asset-properties",
             "Variable": "isEarpiece",
             "ExclusiveWith": [ "SDG.Unturned.ItemAsset, Assembly-CSharp::Pro" ]
+        },
+        {
+            "Key": "CosmeticPreviewMythicId",
+            "Type":
+            {
+                "Type": "LegacyAssetReference",
+                "AssetType": "SDG.Unturned.MythicAsset, Assembly-CSharp"
+            },
+            "DefaultValue": 0,
+            "Experimental": true,
+            "Description": "Overrides the mythical effect to use when rendering promotional material.",
+            "Variable": "cosmeticPreviewMythicId"
         }
     ],
     "BundleAssets":

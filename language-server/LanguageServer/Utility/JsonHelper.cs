@@ -10,6 +10,7 @@ internal static class JsonHelper
 {
     public static bool TryCreateJValue<TValue>(TValue value, [NotNullWhen(true)] out JValue? json)
     {
+        // TODO: boolean TValue causes 'Internal CLR error. (0x80131506)'
         if (value == null)
         {
             json = JValue.CreateNull();

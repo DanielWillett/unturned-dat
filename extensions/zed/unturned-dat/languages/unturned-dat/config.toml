@@ -1,0 +1,7 @@
+name = "Unturned Data File"
+grammar = "unturneddat"
+first_line_pattern = "^(?:\\/+\\s*udat-.*:\\s*(?:.*)\\s*|\\/\\/\\s\\>\\sUnturned\\sServer\\sConfiguration\\sFile)$"
+path_suffixes = [ "dat", "asset", "vdf", "acf", "tool", "udat", "udatproj" ]
+line_comments = [ "// ", "/ " ]
+tab_size = 4
+hard_tabs = true

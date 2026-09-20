@@ -365,3 +365,6 @@ FodyWeavers.xsd
 /log.txt
 /docs/Docs (Build)
 /docs/Docs/api
+
+/extensions/zed/**/*.wasm
+/extensions/zed/*/target
