@@ -14,6 +14,7 @@ using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Types;
 using UnturnedDat.Data.Utility;
 using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Utility;
 
 namespace UnturnedDat.LanguageServer.Handlers;
 
@@ -22,22 +23,27 @@ internal class InlayHintsHandler : IInlayHintsHandler
     private readonly IParsingServices _parsingServices;
     private readonly IFileRelationalModelProvider _modelProvider;
     private readonly OpenedFileTracker _fileTracker;
+    private readonly StartupWaitUtility _startupWait;
 
     public InlayHintsHandler(
         IParsingServices parsingServices,
         IFileRelationalModelProvider modelProvider,
-        OpenedFileTracker fileTracker)
+        OpenedFileTracker fileTracker,
+        StartupWaitUtility startupWait)
     {
         _parsingServices = parsingServices;
         _modelProvider = modelProvider;
         _fileTracker = fileTracker;
+        _startupWait = startupWait;
     }
 
-    public Task<InlayHintContainer?> Handle(InlayHintParams request, CancellationToken cancellationToken)
+    public async Task<InlayHintContainer?> Handle(InlayHintParams request, CancellationToken cancellationToken)
     {
+        await _startupWait.WaitForStartupAsync();
+
         if (!_fileTracker.Files.TryGetValue(request.TextDocument.Uri, out OpenedFile? file))
         {
-            return Task.FromResult<InlayHintContainer?>(new InlayHintContainer());
+            return new InlayHintContainer();
         }
 
         List<InlayHint> hints = new List<InlayHint>(4);
@@ -46,7 +52,7 @@ internal class InlayHintsHandler : IInlayHintsHandler
         InlayHintVisitor visitor = new InlayHintVisitor(hints, _modelProvider, _parsingServices, request.Range?.ToFileRange());
         sourceFile.Visit(ref visitor);
 
-        return Task.FromResult<InlayHintContainer?>(new InlayHintContainer(hints));
+        return new InlayHintContainer(hints);
     }
 
 

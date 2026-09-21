@@ -33,8 +33,12 @@ internal class RootLocalizationNode : RootDictionaryNode, ILocalizationSourceFil
         : base(file, database, count, nodes, in properties, additionalProperties)
     {
         Asset = asset;
-        ActualType = asset.ActualType;
         LanguageName = GetInternedLanguageName(file.File);
+    }
+
+    protected override QualifiedType CalculateActualType()
+    {
+        return Asset.ActualType;
     }
 
     private static string GetInternedLanguageName(string fullName)

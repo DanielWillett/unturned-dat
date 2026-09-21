@@ -50,7 +50,7 @@
 
     <ProjectReference Include="../MathMatrix/MathMatrix.csproj" Private="False" />
 
-    <PackageReference Include="AssetsTools.NET" Version="3.0.4" />
+    <PackageReference Include="AssetsTools.NET" Version="3.0.5" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'" />
     <PackageReference Include="System.Text.Json" Version="4.7.1" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.4.0" />
@@ -95,10 +95,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="AssetEnvironment\" />
   </ItemGroup>
 
 </Project>

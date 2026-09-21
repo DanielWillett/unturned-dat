@@ -5,7 +5,10 @@ using UnturnedDat.Data.Spec;
 
 namespace UnturnedDat.Data.Files;
 
-internal class ReferencedWorkspaceFile : IWorkspaceFile
+/// <summary>
+/// Create a <see cref="IWorkspaceFile"/> without any extra state.
+/// </summary>
+public class ReferencedWorkspaceFile : IWorkspaceFile
 {
     private readonly string _fullText;
 

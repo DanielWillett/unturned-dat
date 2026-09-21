@@ -827,6 +827,9 @@ public class SwitchValue<TResult> : SwitchValue, IValue<TResult>, IEquatable<Swi
     /// <inheritdoc />
     public bool Equals(SwitchValue<TResult>? other)
     {
+        if (other is TypeSwitch && this is not TypeSwitch)
+            return false;
+
         return (object)this == other || (other != null && Type.Equals(other.Type) && base.Equals(other));
     }
 

@@ -11,9 +11,9 @@
       "commandName": "Executable",
       "executablePath": "C:\\Users\\danny\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
       "commandLineArgs": "\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Unturned\\Bundles\" --log danielwillett.unturned-data-file-lsp:trace",
-      "workingDirectory": "A:\\repos\\UnturnedAssetFileLsp\\LspServer\\bin\\Debug\\net9.0",
+      "workingDirectory": "A:\\repos\\UnturnedAssetFileLsp\\language-server\\LanguageServer\\bin\\Debug\\net10.0",
       "environmentVariables": {
-        "UNTURNED_LSP_DEBUG": "1"
+        "UNTURNED_DAT_DEBUG": "1"
       },
       "remoteDebugEnabled": false,
       "authenticationMode": null

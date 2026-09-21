@@ -10,6 +10,7 @@ using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Types;
 using UnturnedDat.LanguageServer.Diagnostics;
 using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Utility;
 
 namespace UnturnedDat.LanguageServer.Handlers;
 
@@ -19,6 +20,7 @@ internal class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
     private readonly IParsingServices _parsingServices;
     private readonly ILogger<DocumentDiagnosticHandler> _logger;
     private readonly IFileRelationalModelProvider _modelProvider;
+    private readonly StartupWaitUtility _startupWait;
     private readonly DiagnosticsManager _diagnosticsManager;
 
     public DocumentDiagnosticHandler(
@@ -26,13 +28,15 @@ internal class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
         IParsingServices parsingServices,
         ILogger<DocumentDiagnosticHandler> logger,
         DiagnosticsManager diagnosticsManager,
-        IFileRelationalModelProvider modelProvider)
+        IFileRelationalModelProvider modelProvider,
+        StartupWaitUtility startupWait)
     {
         _fileTracker = fileTracker;
         _parsingServices = parsingServices;
         _logger = logger;
         _diagnosticsManager = diagnosticsManager;
         _modelProvider = modelProvider;
+        _startupWait = startupWait;
     }
 
     /// <inheritdoc />
@@ -50,6 +54,8 @@ internal class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
     /// <inheritdoc />
     public override async Task<RelatedDocumentDiagnosticReport> Handle(DocumentDiagnosticParams request, CancellationToken cancellationToken)
     {
+        await _startupWait.WaitForStartupAsync();
+
         string filePath = Path.GetFullPath(request.TextDocument.Uri.GetFileSystemPath());
         FileDiagnostics diag = _diagnosticsManager.GetOrAddFile(filePath, request.TextDocument.Uri);
 
@@ -88,7 +94,7 @@ internal class DocumentDiagnosticHandler : DocumentDiagnosticHandlerBase
         //    diagnostics.Add(new Diagnostic
         //    {
         //        Code = new DiagnosticCode(msg.Diagnostic.ErrorId),
-        //        Source = UnturnedAssetFileLspServer.DiagnosticSource,
+        //        Source = UnturnedDatLanguageServer.DiagnosticSource,
         //        Message = msg.Message,
         //        Range = msg.Range.ToRange(),
         //        Tags = msg.Diagnostic == DatDiagnostics.UNT1018 ? new Container<DiagnosticTag>(DiagnosticTag.Deprecated) : null

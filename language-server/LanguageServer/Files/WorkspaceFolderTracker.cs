@@ -86,6 +86,9 @@ internal class WorkspaceFolderTracker : IDisposable
 
     internal void ConsumeChange(string fileName, FileChangeType changeType)
     {
+        if (Path.DirectorySeparatorChar == '\\')
+            fileName = fileName.Replace('/', '\\');
+
         switch (changeType)
         {
             case FileChangeType.Deleted:

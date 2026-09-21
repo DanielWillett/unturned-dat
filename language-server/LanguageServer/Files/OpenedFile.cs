@@ -281,8 +281,8 @@ public partial class OpenedFile : IMutableWorkspaceFile, IDiagnosticSink, IBundl
         TypeInfo = new FileTypeInfo(File);
 #if KEEP_VIRTUAL_FILE_SYSTEM
         _useVirtualFiles = useVirtualFiles;
-        _virtualFile = Path.Combine(UnturnedAssetFileLspServer.DebugPath, Path.GetFileName(path) + ".txt");
-        _editsFile = Path.Combine(UnturnedAssetFileLspServer.DebugPath, Path.GetFileName(path) + ".edits.txt");
+        _virtualFile = Path.Combine(UnturnedDatLanguageServer.DebugPath, Path.GetFileName(path) + ".txt");
+        _editsFile = Path.Combine(UnturnedDatLanguageServer.DebugPath, Path.GetFileName(path) + ".edits.txt");
         if (useVirtualFiles)
             System.IO.File.WriteAllText(_editsFile, ReadOnlySpan<char>.Empty);
 #endif

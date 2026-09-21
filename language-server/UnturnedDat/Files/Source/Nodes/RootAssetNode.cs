@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
+using System.Runtime.Serialization;
 using UnturnedDat.Data.Project;
 using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Types;
@@ -11,13 +12,77 @@ namespace UnturnedDat.Data.Files;
 
 internal class RootAssetNodeSkippedLocalization : RootDictionaryNode, IAssetSourceFile
 {
+    private bool _hasMetadata;
+    private Guid? _guid;
+    private ushort? _id;
+    private AssetCategoryValue _category;
+    private QualifiedOrAliasedType _assetType;
+    private bool _isErrored;
+    private QualifiedType _actualType;
+
     public virtual ImmutableArray<ILocalizationSourceFile> Localization => throw new NotSupportedException();
-    public Guid? Guid { get; private set; }
-    public ushort? Id { get; private set; }
-    public AssetCategoryValue Category { get; private set; }
-    public QualifiedOrAliasedType AssetType { get; private set; }
-    public string AssetName { get; private set; }
-    public bool IsErrored { get; private set; }
+
+    public Guid? Guid
+    {
+        get
+        {
+            if (_hasMetadata)
+                return _guid;
+
+            LoadMetadata();
+            return _guid;
+        }
+    }
+
+    public ushort? Id
+    {
+        get
+        {
+            if (_hasMetadata)
+                return _id;
+
+            LoadMetadata();
+            return _id;
+        }
+    }
+
+    public AssetCategoryValue Category
+    {
+        get
+        {
+            if (_hasMetadata)
+                return _category;
+
+            LoadMetadata();
+            return _category;
+        }
+    }
+
+    public QualifiedOrAliasedType AssetType
+    {
+        get
+        {
+            if (_hasMetadata)
+                return _assetType;
+
+            LoadMetadata();
+            return _assetType;
+        }
+    }
+
+    public string AssetName { get; protected set; }
+
+    public bool IsErrored
+    {
+        get
+        {
+            if (_hasMetadata)
+                return _isErrored;
+
+            LoadMetadata();
+            return _isErrored;
+        }
+    }
 
     public new static RootAssetNodeSkippedLocalization Create(
         IWorkspaceFile file,
@@ -41,8 +106,6 @@ internal class RootAssetNodeSkippedLocalization : RootDictionaryNode, IAssetSour
     {
         string fileName = file.File;
 
-        LoadMetadata();
-
         if (fileName.EndsWith("Asset.dat", StringComparison.OrdinalIgnoreCase))
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -59,10 +122,21 @@ internal class RootAssetNodeSkippedLocalization : RootDictionaryNode, IAssetSour
         }
     }
 
+    protected override QualifiedType CalculateActualType()
+    {
+        if (!_hasMetadata)
+            LoadMetadata();
+
+        return _actualType;
+    }
+
     internal void LoadMetadata()
     {
         lock (TreeSync)
         {
+            if (_hasMetadata)
+                return;
+
             bool isErrored = false;
             Guid? guid = null;
             ushort? id = null;
@@ -179,19 +253,30 @@ internal class RootAssetNodeSkippedLocalization : RootDictionaryNode, IAssetSour
                 }
             }
 
-            Guid = guid;
-            Id = id;
-            Category = category.GetValueOrDefault(AssetCategoryValue.None);
-            AssetType = type.GetValueOrDefault();
-            ActualType = actualType.GetValueOrDefault(QualifiedType.None);
-            IsErrored = isErrored;
+            _guid = guid;
+            _id = id;
+            _category = category.GetValueOrDefault(AssetCategoryValue.None);
+            _assetType = type.GetValueOrDefault();
+            _actualType = actualType.GetValueOrDefault(QualifiedType.None);
+            _isErrored = isErrored;
+            _hasMetadata = true;
         }
     }
 }
 
 internal sealed class RootAssetNode : RootAssetNodeSkippedLocalization
 {
-    public override ImmutableArray<ILocalizationSourceFile> Localization { get; }
+    private ImmutableArray<ILocalizationSourceFile> _localization;
+
+    public override ImmutableArray<ILocalizationSourceFile> Localization
+    {
+        get
+        {
+            if (_localization.IsDefault)
+                DiscoverLocalization();
+            return _localization;
+        }
+    }
 
     public new static RootAssetNode Create(
         IWorkspaceFile file,
@@ -221,91 +306,71 @@ internal sealed class RootAssetNode : RootAssetNodeSkippedLocalization
         OneOrMore<KeyValuePair<string, object?>> additionalProperties)
         : base(file, database, count, nodes, in properties, additionalProperties)
     {
-        Localization = localization;
+        _localization = localization;
     }
-
-
 
     /// <inheritdoc />
     private RootAssetNode(IWorkspaceFile file, IAssetSpecDatabase database, int count, ISourceNode[] nodes, in AnySourceNodeProperties properties,
         OneOrMore<KeyValuePair<string, object?>> additionalProperties)
         : base(file, database, count, nodes, in properties, additionalProperties)
-    {
-        string fileName = file.File;
+    { }
 
-        Localization = ImmutableArray<ILocalizationSourceFile>.Empty;
-        
-        if (database.FileTypes.TryGetValue(ActualType, out DatFileType? specType)
-            && specType is not IDatTypeWithLocalizationProperties { LocalizationProperties.Length: > 0 })
+    private void DiscoverLocalization()
+    {
+        if (Database == null)
         {
+            _localization = ImmutableArray<ILocalizationSourceFile>.Empty;
             return;
         }
 
-        string? dirName = Path.GetDirectoryName(fileName);
-        if (string.IsNullOrEmpty(dirName))
-            return;
+        string fileName = File.WorkspaceFile.File;
+        using LocalizationFileEnumerator enumerator = new LocalizationFileEnumerator(Database!, fileName, ActualType);
 
-        try
+        int englishIndex = -1;
+        ImmutableArray<ILocalizationSourceFile>.Builder builder = ImmutableArray.CreateBuilder<ILocalizationSourceFile>(enumerator.FileCount);
+
+        while (enumerator.MoveNext())
         {
-            string[] files = Directory.GetFiles(dirName, "*.dat");
-            ImmutableArray<ILocalizationSourceFile>.Builder builder = ImmutableArray.CreateBuilder<ILocalizationSourceFile>(files.Length);
-            int englishIndex = -1;
-            foreach (string localFile in files)
+            string localFile = enumerator.Current!;
+            string? text;
+            try
             {
-                if (localFile.Equals(fileName, OSPathHelper.PathComparison))
-                    continue;
-
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
-                ReadOnlySpan<char> langName = Path.GetFileNameWithoutExtension(localFile.AsSpan());
-                if (langName.IsWhiteSpace() || !char.IsUpper(langName[0]))
-                    continue;
-#else
-                string langName = Path.GetFileNameWithoutExtension(localFile);
-                if (string.IsNullOrWhiteSpace(langName) || !char.IsUpper(langName[0]))
-                    continue;
-#endif
-
-                string? text;
-                try
-                {
-                    text = System.IO.File.ReadAllText(localFile);
-                }
-                catch (SystemException)
-                {
-                    text = null;
-                }
-
-                ReferencedWorkspaceFile workspaceFile = new ReferencedWorkspaceFile(localFile, database, this, text!, static (file, state, text) =>
-                {
-                    if (text == null)
-                        return null!;
-
-                    using SourceNodeTokenizer tokenizer = new SourceNodeTokenizer(
-                        text,
-                        SourceNodeTokenizerOptions.None
-                    );
-                    return tokenizer.ReadRootDictionary(SourceNodeTokenizer.RootInfo.Localization(file, file.Database, (IAssetSourceFile)state!));
-                }, file.Bundle);
-
-                if (workspaceFile.SourceFile is not ILocalizationSourceFile local)
-                {
-                    workspaceFile.Dispose();
-                    continue;
-                }
-
-                if (local.LanguageName.Equals("English", StringComparison.Ordinal))
-                {
-                    englishIndex = builder.Count;
-                }
-
-                builder.Add(local);
+                text = System.IO.File.ReadAllText(localFile);
+            }
+            catch (SystemException)
+            {
+                text = null;
             }
 
-            if (englishIndex > 0)
-                (builder[0], builder[englishIndex]) = (builder[englishIndex], builder[0]);
-            
-            Localization = builder.MoveToImmutableOrCopy();
+            ReferencedWorkspaceFile workspaceFile = new ReferencedWorkspaceFile(localFile, Database!, this, text!, static (file, state, text) =>
+            {
+                if (text == null)
+                    return null!;
+
+                using SourceNodeTokenizer tokenizer = new SourceNodeTokenizer(
+                    text,
+                    SourceNodeTokenizerOptions.None
+                );
+                return tokenizer.ReadRootDictionary(SourceNodeTokenizer.RootInfo.Localization(file, file.Database, (IAssetSourceFile)state!));
+            }, File.WorkspaceFile.Bundle);
+
+            if (workspaceFile.SourceFile is not ILocalizationSourceFile local)
+            {
+                workspaceFile.Dispose();
+                continue;
+            }
+
+            if (local.LanguageName.Equals("English", StringComparison.Ordinal))
+            {
+                englishIndex = builder.Count;
+            }
+
+            builder.Add(local);
         }
-        catch (SystemException) { }
+
+        if (englishIndex > 0)
+            (builder[0], builder[englishIndex]) = (builder[englishIndex], builder[0]);
+
+        _localization = builder.MoveToImmutableOrCopy();
     }
 }

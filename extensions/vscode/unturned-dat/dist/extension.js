@@ -22706,7 +22706,7 @@ async function activate(context) {
     await logAndError(`Language Server executable not accessible at "${dllPath}".`);
     client = void 0;
   } else if (!skipLsp) {
-    const isDebug = process.env.UNTURNED_LSP_DEBUG === "1";
+    const isDebug = process.env.UNTURNED_DAT_DEBUG === "1";
     const args = [];
     let command = dllPath;
     if (!useExeFile) {
@@ -22724,7 +22724,7 @@ async function activate(context) {
     }
     const options = {
       env: isDebug ? {
-        "UNTURNED_LSP_DEBUG": "1"
+        "UNTURNED_DAT_DEBUG": "1"
       } : {},
       shell: useShell,
       cwd: relativeFilePath

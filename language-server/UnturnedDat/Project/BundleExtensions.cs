@@ -61,7 +61,7 @@ public static class BundleExtensions
                 }
 
                 string name = key.Key;
-                if (key is DatTemplatePropertyKey templateKey)
+                if (key is DatTemplatePropertyKey templateKey && templateArgs.Length == templateKey.TemplateProcessor.TemplateCount)
                 {
                     name = templateKey.TemplateProcessor.CreateKey(name, templateArgs);
                 }

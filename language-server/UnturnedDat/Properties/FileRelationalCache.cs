@@ -146,7 +146,7 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
     {
         // assume TreeSync locked
         IDictionarySourceNode parent = (IDictionarySourceNode)node.Parent;
-        if (parent != SourceFile)
+        if (parent != parent.File)
         {
             RootDictionaryPosition pos = parent.GetRootAssetNode(out _);
             if (pos == RootDictionaryPosition.Other || parent.File != SourceFile)
@@ -156,9 +156,13 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
             }
         }
 
-        if (_entries.TryGetValue(node.Key, out entry))
+        if (parent.File == SourceFile)
         {
-            return true;
+            // localization properties can be looked up in an asset file's cache
+            if (_entries.TryGetValue(node.Key, out entry))
+            {
+                return true;
+            }
         }
 
         foreach (Entry e in _entries.Values)
@@ -480,7 +484,7 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
         private readonly HashSet<IPropertySourceNode> _referencedProperties;
         private IPropertySourceNode? _currentProperty;
         private bool _currentPropertyWasDereferenced;
-        private StringDictionary<Entry>? _entries;
+        private StringDictionary<Entry> _entries;
 
         private IDictionarySourceNode _rootNode;
         private IPropertySourceNode? _ignore;
@@ -598,6 +602,7 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
             if (property is DatBundleAsset bundleAsset)
             {
                 ProcessBundleAsset(bundleAsset, propertyType);
+                return;
             }
 
             IPropertySourceNode? propertyNode = FindDirectDescendantPropertyNode(property);
@@ -629,11 +634,9 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
                 createdEntry.Node = propertyNode;
                 createdEntry.ParentNode = _rootNode;
                 createdEntry.Property = property;
-
-                if (_referencedPropertyNodeBufferForThisProperty is { Count: > 0 })
-                {
-                    createdEntry.RelatedProperties = _referencedPropertyNodeBufferForThisProperty.ToArray();
-                }
+                createdEntry.RelatedProperties = _referencedPropertyNodeBufferForThisProperty is { Count: > 0 }
+                    ? _referencedPropertyNodeBufferForThisProperty.ToArray()
+                    : null;
                 
                 _entries[key] = createdEntry;
 

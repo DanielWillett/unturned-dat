@@ -80,19 +80,28 @@ internal sealed class UnturnedDatLanguageServer
                         ? Environment.SpecialFolder.CommonApplicationData
                         : Environment.SpecialFolder.InternetCache
                 ),
-                "UnturnedAssetFileLsp"
+                "unturned-dat"
             );
         }
         else
         {
             // Linux, FreeBSD
-            DataPath = "/var/cache/UnturnedAssetFileLsp";
+            DataPath = "/var/cache/unturned-dat";
         }
 
-        Directory.CreateDirectory(DataPath);
+        string oldDir = DataPath.Replace("unturned-dat", "UnturnedAssetFileLsp");
+        if (Directory.Exists(oldDir) && !Directory.Exists(DataPath))
+        {
+            Directory.Move(oldDir, DataPath);
+        }
+        else
+        {
+            Directory.CreateDirectory(DataPath);
+        }
+
 #if DEBUG
         DebugPath = Path.Combine(DataPath, "Debug");
-        if (EnvironmentHelper.ParseBooleanEnvironmentVariable("UNTURNED_LSP_DEBUG"))
+        if (EnvironmentHelper.ParseBooleanEnvironmentVariable("UNTURNED_DAT_DEBUG"))
         {
             Debugger.Launch();
         }
@@ -169,6 +178,7 @@ internal sealed class UnturnedDatLanguageServer
                         .AddSingleton<DiagnosticsManager>()
                         .AddSingleton<GlobalCodeFixes>()
                         .AddSingleton<LspInstallationEnvironment>()
+                        .AddSingleton<StartupWaitUtility>()
                         .AddSingleton<FileRelationalCacheProvider>()
                         .AddSingleton(new InstallDirUtility("Unturned", "304930"))
                         .AddSingleton<EnvironmentCache>()
@@ -233,6 +243,9 @@ internal sealed class UnturnedDatLanguageServer
         });
 
         await OnStartedAsync(CancellationToken.None);
+
+        // run startup tasks
+        _server.Services.GetRequiredService<StartupWaitUtility>().NotifyStartupCompleted();
 
         await _server.WaitForExit.ConfigureAwait(false);
 
@@ -381,7 +394,7 @@ internal sealed class UnturnedDatLanguageServer
             FileAssociationUtility util = ActivatorUtilities.CreateInstance<FileAssociationUtility>(_server.Services);
             try
             {
-                await util.AssociateFileTypesAsync(force: EnvironmentHelper.ParseBooleanEnvironmentVariable("UNTURNED_LSP_RESET_FILE_ASSOC"));
+                await util.AssociateFileTypesAsync(force: EnvironmentHelper.ParseBooleanEnvironmentVariable("UNTURNED_DAT_RESET_FILE_ASSOC"));
             }
             finally
             {

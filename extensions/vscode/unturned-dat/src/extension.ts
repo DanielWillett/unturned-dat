@@ -167,7 +167,7 @@ export async function activate(context: ExtensionContext): Promise<void>
     }
     else if (!skipLsp)
     {
-        const isDebug = process.env.UNTURNED_LSP_DEBUG === "1";
+        const isDebug = process.env.UNTURNED_DAT_DEBUG === "1";
         const args: string[] = [ ];
         let command = dllPath;
         if (!useExeFile)
@@ -195,7 +195,7 @@ export async function activate(context: ExtensionContext): Promise<void>
         const options: ExecutableOptions = {
             env: isDebug
                 ? {
-                    "UNTURNED_LSP_DEBUG": "1"
+                    "UNTURNED_DAT_DEBUG": "1"
                 }
                 : {},
             shell: useShell,

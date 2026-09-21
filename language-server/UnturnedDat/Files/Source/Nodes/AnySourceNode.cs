@@ -76,7 +76,18 @@ internal abstract class AnySourceNode : ISourceNode
         if (other == null || other.GetType() != GetType())
             return false;
 
-        return Index == other.Index && Range == other.Range && File.Equals(other.File) && Parent.Equals(other.Parent) && Depth == other.Depth;
+        if (Index != other.Index || Range != other.Range || Depth != other.Depth)
+            return false;
+
+        if (ReferenceEquals(Parent, this))
+        {
+            if (!ReferenceEquals(other.Parent, other))
+                return false;
+        }
+        else if (ReferenceEquals(other.Parent, other))
+            return false;
+
+        return true;
     }
 
     public override bool Equals(object? obj)

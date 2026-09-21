@@ -10,6 +10,7 @@ using UnturnedDat.Data.Properties;
 using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Types;
 using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Utility;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace UnturnedDat.LanguageServer.Handlers;
@@ -20,17 +21,20 @@ internal class CodeActionRequestHandler : CodeActionHandlerBase
     private readonly IFileRelationalModelProvider _modelProvider;
     private readonly IParsingServices _parsingServices;
     private readonly OpenedFileTracker _fileTracker;
+    private readonly StartupWaitUtility _startupWait;
 
     public CodeActionRequestHandler(
         GlobalCodeFixes codeFixes,
         IFileRelationalModelProvider modelProvider,
         IParsingServices parsingServices,
-        OpenedFileTracker fileTracker)
+        OpenedFileTracker fileTracker,
+        StartupWaitUtility startupWait)
     {
         _codeFixes = codeFixes;
         _modelProvider = modelProvider;
         _parsingServices = parsingServices;
         _fileTracker = fileTracker;
+        _startupWait = startupWait;
     }
 
     protected override CodeActionRegistrationOptions CreateRegistrationOptions(
@@ -45,9 +49,11 @@ internal class CodeActionRequestHandler : CodeActionHandlerBase
         };
     }
 
-    public override Task<CommandOrCodeActionContainer?> Handle(CodeActionParams request, CancellationToken cancellationToken)
+    public override async Task<CommandOrCodeActionContainer?> Handle(CodeActionParams request, CancellationToken cancellationToken)
     {
-        return Task.FromResult<CommandOrCodeActionContainer?>(GetCodeActions(request, cancellationToken));
+        await _startupWait.WaitForStartupAsync();
+
+        return GetCodeActions(request, cancellationToken);
     }
 
     private CommandOrCodeActionContainer GetCodeActions(CodeActionParams request, CancellationToken token)

@@ -11,6 +11,7 @@ using UnturnedDat.Data.Utility;
 using UnturnedDat.Data.Values;
 using UnturnedDat.LanguageServer.Files;
 using UnturnedDat.LanguageServer.Protocol;
+using UnturnedDat.LanguageServer.Utility;
 
 namespace UnturnedDat.LanguageServer.Handlers.AssetProperties;
 
@@ -20,18 +21,22 @@ internal class DiscoverBundleAssetsHandler : IDiscoverBundleAssetsHandler
 
     private readonly OpenedFileTracker _fileTracker;
     private readonly IParsingServices _parsingServices;
+    private readonly StartupWaitUtility _startupWait;
 
-    public DiscoverBundleAssetsHandler(OpenedFileTracker fileTracker, IParsingServices parsingServices)
+    public DiscoverBundleAssetsHandler(OpenedFileTracker fileTracker, IParsingServices parsingServices, StartupWaitUtility startupWait)
     {
         _fileTracker = fileTracker;
         _parsingServices = parsingServices;
+        _startupWait = startupWait;
     }
 
-    public Task<Container<BundleAssetInfo>> Handle(DiscoverBundleAssetsParams request, CancellationToken cancellationToken)
+    public async Task<Container<BundleAssetInfo>> Handle(DiscoverBundleAssetsParams request, CancellationToken cancellationToken)
     {
+        await _startupWait.WaitForStartupAsync();
+
         if (!_fileTracker.Files.TryGetValue(request.Document, out OpenedFile? file))
         {
-            return Task.FromResult(Empty);
+            return Empty;
         }
 
         ISourceFile sourceFile = file.SourceFile;
@@ -41,7 +46,7 @@ internal class DiscoverBundleAssetsHandler : IDiscoverBundleAssetsHandler
 
         if (fileType is not DatAssetFileType { HasBundleAssets: true } assetType)
         {
-            return Task.FromResult(Empty);
+            return Empty;
         }
 
         List<BundleAssetInfo> outputProperties = new List<BundleAssetInfo>(8);
@@ -194,7 +199,7 @@ internal class DiscoverBundleAssetsHandler : IDiscoverBundleAssetsHandler
         });
 
         rtn:
-        return Task.FromResult(new Container<BundleAssetInfo>(outputProperties));
+        return new Container<BundleAssetInfo>(outputProperties);
     }
 
     private static void ResolveChildObjects(DatBundleAsset unityAsset, string? requestPath, List<BundleAssetInfo> outputProperties, ref FileEvaluationContext ctx)

@@ -17,7 +17,7 @@ internal class DiskCleanupRegistrationUtility
     public const string EnvVarDisableDiskCleanupHandler = "UNTURNED_ASSET_SPEC_NO_DISK_CLEANUP";
 
     private const string DataVersionValueName = "LspServer_CacheDataVersion";
-    private const int CurrentVersion = 1;
+    private const int CurrentVersion = 2;
     private const string RegistrationName = "Unturned Data File Language Server";
     private const string KeyPath = $@"Software\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\{RegistrationName}";
 

@@ -4,12 +4,14 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using UnturnedDat.Data.Diagnostics;
 using UnturnedDat.Data.Parsing;
 using UnturnedDat.Data.Properties;
 using UnturnedDat.Data.Utility;
 using UnturnedDat.LanguageServer.Files;
 using UnturnedDat.LanguageServer.Handlers;
+using UnturnedDat.LanguageServer.Utility;
 
 namespace UnturnedDat.LanguageServer.Diagnostics;
 
@@ -31,7 +33,10 @@ internal class DiagnosticsManager : IDisposable
 
     private readonly ConcurrentDictionary<string, FileDiagnostics> _diagnostics;
 
+    private ConcurrentQueue<FileDiagnostics>? _startupQueue;
+
     internal IParsingServices Services;
+    private readonly StartupWaitUtility _startupWait;
     internal IFileRelationalModelProvider RelationalModelProvider;
 
     public DiagnosticsManager(
@@ -40,7 +45,8 @@ internal class DiagnosticsManager : IDisposable
         LspWorkspaceEnvironment workspaceEnvironment,
         IFileRelationalModelProvider relationalModelProvider,
         ILanguageServerFacade languageServer,
-        IParsingServices parsingServices)
+        IParsingServices parsingServices,
+        StartupWaitUtility startupWait)
     {
         _workQueue = new ConcurrentQueue<DiagnosticsWorkItem>();
         _diagnostics = new ConcurrentDictionary<string, FileDiagnostics>(OSPathHelper.PathComparer);
@@ -52,6 +58,7 @@ internal class DiagnosticsManager : IDisposable
 
         RelationalModelProvider = relationalModelProvider;
         Services = parsingServices;
+        _startupWait = startupWait;
 
         _workspaceEnvironment.FileCreated += OnFileCreated;
         _workspaceEnvironment.FileDeleted += OnFileDeleted;
@@ -66,6 +73,32 @@ internal class DiagnosticsManager : IDisposable
         foreach (WorkspaceFolderTracker folder in _workspaceEnvironment.WorkspaceFolders.Values)
         {
             OnWorkspaceFolderAdded(folder);
+        }
+
+        Task.Run(async () =>
+        {
+            await _startupWait.WaitForStartupAsync();
+
+            try
+            {
+                OnStartupFinished();
+            }
+            catch (Exception ex)
+            {
+                Services.CreateLogger<DiagnosticsManager>().LogError(ex, "Error running OnStartupFinished.");
+            }
+        });
+    }
+
+    private void OnStartupFinished()
+    {
+        ConcurrentQueue<FileDiagnostics>? queue = Interlocked.Exchange(ref _startupQueue, null);
+        if (queue == null)
+            return;
+        
+        while (queue.TryDequeue(out FileDiagnostics? diag))
+        {
+            diag.Recalculate();
         }
     }
 
@@ -124,6 +157,9 @@ internal class DiagnosticsManager : IDisposable
 
     public FileDiagnostics GetOrAddFile(string filePath, DocumentUri? uri)
     {
+        if (Path.DirectorySeparatorChar == '\\')
+            filePath = filePath.Replace('/', '\\');
+
         if (_diagnostics.TryGetValue(filePath, out FileDiagnostics? d))
             return d;
 
@@ -167,7 +203,34 @@ internal class DiagnosticsManager : IDisposable
 
     private void ReclaculateDiagnostics(string filePath)
     {
-        GetOrAddFile(filePath, null).Recalculate();
+        if (Path.DirectorySeparatorChar == '\\')
+            filePath = filePath.Replace('/', '\\');
+
+        RecalculateOrQueue(GetOrAddFile(filePath, null));
+    }
+
+    private void RecalculateOrQueue(FileDiagnostics diagnostics)
+    {
+        if (_startupWait.HasStartedUp)
+        {
+            diagnostics.Recalculate();
+        }
+        else
+        {
+            ConcurrentQueue<FileDiagnostics> queue;
+            if (_startupQueue == null)
+            {
+                ConcurrentQueue<FileDiagnostics>? old = Interlocked.CompareExchange(ref _startupQueue, queue = new ConcurrentQueue<FileDiagnostics>(), null);
+                if (old != null)
+                    queue = old;
+            }
+            else
+            {
+                queue = _startupQueue;
+            }
+
+            queue.Enqueue(diagnostics);
+        }
     }
 
     private void TransferDiagnostics(string from, string to)
@@ -177,7 +240,7 @@ internal class DiagnosticsManager : IDisposable
 
         fileDiags.UpdateFileName(to, DocumentUri.File(to));
         _diagnostics[to] = fileDiags;
-        fileDiags.Recalculate();
+        RecalculateOrQueue(fileDiags);
     }
 
     private void RemoveDiagnostics(string filePath)
@@ -190,13 +253,23 @@ internal class DiagnosticsManager : IDisposable
 
     private void OnWorkspaceFolderAdded(WorkspaceFolderTracker obj)
     {
-        _workQueue.Enqueue(new DiagnosticsWorkItem(obj.FilePath, type: DiagnosticsWorkItemType.DiscoverAll));
+        string filePath = obj.FilePath;
+
+        if (Path.DirectorySeparatorChar == '\\')
+            filePath = filePath.Replace('/', '\\');
+
+        _workQueue.Enqueue(new DiagnosticsWorkItem(filePath, type: DiagnosticsWorkItemType.DiscoverAll));
         MaybeStartWorkerThread(forceRunOnWorkerThread: true);
     }
 
     private void OnWorkspaceFolderRemoved(WorkspaceFolderTracker obj)
     {
-        _workQueue.Enqueue(new DiagnosticsWorkItem(obj.FilePath, type: DiagnosticsWorkItemType.DeleteAll));
+        string filePath = obj.FilePath;
+
+        if (Path.DirectorySeparatorChar == '\\')
+            filePath = filePath.Replace('/', '\\');
+
+        _workQueue.Enqueue(new DiagnosticsWorkItem(filePath, type: DiagnosticsWorkItemType.DeleteAll));
         MaybeStartWorkerThread(forceRunOnWorkerThread: true);
     }
 

@@ -10,6 +10,8 @@ namespace UnturnedDat.Data.Files;
 
 internal class RootDictionaryNode : DictionaryNode, ISourceFile
 {
+    private bool _hasActualType;
+
     internal IAssetSpecDatabase? Database { get; }
     public OneOrMore<KeyValuePair<string, object?>> AdditionalProperties { get; }
 
@@ -17,7 +19,45 @@ internal class RootDictionaryNode : DictionaryNode, ISourceFile
     public TfmLock TreeSync { get; }
     public int FileVersion { get; private set; }
     public ImmutableArray<IPropertySourceNode> Properties { get; internal set; }
-    public QualifiedType ActualType { get; protected set; }
+
+    public QualifiedType ActualType
+    {
+        get
+        {
+            if (_hasActualType)
+                return field;
+
+            field = CalculateActualType();
+            _hasActualType = true;
+            return field;
+        }
+    }
+
+    protected void ResetActualTypeCache()
+    {
+        _hasActualType = false;
+    }
+
+    protected virtual QualifiedType CalculateActualType()
+    {
+        if (Database is not { IsInitialized: true } || this is RootLocalizationNode)
+            return QualifiedType.None;
+
+        if (this.TryGetAdditionalProperty(Comment.TypeAdditionalProperty, out string? str) && str != null)
+        {
+            return new QualifiedType(str, true);
+        }
+        if (Database.Information.KnownFileNames.TryGetValue(Path.GetFileName(File.WorkspaceFile.File), out QualifiedType t) && !t.IsNull)
+        {
+            return t.CaseInsensitive;
+        }
+        if (OSPathHelper.IsExtension(File.WorkspaceFile.File, ".udatproj"))
+        {
+            return ProjectFileType.TypeId;
+        }
+
+        return QualifiedType.None;
+    }
 
     public static RootDictionaryNode Create(
         IWorkspaceFile file,
@@ -54,22 +94,6 @@ internal class RootDictionaryNode : DictionaryNode, ISourceFile
                 continue;
 
             builder.Add(pn);
-        }
-
-        if (database is { IsInitialized: true } && this is not RootAssetNodeSkippedLocalization and not RootLocalizationNode)
-        {
-            if (this.TryGetAdditionalProperty(Comment.TypeAdditionalProperty, out string? str) && str != null)
-            {
-                ActualType = new QualifiedType(str, true);
-            }
-            else if (database.Information.KnownFileNames.TryGetValue(Path.GetFileName(file.File), out QualifiedType t) && !t.IsNull)
-            {
-                ActualType = t.CaseInsensitive;
-            }
-            else if (OSPathHelper.IsExtension(file.File, ".udatproj"))
-            {
-                ActualType = ProjectFileType.TypeId;
-            }
         }
 
         Properties = builder.MoveToImmutableOrCopy();

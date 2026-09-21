@@ -203,52 +203,75 @@ internal class FileDiagnostics : IWorkspaceFile, IDiagnosticSink
         _manager.PushDiagnostics(this, container);
     }
 
+    private IAssetSourceFile? _pendingLocalizationAssetFile;
+
     private void TryAddLocalizationFiles(ref ISourceFile file, string fileName)
     {
         if (file is not IAssetSourceFile assetFile)
             return;
 
-        string? dirName = Path.GetDirectoryName(fileName);
-        if (string.IsNullOrEmpty(dirName))
-            return;
-        ImmutableArray<ILocalizationSourceFile> localizationFiles;
-        try
+        using LocalizationFileEnumerator enumerator = new LocalizationFileEnumerator(_database, fileName, assetFile.ActualType);
+
+        ImmutableArray<ILocalizationSourceFile>.Builder builder = ImmutableArray.CreateBuilder<ILocalizationSourceFile>(enumerator.FileCount);
+
+        int englishIndex = -1;
+        while (enumerator.MoveNext())
         {
-            string[] files = Directory.GetFiles(dirName, "*.dat");
-            ImmutableArray<ILocalizationSourceFile>.Builder builder =
-                ImmutableArray.CreateBuilder<ILocalizationSourceFile>(files.Length);
-            int englishIndex = -1;
-            foreach (string localFile in files)
+            string localFile = enumerator.Current!;
+            if (localFile.Equals(fileName, OSPathHelper.PathComparison))
+                continue;
+
+            ReadOnlySpan<char> langName = Path.GetFileNameWithoutExtension(localFile.AsSpan());
+            if (langName.IsWhiteSpace() || !char.IsUpper(langName[0]))
+                continue;
+
+            FileDiagnostics localFileDiags = _manager.GetOrAddFile(localFile, null);
+            ISourceFile? sourceFile;
+            OpenedFile? openedFile = localFileDiags.OpenedFile;
+            if (openedFile != null)
             {
-                if (localFile.Equals(fileName, OSPathHelper.PathComparison))
-                    continue;
-
-                ReadOnlySpan<char> langName = Path.GetFileNameWithoutExtension(localFile.AsSpan());
-                if (langName.IsWhiteSpace() || !char.IsUpper(langName[0]))
-                    continue;
-
-                FileDiagnostics localFileDiags = _manager.GetOrAddFile(localFile, null);
-
-                if (localFileDiags.SourceFile is not ILocalizationSourceFile local)
-                    continue;
-
-                if (local.LanguageName.Equals("English", StringComparison.Ordinal))
+                sourceFile = openedFile.SourceFile;
+            }
+            else
+            {
+                sourceFile = localFileDiags.SourceFile;
+                if (sourceFile == null)
                 {
-                    englishIndex = builder.Count;
-                }
+                    _pendingLocalizationAssetFile = assetFile;
+                    IWorkspaceFile wsFile = new ReferencedWorkspaceFile(
+                        localFile,
+                        _database,
+                        this,
+                        File.ReadAllText(localFile),
+                        static (file, state, text) =>
+                        {
+                            using SourceNodeTokenizer assetTokenizer = new SourceNodeTokenizer(text, SourceNodeTokenizerOptions.Default);
 
-                builder.Add(local);
+                            FileDiagnostics diags = (FileDiagnostics)state!;
+                            return assetTokenizer.ReadRootDictionary(SourceNodeTokenizer.RootInfo.Localization(file, diags._database, diags._pendingLocalizationAssetFile!));
+                        },
+                        file.WorkspaceFile.Bundle
+                    );
+                    _pendingLocalizationAssetFile = null;
+                    sourceFile = wsFile.SourceFile;
+                }
             }
 
-            if (englishIndex > 0)
-                (builder[0], builder[englishIndex]) = (builder[englishIndex], builder[0]);
+            if (sourceFile is not ILocalizationSourceFile local)
+                continue;
 
-            localizationFiles = builder.MoveToImmutableOrCopy();
+            if (local.LanguageName.Equals("English", StringComparison.Ordinal))
+            {
+                englishIndex = builder.Count;
+            }
+
+            builder.Add(local);
         }
-        catch (SystemException)
-        {
-            localizationFiles = ImmutableArray<ILocalizationSourceFile>.Empty;
-        }
+
+        if (englishIndex > 0)
+            (builder[0], builder[englishIndex]) = (builder[englishIndex], builder[0]);
+
+        ImmutableArray<ILocalizationSourceFile> localizationFiles = builder.MoveToImmutableOrCopy();
 
         if (assetFile.TryAddLocalization(localizationFiles, out IAssetSourceFile? assetSourceFile))
         {

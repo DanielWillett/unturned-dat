@@ -39,6 +39,9 @@ public static class ImmutableArrayExtensions
     /// <typeparam name="T">The array's element type.</typeparam>
     public static ImmutableArray<T> MoveToImmutableOrCopy<T>(this ImmutableArray<T>.Builder builder)
     {
+        if (builder.Count == 0)
+            return ImmutableArray<T>.Empty;
+        
         return builder.Capacity == builder.Count ? builder.MoveToImmutable() : builder.ToImmutable();
     }
 
@@ -47,6 +50,11 @@ public static class ImmutableArrayExtensions
     /// </summary>
     public static ImmutableArray<TTo> UnsafeConvert<TFrom, TTo>(this ImmutableArray<TFrom> old) where TTo : class where TFrom : class, TTo
     {
+        if (old.IsDefault)
+            return default;
+        if (old.IsEmpty)
+            return ImmutableArray<TTo>.Empty;
+
         TFrom[] oldArray = old.UnsafeThaw();
         // ReSharper disable once CoVariantArrayConversion
         return ((TTo[])oldArray).UnsafeFreeze();

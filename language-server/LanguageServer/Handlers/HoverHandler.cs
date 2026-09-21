@@ -13,12 +13,14 @@ using UnturnedDat.Data.Types;
 using UnturnedDat.Data.Utility;
 using UnturnedDat.Data.Values;
 using UnturnedDat.LanguageServer.Files;
+using UnturnedDat.LanguageServer.Utility;
 
 namespace UnturnedDat.LanguageServer.Handlers;
 
 internal class HoverHandler : IHoverHandler
 {
     private readonly FileEvaluationContextFactory _evalFactory;
+    private readonly StartupWaitUtility _startupWait;
 
     /// <inheritdoc />
     HoverRegistrationOptions IRegistration<HoverRegistrationOptions, HoverCapability>.GetRegistrationOptions(
@@ -30,14 +32,17 @@ internal class HoverHandler : IHoverHandler
         };
     }
 
-    public HoverHandler(FileEvaluationContextFactory evalFactory)
+    public HoverHandler(FileEvaluationContextFactory evalFactory, StartupWaitUtility startupWait)
     {
         _evalFactory = evalFactory;
+        _startupWait = startupWait;
     }
 
     /// <inheritdoc />
-    public Task<Hover?> Handle(HoverParams request, CancellationToken cancellationToken)
+    public async Task<Hover?> Handle(HoverParams request, CancellationToken cancellationToken)
     {
+        await _startupWait.WaitForStartupAsync();
+
         if (!_evalFactory.TryCreate(
                 request.Position,
                 request.TextDocument.Uri,
@@ -47,7 +52,7 @@ internal class HoverHandler : IHoverHandler
                 out ISourceNode? hoverNode
             ) && hoverNode == null)
         {
-            return Task.FromResult<Hover?>(null);
+            return null;
         }
 
         HoverMarkdownBuilder builder = new HoverMarkdownBuilder(new StringBuilder(128), propertyNode);
@@ -84,7 +89,7 @@ internal class HoverHandler : IHoverHandler
             }
         }
 
-        return Task.FromResult<Hover?>(new Hover
+        return new Hover
         {
             Range = range.ToRange(),
             Contents = new MarkedStringsOrMarkupContent(new MarkupContent
@@ -92,7 +97,7 @@ internal class HoverHandler : IHoverHandler
                 Kind = MarkupKind.Markdown,
                 Value = builder.ToString()
             })
-        });
+        };
     }
 
     private ref struct MetadataVisitor : IValueVisitor, ITypeVisitor

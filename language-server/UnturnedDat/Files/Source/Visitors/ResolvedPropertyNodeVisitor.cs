@@ -117,57 +117,92 @@ public abstract class ResolvedPropertyNodeVisitor : OrderedNodeVisitor
 
         PropertyBreadcrumbs breadcrumbs = PropertyBreadcrumbs.FromNode(node);
 
-        IFileRelationalModel model = _modelProvider.GetProvider(node.File, node.File.GetPropertyContext());
-        if (breadcrumbs.IsRoot)
+        ISourceFile sourceFile = node.File;
+        SpecPropertyContext propertyContext = sourceFile.GetPropertyContext();
+        // first check file, then if file is localization check asset file
+        while (true)
         {
-            if (!model.TryGetPropertyInfoFromNode(node, out PropertyNodeRelationalInfo info) || info.ValueType == null)
+            IFileRelationalModel model = _modelProvider.GetProvider(sourceFile, propertyContext);
+            if (breadcrumbs.IsRoot)
             {
-                if ((_flags & PropertyInclusionFlags.ResolvedOnly) == 0)
+                if (!model.TryGetPropertyInfoFromNode(node, out PropertyNodeRelationalInfo info) || info.ValueType == null)
                 {
-                    AcceptUnresolvedProperty(node, in breadcrumbs);
+                    if (propertyContext == SpecPropertyContext.Localization && sourceFile is ILocalizationSourceFile lclSrcFile)
+                    {
+                        propertyContext = SpecPropertyContext.Property;
+                        sourceFile = lclSrcFile.Asset;
+                        continue;
+                    }
+
+                    if ((_flags & PropertyInclusionFlags.ResolvedOnly) == 0)
+                    {
+                        AcceptUnresolvedProperty(node, in breadcrumbs);
+                    }
+
+                    break;
                 }
 
-                return;
-            }
-
-            foreach (IPropertySourceNode n in info.RelatedProperties)
-            {
-                _ignoreProperties.Add(n);
-            }
-
-            if ((_flags & PropertyInclusionFlags.UnresolvedOnly) != 0)
-                return;
-
-            FileEvaluationContext ctx = new FileEvaluationContext(_parsingServices, node.File, node.GetRootPosition())
-            {
-                RootBreadcrumbs = breadcrumbs
-            };
-
-            AcceptResolvedProperty(info.Property, info.ValueType, ref ctx, node);
-        }
-        else
-        {
-            if (!model.TryGetPropertyFromNode(node, out DatProperty? property, valueOnly: true))
-            {
-                if ((_flags & PropertyInclusionFlags.ResolvedOnly) == 0)
+                if (propertyContext == SpecPropertyContext.Property && node.File != sourceFile)
                 {
-                    AcceptUnresolvedProperty(node, in breadcrumbs);
+                    // don't want to double count a localization property that was originally defined in a normal property
+                    break;
                 }
-                return;
+
+                foreach (IPropertySourceNode n in info.RelatedProperties)
+                {
+                    _ignoreProperties.Add(n);
+                }
+
+                if ((_flags & PropertyInclusionFlags.UnresolvedOnly) != 0)
+                    break;
+
+                FileEvaluationContext ctx = new FileEvaluationContext(_parsingServices, node.File, node.GetRootPosition())
+                {
+                    RootBreadcrumbs = breadcrumbs
+                };
+
+                AcceptResolvedProperty(info.Property, info.ValueType, ref ctx, node);
+            }
+            else
+            {
+                if (!model.TryGetPropertyFromNode(node, out DatProperty? property, valueOnly: true))
+                {
+                    if (propertyContext == SpecPropertyContext.Localization && sourceFile is ILocalizationSourceFile lclSrcFile)
+                    {
+                        propertyContext = SpecPropertyContext.Property;
+                        sourceFile = lclSrcFile.Asset;
+                        continue;
+                    }
+
+                    if ((_flags & PropertyInclusionFlags.ResolvedOnly) == 0)
+                    {
+                        AcceptUnresolvedProperty(node, in breadcrumbs);
+                    }
+
+                    break;
+                }
+
+                if (propertyContext == SpecPropertyContext.Property && node.File != sourceFile)
+                {
+                    // don't want to double count a localization property that was originally defined in a normal property
+                    break;
+                }
+
+                FileEvaluationContext ctx = new FileEvaluationContext(_parsingServices, node.File, node.GetRootPosition())
+                {
+                    RootBreadcrumbs = breadcrumbs
+                };
+
+                if ((_flags & PropertyInclusionFlags.UnresolvedOnly) != 0)
+                    break;
+
+                if (!property.Type.TryEvaluateType(out IType? type, ref ctx))
+                    break;
+
+                AcceptResolvedProperty(property, type, ref ctx, node);
             }
 
-            FileEvaluationContext ctx = new FileEvaluationContext(_parsingServices, node.File, node.GetRootPosition())
-            {
-                RootBreadcrumbs = breadcrumbs
-            };
-
-            if ((_flags & PropertyInclusionFlags.UnresolvedOnly) != 0)
-                return;
-
-            if (!property.Type.TryEvaluateType(out IType? type, ref ctx))
-                return;
-
-            AcceptResolvedProperty(property, type, ref ctx, node);
+            break;
         }
     }
 }

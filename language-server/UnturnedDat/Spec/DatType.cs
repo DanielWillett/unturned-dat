@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.Json;
 using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
 using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
 namespace UnturnedDat.Data.Spec;
 
@@ -235,6 +240,8 @@ public abstract class DatType : BaseType<DatType>, IDatSpecificationObject
 /// </summary>
 public abstract class DatTypeWithProperties : DatType
 {
+    private bool _hasDoneLocalPropertiesCalculation;
+
     internal ImmutableArray<DatProperty>.Builder? PropertiesBuilder;
 
     /// <summary>
@@ -252,9 +259,67 @@ public abstract class DatTypeWithProperties : DatType
     /// </summary>
     public bool OverridableProperties { get; internal set; }
 
+    /// <summary>
+    /// Whether or not this file type has any localization properties in it or it's property's types.
+    /// </summary>
+    /// <remarks>This is effectively 'Could this type ever need a language file?'.</remarks>
+    public bool HasLocalizationProperties
+    {
+        get
+        {
+            if (_hasDoneLocalPropertiesCalculation)
+                return field;
+
+            field = CalculateHasLocalizationProperties();
+            _hasDoneLocalPropertiesCalculation = true;
+            return field;
+        }
+    }
+
     internal DatTypeWithProperties(QualifiedType type, DatTypeWithProperties? baseType, JsonElement element) : base(type, baseType, element)
     {
         Properties = ImmutableArray<DatProperty>.Empty;
+    }
+
+    private bool CalculateHasLocalizationProperties()
+    {
+        if (BaseType is { HasLocalizationProperties: true })
+            return true;
+
+        if (this is not IDatTypeWithLocalizationProperties lclProps)
+            return false;
+
+        if (!lclProps.LocalizationProperties.IsDefaultOrEmpty || lclProps.LocalizationPropertiesBuilder is { Count: > 0 })
+            return true;
+
+        IEnumerable<DatProperty> properties = PropertiesBuilder ?? Properties.AsEnumerable();
+        foreach (DatProperty property in properties)
+        {
+            switch (property.Type)
+            {
+                case TypeSwitch sw:
+                    foreach (ISwitchCase<IType> @case in sw.Cases.OfType<ISwitchCase<IType>>())
+                    {
+                        if (!@case.Value.TryGetConcreteValue(out Optional<IType> type))
+                            continue;
+
+                        if (type.HasValue && TypeCouldHaveLocalizationProperties(type.Value))
+                            return true;
+                    }
+
+                    break;
+
+                case IType type when TypeCouldHaveLocalizationProperties(type):
+                    return true;
+            }
+        }
+
+        return false;
+
+        static bool TypeCouldHaveLocalizationProperties(IType type)
+        {
+            return type.TrimmingBehavior >= PropertySearchTrimmingBehavior.CreatesOtherPropertiesInLinkedFiles;
+        }
     }
 }
 
@@ -307,6 +372,8 @@ public interface IDatTypeWithStringParseableType<T>
 /// </summary>
 public class DatFileType : DatTypeWithProperties
 {
+    private bool _hasDoneLocalPropertiesCalculation;
+
     // allows type properties to reference other types before they're finalized.
     internal ImmutableDictionary<QualifiedType, DatType>.Builder? TypesBuilder;
 

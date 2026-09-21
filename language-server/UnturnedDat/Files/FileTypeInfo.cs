@@ -1,20 +1,34 @@
-﻿using UnturnedDat.Data.Utility;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using UnturnedDat.Data.Utility;
 
-namespace UnturnedDat.LanguageServer.Files;
+namespace UnturnedDat.Data.Files;
 
-internal readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
+/// <summary>
+/// Guesses information about an asset file from its parent folder and relative files.
+/// </summary>
+public readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
 {
-    public readonly bool IsAsset;
-    public readonly bool IsLocalization;
+    /// <summary>
+    /// Whether or not this file is an asset file.
+    /// </summary>
+    public bool IsAsset { get; }
+
+    /// <summary>
+    /// Whether or not this file is an asset's localization file.
+    /// </summary>
+    [MemberNotNullWhen(true, nameof(AssetPath))]
+    public bool IsLocalization { get; }
 
     /// <summary>
     /// Corresponding asset path if this is a localization file.
     /// </summary>
-    public readonly string? AssetPath;
+    public string? AssetPath { get; }
 
     public FileTypeInfo(ReadOnlySpan<char> fullName)
     {
-        ReadOnlySpan<char> fileName = Path.GetFileName(fullName);
+        ReadOnlySpan<char> fileName = OSPathHelper.GetFileName(fullName);
 
         if (fileName.Equals("Asset.dat", OSPathHelper.PathComparison))
         {
@@ -30,8 +44,8 @@ internal readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
             return;
         }
 
-        ReadOnlySpan<char> fullDirectoryName = Path.GetDirectoryName(fullName);
-        ReadOnlySpan<char> directoryName = Path.GetFileName(fullDirectoryName);
+        ReadOnlySpan<char> fullDirectoryName = OSPathHelper.GetDirectoryName(fullName);
+        ReadOnlySpan<char> directoryName = OSPathHelper.GetFileName(fullDirectoryName);
         ReadOnlySpan<char> ext = fileName[extStartIndex..];
 
         // **/*.asset
@@ -60,8 +74,7 @@ internal readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
         }
 
         // Folder/English.dat (with Folder.dat)
-        string datAsset = string.Concat(directoryName, ".dat");
-        datAsset = Path.Join(fullDirectoryName, datAsset);
+        string datAsset = OSPathHelper.CombineAndConcat(fullDirectoryName, directoryName, ".dat");
         if (File.Exists(datAsset))
         {
             IsLocalization = true;
@@ -70,8 +83,7 @@ internal readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
         }
 
         // Folder/English.dat (with Folder.asset)
-        string assetAsset = string.Concat(directoryName, ".asset");
-        assetAsset = Path.Join(fullDirectoryName, assetAsset);
+        string assetAsset = OSPathHelper.CombineAndConcat(fullDirectoryName, directoryName, ".asset");
         if (File.Exists(assetAsset))
         {
             IsLocalization = true;
@@ -79,7 +91,7 @@ internal readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
             return;
         }
 
-        string assetDatPath = Path.Join(fullDirectoryName, "Asset.dat");
+        string assetDatPath = OSPathHelper.CombineAndConcat(fullDirectoryName, "Asset.dat", ReadOnlySpan<char>.Empty);
         if (File.Exists(assetDatPath))
         {
             IsLocalization = true;

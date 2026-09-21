@@ -23,18 +23,22 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
 
     private readonly OpenedFileTracker _fileTracker;
     private readonly IParsingServices _parsingServices;
+    private readonly StartupWaitUtility _startupWait;
 
-    public DiscoverAssetPropertiesHandler(OpenedFileTracker fileTracker, IParsingServices parsingServices)
+    public DiscoverAssetPropertiesHandler(OpenedFileTracker fileTracker, IParsingServices parsingServices, StartupWaitUtility startupWait)
     {
         _fileTracker = fileTracker;
         _parsingServices = parsingServices;
+        _startupWait = startupWait;
     }
 
-    public Task<Container<AssetProperty>> Handle(DiscoverAssetPropertiesParams request, CancellationToken cancellationToken)
+    public async Task<Container<AssetProperty>> Handle(DiscoverAssetPropertiesParams request, CancellationToken cancellationToken)
     {
+        await _startupWait.WaitForStartupAsync();
+
         if (!_fileTracker.Files.TryGetValue(request.Document, out OpenedFile? file))
         {
-            return Task.FromResult(Empty);
+            return Empty;
         }
 
         ISourceFile sourceFile = file.SourceFile;
@@ -93,7 +97,7 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
             outputProperties.Sort(headerSize, outputProperties.Count - headerSize, comparer);
         }
 
-        return Task.FromResult(new Container<AssetProperty>(outputProperties));
+        return new Container<AssetProperty>(outputProperties);
     }
 
     private void Execute(IDictionarySourceNode dictionary, AssetDatPropertyPosition position, List<AssetProperty> outputProperties)
