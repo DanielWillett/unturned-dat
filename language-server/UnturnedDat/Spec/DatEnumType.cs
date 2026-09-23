@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -132,13 +133,78 @@ public class DatEnumType : DatType,
     /// <param name="value">Parsed enum value.</param>
     /// <param name="caseInsensitive">Whether or not to accept values of a different case but the same value.</param>
     /// <returns>Whether or not a match was found.</returns>
-    public virtual bool TryParse(ReadOnlySpan<char> text, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive = true)
+    public bool TryParse(ReadOnlySpan<char> text, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive = true)
     {
+        return TryParse(text, null, out value, caseInsensitive);
+    }
+
+    protected virtual bool TryParse(ReadOnlySpan<char> text, string? str, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive = true)
+    {
+        if (TryParseNumeric(text, out value))
+            return true;
+
         return TryParseSingleValue(text, out value, caseInsensitive);
+    }
+
+    protected bool TryParseNumeric(ReadOnlySpan<char> text, [NotNullWhen(true)] out DatEnumValue? value, string? str = null)
+    {
+        text = text.Trim();
+        if (text.IsEmpty)
+        {
+            value = null;
+            return false;
+        }
+
+        if (text[0] is not '-' and not '(' and not '.' && !char.IsDigit(text[0]))
+        {
+            value = null;
+            return false;
+        }
+
+        long numValue;
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+        if (long.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out long numValueI8))
+#else
+        if (long.TryParse(str ??= text.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out long numValueI8))
+#endif
+        {
+            numValue = numValueI8;
+        }
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+        else if (ulong.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out ulong numValueU8))
+#else
+        else if (ulong.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out ulong numValueU8))
+#endif
+        {
+            numValue = unchecked ( (long)numValueU8 );
+        }
+        else
+        {
+            value = null;
+            return false;
+        }
+
+        return TryGetValueFromNumber(numValue, out value);
+    }
+
+    protected virtual bool TryGetValueFromNumber(long numValue, [NotNullWhen(true)] out DatEnumValue? value)
+    {
+        foreach (DatEnumValue v in Values)
+        {
+            if (v.NumericValue != numValue)
+                continue;
+
+            value = v;
+            return true;
+        }
+
+        value = null;
+        return false;
     }
 
     protected bool TryParseSingleValue(ReadOnlySpan<char> text, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive)
     {
+        text = text.Trim();
         if (text.IsEmpty)
         {
             value = null;
@@ -174,7 +240,7 @@ public class DatEnumType : DatType,
         }
 
         string? str = reader.GetString();
-        bool s = TryParse(str, out DatEnumValue? v, caseInsensitive: false);
+        bool s = TryParse(str.AsSpan(), str, out DatEnumValue? v, caseInsensitive: false);
         value = v;
         return s;
     }
@@ -255,7 +321,7 @@ public class DatEnumType : DatType,
             case JsonValueKind.String:
                 string str = json.GetString()!;
                 args.TextAsString = str;
-                if (TryParse(str, out DatEnumValue? val, caseInsensitive: false))
+                if (TryParse(str.AsSpan(), str, out DatEnumValue? val, caseInsensitive: false))
                 {
                     value = val;
                     return true;
@@ -289,7 +355,7 @@ public class DatEnumType : DatType,
         metadata.DeclaringType = TypeName;
         metadata.Variable = value.Value;
         metadata.Description = value.Description;
-        metadata.Version = value.Version ?? Version;
+        metadata.Version = value.Version == UnturnedVersion.Zero ? Version : value.Version;
         metadata.Docs = value.Docs ?? Docs;
         metadata.IsDeprecated = value.Deprecated;
         metadata.CorrespondingType = value.CorrespondingType;
@@ -339,7 +405,7 @@ public class DatEnumType : DatType,
             }
         }
 
-        if (TryParseSingleValue(v.Value.AsSpan(), out DatEnumValue? enumValue, true))
+        if (TryParse(v.Value.AsSpan(), v.Value, out DatEnumValue? enumValue, true))
         {
             args.Result = TypeParserResult.Successful;
             value = new Optional<DatEnumValue>(enumValue);
@@ -390,6 +456,13 @@ public class DatFlagEnumType :
 
     internal DatFlagEnumType(QualifiedType type, JsonElement element, DatFileType file, IDatSpecificationReadContext context) : base(type, element, file, context) { }
 
+    protected override bool TryGetValueFromNumber(long numValue, [NotNullWhen(true)] out DatEnumValue? value)
+    {
+        OneOrMore<DatFlagEnumValue> values = Deconstruct(numValue, false);
+        value = DatFlagEnumValue.Create(values, this, default);
+        return true;
+    }
+
     public bool TryReadValueFromJson(ref Utf8JsonReader reader, [NotNullWhen(true)] out IValue<DatFlagEnumValue>? value)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -411,9 +484,9 @@ public class DatFlagEnumType :
     }
 
     /// <inheritdoc cref="TryParse(ReadOnlySpan{char}, out DatFlagEnumValue, bool)"/>
-    public override bool TryParse(ReadOnlySpan<char> text, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive = true)
+    protected override bool TryParse(ReadOnlySpan<char> text, string? str, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive = true)
     {
-        bool s = TryParse(text, out DatFlagEnumValue? flagValue, caseInsensitive);
+        bool s = TryParse(text, str, out DatFlagEnumValue? flagValue, caseInsensitive);
         value = flagValue;
         return s;
     }
@@ -427,6 +500,17 @@ public class DatFlagEnumType :
     /// <returns>Whether or not a match was found.</returns>
     public bool TryParse(ReadOnlySpan<char> text, [NotNullWhen(true)] out DatFlagEnumValue? value, bool caseInsensitive = true)
     {
+        return TryParse(text, null, out value, caseInsensitive);
+    }
+
+    private bool TryParse(ReadOnlySpan<char> text, string? str, [NotNullWhen(true)] out DatFlagEnumValue? value, bool caseInsensitive = true)
+    {
+        if (TryParseNumeric(text, out DatEnumValue? v, str) && v is DatFlagEnumValue f)
+        {
+            value = f;
+            return true;
+        }
+
         value = null;
         text = text.Trim();
 
@@ -549,7 +633,7 @@ public class DatFlagEnumType :
         }
     }
 
-    private unsafe struct ValueSpanStringState
+    private struct ValueSpanStringState
     {
         public ReadOnlySpan<DatFlagEnumValue>* Values;
         public bool Casing;
@@ -859,7 +943,7 @@ public class DatEnumValue : IValue<DatEnumValue>, IEquatable<DatEnumValue>, IDat
     /// <summary>
     /// The version of Unturned this enum value was added in.
     /// </summary>
-    public Version? Version { get; internal set; }
+    public UnturnedVersion Version { get; internal set; }
 
     /// <summary>
     /// The numeric value of this enum, used for [Flag] enums.

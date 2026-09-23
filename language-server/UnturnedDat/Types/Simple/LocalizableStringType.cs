@@ -114,14 +114,31 @@ public sealed class LocalizableStringType : BaseType<string, LocalizableStringTy
                 return false;
             }
 
-            // todo:
-            if (args.DiagnosticSink != null && false)
+            string propertyName = (args.ParentNode as IPropertySourceNode)?.Key ?? args.Property.Key;
+            if (_keyOverride != null && _keyOverride.TryEvaluateValue(out Optional<string> keyOverride, ref ctx) && !string.IsNullOrEmpty(keyOverride.Value))
             {
-                DiagnosticSinkExtensions.CheckStringDiagnostics(ref args, null!, _minLength, _maxLength, _allowLineBreakTag, _allowRichText, _extraTags, _formattingArgs);
+                propertyName = keyOverride.Value;
             }
-            value = Optional<string>.Null;
-            args.Result = TypeParserResult.Failed;
-            return false;
+
+            if (localFile.TryGetProperty(propertyName, out IPropertySourceNode? propertyNode)
+                && propertyNode.Value is IValueSourceNode lclValueNode)
+            {
+                if (args.DiagnosticSink != null)
+                {
+                    DiagnosticSinkExtensions.CheckStringDiagnostics(ref args, lclValueNode, _minLength, _maxLength, _allowLineBreakTag, _allowRichText, _extraTags, _formattingArgs);
+                }
+
+                if (args.ReferencedPropertySink != null)
+                {
+                    args.ReferencedPropertySink.AcceptReferencedProperty(propertyNode);
+                    if (args.ValueNode is { Parent: IPropertySourceNode parentProperty })
+                        args.ReferencedPropertySink.AcceptDereferencedProperty(parentProperty);
+                }
+
+                value = lclValueNode.Value;
+                args.Result = TypeParserResult.Successful;
+                return true;
+            }
         }
 
         if (TypeParsers.TryApplyMissingValueBehavior(ref args, ref ctx, out value, out bool rtn))

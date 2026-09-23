@@ -114,7 +114,7 @@ public class DatProperty : IDatSpecificationObject
     /// The version of Unturned this property was added in.
     /// </summary>
     /// <remarks>Corresponds to the <c>Version</c> property.</remarks>
-    public IValue<Version>? Version { get; internal set; }
+    public IValue<UnturnedVersion>? Version { get; internal set; }
 
     /// <summary>
     /// Whether or not this property is deprecated/obsolete.

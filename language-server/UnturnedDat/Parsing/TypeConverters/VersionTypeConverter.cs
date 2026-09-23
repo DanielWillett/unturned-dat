@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -8,53 +7,35 @@ using UnturnedDat.Data.Utility;
 
 namespace UnturnedDat.Data.Parsing;
 
-internal sealed class VersionTypeConverter : ITypeConverter<Version>
+internal sealed class VersionTypeConverter : ITypeConverter<UnturnedVersion>
 {
-    public IType<Version> DefaultType => VersionType.Instance;
+    public IType<UnturnedVersion> DefaultType => VersionType.Instance;
 
-    public bool TryParse(ReadOnlySpan<char> text, ref TypeConverterParseArgs<Version> args, [NotNullWhen(true)] out Version? parsedValue)
+    public bool TryParse(ReadOnlySpan<char> text, ref TypeConverterParseArgs<UnturnedVersion> args, out UnturnedVersion parsedValue)
     {
-        return Version.TryParse(args.StringOrSpan(text), out parsedValue);
+        return UnturnedVersion.TryParse(args.StringOrSpan(text), out parsedValue);
     }
 
-    public string Format(Version value, ref TypeConverterFormatArgs args)
+    public string Format(UnturnedVersion value, ref TypeConverterFormatArgs args)
     {
-        return value.ToString();
+        return value.ToString(true);
     }
 
-    public bool TryFormat(Span<char> output, Version value, out int size, ref TypeConverterFormatArgs args)
+    public bool TryFormat(Span<char> output, UnturnedVersion value, out int size, ref TypeConverterFormatArgs args)
     {
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
-        if (value.TryFormat(output, out size))
+        if (value.TryFormat(output, out size, true))
         {
             return true;
         }
 
-        uint fieldCt = value.Build != -1 ? value.Revision != -1 ? 4u : 3u : 2u;
-        size = fieldCt switch
-        {
-            2 => StringHelper.CountDigits(value.Major) + 1 + StringHelper.CountDigits(value.Minor),
-            3 => StringHelper.CountDigits(value.Major) + 1 + StringHelper.CountDigits(value.Minor)
-                 + 1 + StringHelper.CountDigits(value.Build),
-            _ => StringHelper.CountDigits(value.Major) + 1 + StringHelper.CountDigits(value.Minor)
-                 + 1 + StringHelper.CountDigits(value.Build) + 1 + StringHelper.CountDigits(value.Revision)
-        };
-
+        size = UnturnedVersion.MaximumStringLength;
         return false;
-#else
-        string str = args.FormatCache ?? value.ToString();
-        size = str.Length;
-        if (str.AsSpan().TryCopyTo(output))
-            return true;
-        args.FormatCache = str;
-        return false;
-#endif
     }
 
     public override bool Equals(object? obj) => obj is VersionTypeConverter;
     public override int GetHashCode() => 417383781;
 
-    public bool TryConvertTo<TTo>(Optional<Version> obj, out Optional<TTo> result) where TTo : IEquatable<TTo>
+    public bool TryConvertTo<TTo>(Optional<UnturnedVersion> obj, out Optional<TTo> result) where TTo : IEquatable<TTo>
     {
         if (!obj.HasValue)
         {
@@ -62,129 +43,87 @@ internal sealed class VersionTypeConverter : ITypeConverter<Version>
             return true;
         }
 
-        if (typeof(TTo) == typeof(Version))
+        if (typeof(TTo) == typeof(UnturnedVersion))
         {
-            result = Unsafe.As<Optional<Version>, Optional<TTo>>(ref obj);
+            result = Unsafe.As<Optional<UnturnedVersion>, Optional<TTo>>(ref obj);
             return true;
         }
 
         if (typeof(TTo) == typeof(string))
         {
-            result = new Optional<TTo>(MathMatrix.As<string, TTo>(obj.Value.ToString()));
+            result = new Optional<TTo>(MathMatrix.As<string, TTo>(obj.Value.ToString(true)));
             return true;
         }
 
         if (typeof(TTo) == typeof(Vector4))
         {
-            Vector4 v4 = new Vector4(obj.Value.Major, obj.Value.Minor, obj.Value.Build, obj.Value.Revision);
+            Vector4 v4 = new Vector4(obj.Value.Edition, obj.Value.Major, obj.Value.Minor, obj.Value.Patch);
             result = new Optional<TTo>(Unsafe.As<Vector4, TTo>(ref v4));
+        }
+
+        if (typeof(TTo) == typeof(Vector3))
+        {
+            Vector3 v3 = new Vector3(obj.Value.Edition, obj.Value.Major, obj.Value.Minor);
+            result = new Optional<TTo>(Unsafe.As<Vector3, TTo>(ref v3));
+        }
+
+        if (typeof(TTo) == typeof(Vector2))
+        {
+            Vector2 v2 = new Vector2(obj.Value.Edition, obj.Value.Major);
+            result = new Optional<TTo>(Unsafe.As<Vector2, TTo>(ref v2));
         }
 
         result = Optional<TTo>.Null;
         return false;
     }
 
-    public void WriteJson(Utf8JsonWriter writer, Version value, ref TypeConverterFormatArgs args, JsonSerializerOptions options)
+    public void WriteJson(Utf8JsonWriter writer, UnturnedVersion value, ref TypeConverterFormatArgs args, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.ToString());
     }
 
-    public bool TryReadJson(in JsonElement json, out Optional<Version> value, ref TypeConverterParseArgs<Version> args)
+    public bool TryReadJson(in JsonElement json, out Optional<UnturnedVersion> value, ref TypeConverterParseArgs<UnturnedVersion> args)
     {
         switch (json.ValueKind)
         {
             case JsonValueKind.Null:
-                value = Optional<Version>.Null;
+                value = Optional<UnturnedVersion>.Null;
                 return true;
 
             case JsonValueKind.String:
-                if (!Version.TryParse(json.GetString()!, out Version? v))
+                if (!UnturnedVersion.TryParse(json.GetString()!, out UnturnedVersion v))
                 {
-                    value = Optional<Version>.Null;
+                    value = Optional<UnturnedVersion>.Null;
                     return false;
                 }
 
-                value = new Optional<Version>(v);
+                value = v;
                 return true;
 
             case JsonValueKind.Array:
+                byte b = 0, c = 0, d = 0;
                 switch (json.GetArrayLength())
                 {
-                    case 2:
-                        int a0 = json[0].GetInt32(), a1 = json[1].GetInt32();
-                        if (a0 < 0 || a1 < 0)
-                            break;
-
-                        value = new Version(a0, a1);
-                        return true;
-
-                    case 3:
-                        a0 = json[0].GetInt32();
-                        a1 = json[1].GetInt32();
-                        int a2 = json[2].GetInt32();
-                        if (a0 < 0 || a1 < 0 || a2 < 0)
-                            break;
-
-                        value = new Version(a0, a1, a2);
-                        return true;
-
                     case 4:
-                        a0 = json[0].GetInt32();
-                        a1 = json[1].GetInt32();
-                        a2 = json[2].GetInt32();
-                        int a3 = json[3].GetInt32();
-                        if (a0 < 0 || a1 < 0 || a2 < 0 || a3 < 0)
-                            break;
-
-                        value = new Version(a0, a1, a2, a3);
+                        d = json[3].GetByte();
+                        goto case 3;
+                    case 3:
+                        c = json[2].GetByte();
+                        goto case 2;
+                    case 2:
+                        b = json[1].GetByte();
+                        goto case 1;
+                    case 1:
+                        byte a = json[0].GetByte();
+                        value = new UnturnedVersion(a, b, c, d);
                         return true;
                 }
 
-                value = Optional<Version>.Null;
+                value = Optional<UnturnedVersion>.Null;
                 return false;
 
-            case JsonValueKind.Object:
-
-                if (!json.TryGetProperty("Major"u8, out JsonElement majorElement)
-                    || majorElement.ValueKind != JsonValueKind.Number
-                    || !majorElement.TryGetInt32(out int major)
-                    || !json.TryGetProperty("Minor"u8, out JsonElement minorElement)
-                    || minorElement.ValueKind != JsonValueKind.Number
-                    || !minorElement.TryGetInt32(out int minor))
-                {
-                    value = Optional<Version>.Null;
-                    return false;
-                }
-
-                if (json.TryGetProperty("Build"u8, out JsonElement buildElement) && buildElement.ValueKind != JsonValueKind.Null)
-                {
-                    if (buildElement.ValueKind != JsonValueKind.Number || !buildElement.TryGetInt32(out int build))
-                    {
-                        value = Optional<Version>.Null;
-                        return false;
-                    }
-
-                    if (json.TryGetProperty("Revision"u8, out JsonElement revisionElement) && revisionElement.ValueKind != JsonValueKind.Null)
-                    {
-                        if (revisionElement.ValueKind != JsonValueKind.Number || !revisionElement.TryGetInt32(out int revision))
-                        {
-                            value = Optional<Version>.Null;
-                            return false;
-                        }
-
-                        value = new Version(major, minor, build, revision);
-                        return true;
-                    }
-
-                    value = new Version(major, minor, build);
-                    return true;
-                }
-
-                value = new Version(major, minor);
-                return true;
-
             default:
-                value = Optional<Version>.Null;
+                value = Optional<UnturnedVersion>.Null;
                 return false;
         }
     }

@@ -115,6 +115,25 @@ public sealed class LegacyAssetReferenceType :
                 break;
 
             case IValueSourceNode v:
+                if (SupportsThis && v.Value.Equals("this", StringComparison.OrdinalIgnoreCase))
+                {
+                    ushort? idOrNull = ctx.File switch
+                    {
+                        IAssetSourceFile asset => asset.Id,
+                        ILocalizationSourceFile lcl => lcl.Asset.Id,
+                        _ => null
+                    };
+
+                    if (!idOrNull.HasValue)
+                    {
+                        args.DiagnosticSink?.UNT2004_ThisMissingId(ref args, v.Value, args.Type);
+                        return false;
+                    }
+
+                    value = idOrNull.Value;
+                    return true;
+                }
+
                 if (!KnownTypeValueHelper.TryParseUInt16(v.Value, out ushort id))
                 {
                     if (!Defaultable || !KnownTypeValueHelper.TryParseInt32(v.Value, out int idAsInt) || idAsInt > ushort.MaxValue)

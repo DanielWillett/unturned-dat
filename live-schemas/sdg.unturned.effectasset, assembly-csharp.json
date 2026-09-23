@@ -112,7 +112,8 @@
             "DefaultValue": false,
             "Description": "Disable sound effect pitch randomization.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/effect-asset.html#general-data",
-            "Variable": "isStatic"
+            "Variable": "isStatic",
+            "Version": "o:3.10.8.0"
         },
         {
             "Key": "Is_Music",

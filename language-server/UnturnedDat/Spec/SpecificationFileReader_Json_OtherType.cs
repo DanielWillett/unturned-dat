@@ -253,7 +253,7 @@ partial class SpecificationFileReader
 
         // Version
         if (root.TryGetProperty("Version"u8, out element) && element.ValueKind != JsonValueKind.Null)
-            parsedType.Version = Version.Parse(element.GetString()!);
+            parsedType.Version = UnturnedVersion.Parse(element.GetString()!);
 
         // !! needs to be last !!
         // StringParseableType
@@ -353,7 +353,7 @@ partial class SpecificationFileReader
 
         // Version
         if (root.TryGetProperty("Version"u8, out element) && element.ValueKind != JsonValueKind.Null)
-            parsedValue.Version = Version.Parse(element.GetString()!);
+            parsedValue.Version = UnturnedVersion.Parse(element.GetString()!);
 
         return parsedValue;
     }

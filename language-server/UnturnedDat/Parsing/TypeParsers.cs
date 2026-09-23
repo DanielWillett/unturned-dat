@@ -140,7 +140,7 @@ public static class TypeParsers
     /// <summary>
     /// The type parser for <see cref="System.Version"/> values.
     /// </summary>
-    public static ITypeParser<Version> Version => VersionType.Instance;
+    public static ITypeParser<UnturnedVersion> Version => VersionType.Instance;
 
     /// <summary>
     /// Gets the type parser for the given type.

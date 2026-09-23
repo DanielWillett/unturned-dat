@@ -126,7 +126,7 @@ public static class TypeConverters
     /// <summary>
     /// The type converter for <see cref="System.Version"/> values.
     /// </summary>
-    public static ITypeConverter<Version> Version { get; } = new VersionTypeConverter();
+    public static ITypeConverter<UnturnedVersion> Version { get; } = new VersionTypeConverter();
 
     /// <summary>
     /// Gets the type converter for the given type.

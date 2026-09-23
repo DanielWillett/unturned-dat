@@ -16,6 +16,7 @@ using UnturnedDat.Data.Parsing;
 using UnturnedDat.Data.Project;
 using UnturnedDat.Data.Types;
 using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
 namespace UnturnedDat.Data.Spec;
 
@@ -303,6 +304,8 @@ public class AssetSpecDatabase : IDisposable, IAssetSpecDatabase
     protected virtual void Dispose(bool disposing)
     {
         Interlocked.Exchange(ref _statusJson, null)?.Dispose();
+
+        LegacyStateStack.Dispose();
 
         if (!disposing)
             return;

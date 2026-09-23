@@ -273,7 +273,8 @@
             "Description": "Specified if a zombie should always be stunned when targeted by the weapon.",
             "Variable": "zombieStunOverride",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/weapon-asset.html#zombie-damage",
-            "ExclusiveWith": [ "Stun_Zombie_Never" ]
+            "ExclusiveWith": [ "Stun_Zombie_Never" ],
+            "Version": "o:3.24.0.0"
         },
         {
             "Key": "Stun_Zombie_Never",
@@ -282,7 +283,8 @@
             "Description": "Specified if a zombie should never be stunned when targeted by the weapon.",
             "Variable": "zombieStunOverride",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/weapon-asset.html#zombie-damage",
-            "ExclusiveWith": [ "Stun_Zombie_Always" ]
+            "ExclusiveWith": [ "Stun_Zombie_Always" ],
+            "Version": "o:3.24.0.0"
         },
         {
             "Key": "Zombie_Ragdoll_Force_Multiplier",

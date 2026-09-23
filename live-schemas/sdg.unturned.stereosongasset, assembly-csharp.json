@@ -23,7 +23,8 @@
                     "Value":
                     {
                         "Type": "LocalizableString",
-                        "LocalizationKeyOverride": "Name"
+                        "LocalizationKeyOverride": "Name",
+                        "PreferLocalizationValue": true
                     }
                 }
             ],

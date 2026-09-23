@@ -222,7 +222,6 @@ public sealed class BundleReferenceType : BaseType<BundleReference, BundleRefere
                     // reparse with diagnostics
                     _ = TryParseRefObject(d, ref args, out br, BundleReferenceKind.MasterBundleReference, diagnostics: true);
                     args.Result = TypeParserResult.Failed;
-                    return false;
                 }
 
                 break;
@@ -251,7 +250,12 @@ public sealed class BundleReferenceType : BaseType<BundleReference, BundleRefere
             _ => "AssetPath"
         };
 
-        dictionary.TryGetPropertyValue(nameProperty, out IValueSourceNode? nameNode);
+        if (dictionary.TryGetProperty(nameProperty, out IPropertySourceNode? namePropertyNode))
+        {
+            args.ReferencedPropertySink?.AcceptReferencedProperty(namePropertyNode);
+        }
+
+        IValueSourceNode? nameNode = namePropertyNode?.Value as IValueSourceNode;
 
         if (!dictionary.TryGetProperty(pathProperty, out IPropertySourceNode? pathNode))
         {
@@ -259,11 +263,12 @@ public sealed class BundleReferenceType : BaseType<BundleReference, BundleRefere
             {
                 args.DiagnosticSink?.UNT1007(ref args, dictionary, pathProperty);
             }
-            if (nameNode != null)
-                args.ReferencedPropertySink?.AcceptReferencedProperty((IPropertySourceNode)nameNode.Parent);
+
             value = default;
             return false;
         }
+
+        args.ReferencedPropertySink?.AcceptReferencedProperty(pathNode);
 
         if (!pathNode.HasValue || pathNode.ValueKind != SourceValueType.Value)
         {
@@ -273,11 +278,6 @@ public sealed class BundleReferenceType : BaseType<BundleReference, BundleRefere
 
         value = new BundleReference(nameNode?.Value ?? string.Empty, pathNode.GetValueString(out _)!, rType);
 
-        if (nameNode != null)
-            args.ReferencedPropertySink?.AcceptReferencedProperty((IPropertySourceNode)nameNode.Parent);
-
-        args.ReferencedPropertySink?.AcceptReferencedProperty(pathNode);
-        
         if (diagnostics)
             args.DiagnosticSink?.UNT108(ref args);
 

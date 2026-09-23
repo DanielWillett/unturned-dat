@@ -132,7 +132,7 @@ partial class SpecificationFileReader
         }
 
         // SubtypeSwitch
-        if (root.TryGetProperty("SubtypeSwitch"u8, out element) && element.ValueKind != JsonValueKind.String)
+        if (root.TryGetProperty("SubtypeSwitch"u8, out element) && element.ValueKind != JsonValueKind.Null)
         {
             property.SubtypeSwitchPropertyName = element.GetString();
         }
@@ -305,7 +305,7 @@ partial class SpecificationFileReader
         // Version
         if (root.TryGetProperty("Version"u8, out element) && element.ValueKind != JsonValueKind.Null)
         {
-            property.Version = this.ReadValue(in element, VersionType.PackableInstance, property, $"{owner.FullName}.{key}.Version");
+            property.Version = this.ReadValue(in element, VersionType.Instance, property, $"{owner.FullName}.{key}.Version");
         }
 
         // Docs

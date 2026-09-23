@@ -157,20 +157,6 @@ public sealed class PropertyDataRef : RootDataRef<PropertyDataRef>
         return false;
     }
 
-    protected override bool AcceptProperty(in IsLegacyProperty property, ref FileEvaluationContext ctx, out bool value)
-    {
-        if (_propReference.IsCrossReference)
-        {
-            value = false;
-            return false;
-        }
-
-        // todo
-        EnsureValueExists(ctx.Services.Database);
-        value = false;
-        return false;
-    }
-
     protected override bool AcceptProperty(in ValueTypeProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out string? value)
     {
         EnsureValueExists(ctx.Services.Database);

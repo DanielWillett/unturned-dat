@@ -726,70 +726,6 @@ public static class DiagnosticSinkExtensions
         }
 
         /// <summary>
-        /// Reports a version component higher than it's maximum.
-        /// </summary>
-        public void UNT1031_2031_More<TDiagnosticProvider>(
-            ref TDiagnosticProvider provider,
-            int value, int presedence, int maximum, FileRange range, bool err
-        ) where TDiagnosticProvider : struct, IDiagnosticProvider
-        {
-            diagnosticSink.AcceptDiagnostic(new DatDiagnosticMessage
-            {
-                Diagnostic = err ? DatDiagnostics.UNT2031 : DatDiagnostics.UNT1031,
-                Message = string.Format(presedence switch
-                {
-                    0 => DiagnosticResources.UNT1031_More_Major,
-                    1 => DiagnosticResources.UNT1031_More_Minor,
-                    2 => DiagnosticResources.UNT1031_More_Build,
-                    _ => DiagnosticResources.UNT1031_More_Revision
-                }, value, maximum),
-                Range = range
-            });
-            provider.RegisterFailureDiagnostic();
-        }
-
-        /// <summary>
-        /// Reports a version component lower than it's minimum.
-        /// </summary>
-        public void UNT1031_2031_Less<TDiagnosticProvider>(
-            ref TDiagnosticProvider provider,
-            int value, int presedence, int minimum, FileRange range, bool err
-        ) where TDiagnosticProvider : struct, IDiagnosticProvider
-        {
-            diagnosticSink.AcceptDiagnostic(new DatDiagnosticMessage
-            {
-                Diagnostic = err ? DatDiagnostics.UNT2031 : DatDiagnostics.UNT1031,
-                Message = string.Format(presedence switch
-                {
-                    0 => DiagnosticResources.UNT1031_Less_Major,
-                    1 => DiagnosticResources.UNT1031_Less_Minor,
-                    2 => DiagnosticResources.UNT1031_Less_Build,
-                    _ => DiagnosticResources.UNT1031_Less_Revision
-                }, value, minimum),
-                Range = range
-            });
-            provider.RegisterFailureDiagnostic();
-        }
-
-        /// <summary>
-        /// Reports a version component lower than it's minimum.
-        /// </summary>
-        public void UNT1031_2031_Digits<TDiagnosticProvider>(
-            ref TDiagnosticProvider provider,
-            int digitCount, int expectedDigits, FileRange range, bool err
-        ) where TDiagnosticProvider : struct, IDiagnosticProvider
-        {
-            diagnosticSink.AcceptDiagnostic(new DatDiagnosticMessage
-            {
-                Diagnostic = err ? DatDiagnostics.UNT2031 : DatDiagnostics.UNT1031,
-                Message = string.Format(DiagnosticResources.UNT1031_Digits, digitCount, expectedDigits),
-                Range = range
-            });
-            provider.RegisterFailureDiagnostic();
-        }
-
-
-        /// <summary>
         /// Reports a <see langword="false"/> value provided for a flag property.
         /// </summary>
         public void UNT2003<TDiagnosticProvider>(
@@ -843,7 +779,7 @@ public static class DiagnosticSinkExtensions
         /// </summary>
         public void UNT2004_MissingFile<TDiagnosticProvider>(
             ref TDiagnosticProvider provider,
-            IValueSourceNode referencingNode
+            ISourceNode referencingNode
         ) where TDiagnosticProvider : struct, IDiagnosticProvider
         {
             diagnosticSink.AcceptDiagnostic(new DatDiagnosticMessage
@@ -1155,6 +1091,38 @@ public static class DiagnosticSinkExtensions
             {
                 Diagnostic = DatDiagnostics.UNT2004,
                 Message = string.Format(DiagnosticResources.UNT2004_StrictColor, original, type.DisplayName, NodePropertyName(property, ref provider), allowAlpha ? 9 : 7, example),
+                Range = provider.GetRangeAndRegisterDiagnostic()
+            });
+        }
+
+        /// <summary>
+        /// Reports a failed to parse message because a file is using the 'this' keyword but doesn't have a defined GUID.
+        /// </summary>
+        public void UNT2004_ThisMissingGuid<TDiagnosticProvider>(
+            ref TDiagnosticProvider provider,
+            string original, IType type
+        ) where TDiagnosticProvider : struct, IDiagnosticProvider
+        {
+            diagnosticSink.AcceptDiagnostic(new DatDiagnosticMessage
+            {
+                Diagnostic = DatDiagnostics.UNT2004,
+                Message = string.Format(DiagnosticResources.UNT2004_ThisMissingGuid, original, type.DisplayName),
+                Range = provider.GetRangeAndRegisterDiagnostic()
+            });
+        }
+
+        /// <summary>
+        /// Reports a failed to parse message because a file is using the 'this' keyword but doesn't have a defined legacy ID.
+        /// </summary>
+        public void UNT2004_ThisMissingId<TDiagnosticProvider>(
+            ref TDiagnosticProvider provider,
+            string original, IType type
+        ) where TDiagnosticProvider : struct, IDiagnosticProvider
+        {
+            diagnosticSink.AcceptDiagnostic(new DatDiagnosticMessage
+            {
+                Diagnostic = DatDiagnostics.UNT2004,
+                Message = string.Format(DiagnosticResources.UNT2004_ThisMissingId, original, type.DisplayName),
                 Range = provider.GetRangeAndRegisterDiagnostic()
             });
         }

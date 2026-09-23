@@ -53,7 +53,8 @@
             "DefaultValue": false,
             "Description": "Disable sorting the buying and selling lists alphabetically.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/vendor-asset.html#other-properties",
-            "Variable": "enableSorting"
+            "Variable": "enableSorting",
+            "Version": "o:3.24.1.0"
         },
         {
             "Key": "Currency",
@@ -148,7 +149,8 @@
                     "Key": "Type",
                     "Type": "UnturnedDat.Data.Types.VendorSellingBaseType, DanielWillett.UnturnedDat",
                     "DefaultValue": "Item",
-                    "Description": "Whether this vendor listing is for an item or vehicle."
+                    "Description": "Whether this vendor listing is for an item or vehicle.",
+                    "Version": "o:3.24.1.0"
                 },
                 {
                     "Key": "ID",
@@ -405,7 +407,8 @@
                             "Key": "Type",
                             "Value": "Vehicle"
                         }
-                    ]
+                    ],
+                    "Version": "o:3.24.1.0"
                 },
                 {
                     "Key": "PaintColor",

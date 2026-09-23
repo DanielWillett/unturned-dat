@@ -13,9 +13,7 @@ namespace UnturnedDat.Data.Values;
 /// <para>
 /// Supported targets:
 /// <list type="bullet">
-///     <item><c>#Self</c></item>
 ///     <item><c>#This</c></item>
-///     <item>Any non-cross-referenced property reference.</item>
 /// </list>
 /// </para>
 /// <para>

@@ -140,21 +140,29 @@ public abstract class BaseVectorType<TVector, TSelf> :
                     && (args.ParentNode as IDictionarySourceNode ?? (args.ParentNode as IPropertySourceNode)?.Parent as IDictionarySourceNode) is { } dictionary
                     && args.Property != null)
                 {
-                    if (TryParseLegacy(ref args, dictionary, args.Property, out parsed, out bool hadOneComp))
+                    LegacyStateStack.Push(PropertyResolutionContext.Legacy);
+                    try
                     {
-                        if (args.ParentNode is IPropertySourceNode prop)
-                            args.ReferencedPropertySink?.AcceptDereferencedProperty(prop);
+                        if (TryParseLegacy(ref args, dictionary, args.Property, out parsed, out bool hadOneComp))
+                        {
+                            if (args.ParentNode is IPropertySourceNode prop)
+                                args.ReferencedPropertySink?.AcceptDereferencedProperty(prop);
 
-                        value = parsed;
-                        args.Result = TypeParserResult.Successful;
-                        return true;
+                            value = parsed;
+                            args.Result = TypeParserResult.Successful;
+                            return true;
+                        }
+
+                        if (hadOneComp)
+                        {
+                            if (args.ParentNode is IPropertySourceNode prop)
+                                args.ReferencedPropertySink?.AcceptDereferencedProperty(prop);
+                            break;
+                        }
                     }
-
-                    if (hadOneComp)
+                    finally
                     {
-                        if (args.ParentNode is IPropertySourceNode prop)
-                            args.ReferencedPropertySink?.AcceptDereferencedProperty(prop);
-                        break;
+                        LegacyStateStack.Pop();
                     }
                 }
 
@@ -251,8 +259,17 @@ public abstract class BaseVectorType<TVector, TSelf> :
                     break;
                 }
 
-                // check UnityDatColorEx.LegacyParseColor32RGB... if the dictionary is present it always returns true no matter what, so it wouldn't parse the colors here.
-                TryParseFromDictionary(ref args, d, out parsed);
+                LegacyStateStack.Push(PropertyResolutionContext.Modern);
+                try
+                {
+                    // check UnityDatColorEx.LegacyParseColor32RGB... if the dictionary is present it always returns true no matter what, so it wouldn't parse the colors here.
+                    TryParseFromDictionary(ref args, d, out parsed);
+                }
+                finally
+                {
+                    LegacyStateStack.Pop();
+                }
+
                 value = parsed;
                 args.Result = TypeParserResult.Successful;
                 return true;

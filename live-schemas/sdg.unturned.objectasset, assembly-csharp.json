@@ -2208,7 +2208,8 @@
                     "Key": "Type",
                     "Value": "NPC"
                 }
-            ]
+            ],
+            "Version": "o:3.17.6.0"
         },
         {
             "Key": "Add_Night_Light_Script",

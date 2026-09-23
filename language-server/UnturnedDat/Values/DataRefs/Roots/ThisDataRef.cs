@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Properties;
 using UnturnedDat.Data.Spec;
 
 namespace UnturnedDat.Data.Values;
@@ -103,21 +104,14 @@ public sealed class ThisDataRef : RootDataRef<ThisDataRef>
     protected override bool AcceptProperty(in IsLegacyProperty property, ref FileEvaluationContext ctx, out bool value)
     {
         value = false;
-        // NOTE: CAUSES STACK OVERFLOW
-        // if (!Owner.Type.TryEvaluateType(out IType? type, ref ctx))
-        // {
-        //     return false;
-        // }
-        // 
-        // if (type is not ILegacyCompatibleType legacyCompatibleType)
-        // {
-        //     return true;
-        // }
+        if (!LegacyStateStack.TryGetCurrent(out PropertyResolutionContext state))
+        {
+            value = false;
+            return false;
+        }
 
-        // todo
-        // return legacyCompatibleType.TryGetPropertyLegacyStatus(Owner, null, PropertyBreadcrumbs.Root, ref ctx, out value);
-        value = false;
-        return false;
+        value = state == PropertyResolutionContext.Legacy;
+        return true;
     }
 
     /// <inheritdoc />

@@ -211,6 +211,19 @@ public sealed class ListType : ITypeFactory
                     );
             }
 
+            Optional<TCountType> legacyMinCount = Optional<TCountType>.Null;
+            if (Json.TryGetProperty("LegacyMinimumCount"u8, out element) && element.ValueKind != JsonValueKind.Null)
+            {
+                TypeConverterParseArgs<TCountType> parseArgs = new TypeConverterParseArgs<TCountType>(type);
+                if (!TypeConverters.Get<TCountType>().TryReadJson(in element, out legacyMinCount, ref parseArgs))
+                    throw new JsonException(string.Format(
+                            Resources.JsonException_FailedToParseValue,
+                            type.Id,
+                            Context.Length != 0 ? $"{Owner.FullName}.{Context}.LegacyMinimumCount" : $"{Owner.FullName}.LegacyMinimumCount"
+                        )
+                    );
+            }
+
             IValue<TElementType>? defaultValue = null, includedDefaultValue = null;
 
             IndexDataRefContext<TCountType> c;
@@ -256,6 +269,7 @@ public sealed class ListType : ITypeFactory
                 Mode = mode,
                 MinimumCount = minValue,
                 MaximumCount = maxValue,
+                LegacyMinimumCount = legacyMinCount,
                 LegacyDefaultElementTypeValue = defaultValue,
                 LegacyIncludedDefaultElementTypeValue = includedDefaultValue,
                 LegacySingleKey = legacySingleKey,
@@ -323,6 +337,7 @@ public sealed class ListType : ITypeFactory
 ///     <item><c><see cref="bool"/> SkipUnderscoreInLegacyKey</c> - Indicates that the '_' should not be used to separate <c>LegacySingularKey</c> and the index. Defaults to <see langword="false"/>.</item>
 ///     <item><c><see cref="bool"/> RequireUniqueValues</c> - Determines whether or not all elements in the list must be unique (or a warning is shown). Defaults to <see langword="false"/>.</item>
 ///     <item><c><see cref="SpecPropertyContext"/> ElementContext</c> - Determines which type of property the actual elements of the list should be in. This only works for legacy list modes. Defaults to <see cref="SpecPropertyContext.Unspecified"/>.</item>
+///     <item><c><typeparamref name="TCountType"/> LegacyMinimumCount</c> - Minimum number of elements to read, even if the count isn't specified.</item>
 /// </list>
 /// </para>
 /// </summary>
@@ -344,6 +359,7 @@ public class ListType<TCountType, TElementType>
     private readonly IType<TCountType>? _countType;
     private readonly int? _minCount;
     private readonly int? _maxCount;
+    private readonly int? _legacyMinCount;
 
     IType IListType.ElementType => _subType;
 
@@ -410,6 +426,7 @@ public class ListType<TCountType, TElementType>
 
         countConverter.TryConvertTo(_args.MinimumCount, out Optional<int> newMinCount);
         countConverter.TryConvertTo(_args.MaximumCount, out Optional<int> newMaxCount);
+        countConverter.TryConvertTo(_args.LegacyMinimumCount, out Optional<int> legacyMinCount);
         _minCount = newMinCount.AsNullable();
         if (_minCount is <= 0)
             _minCount = null;
@@ -417,6 +434,10 @@ public class ListType<TCountType, TElementType>
         _maxCount = newMaxCount.AsNullable();
         if (_maxCount is < 0)
             _maxCount = null;
+
+        _legacyMinCount = legacyMinCount.AsNullable();
+        if (_legacyMinCount is < 1)
+            _legacyMinCount = null;
     }
 
     #region JSON
@@ -603,7 +624,7 @@ public class ListType<TCountType, TElementType>
 
                 args.CreateSubTypeParserArgs(out TypeParserArgs<TElementType> parseArgs, singularProperty.Value, args.ParentNode, _subType, LegacyExpansionFilter.Modern);
 
-                if (!TryParseWithIndex(0, ref parseArgs, ref ctx, out Optional<TElementType> element))
+                if (!TryParseWithIndex(0, ref parseArgs, ref ctx, out Optional<TElementType> element, PropertyResolutionContext.Modern))
                 {
                     if (!parseArgs.ShouldIgnoreFailureDiagnostic)
                         args.DiagnosticSink?.UNT2004_Generic(ref args, singularProperty.Value == null ? "-" : singularProperty.Value.ToString()!, _subType);
@@ -630,6 +651,16 @@ public class ListType<TCountType, TElementType>
         {
             // null (no value)
             default:
+
+                // count isn't present but count defaults to a value > 0 so the elements don't require a count
+                if (legacy && (_args.Mode & ListMode.LegacyList) != 0 && _legacyMinCount.HasValue)
+                {
+                    int count = _legacyMinCount.Value;
+
+                    IDictionarySourceNode? defaultDictionary = args.ParentNode as IDictionarySourceNode ?? (args.ParentNode as IPropertySourceNode)?.Parent as IDictionarySourceNode;
+                    return TryReadLegacyList(count, ref args, ref ctx, out value, null, defaultDictionary);
+                }
+
                 if (args.MissingValueBehavior != TypeParserMissingValueBehavior.FallbackToDefaultValue)
                 {
                     if (!modern)
@@ -678,7 +709,7 @@ public class ListType<TCountType, TElementType>
 
                     args.CreateSubTypeParserArgs(out TypeParserArgs<TElementType> elementParseArgs, v, listNode, _subType, LegacyExpansionFilter.Modern);
 
-                    if (!TryParseWithIndex(0, ref elementParseArgs, ref ctx, out Optional<TElementType> elementType) || !elementType.HasValue)
+                    if (!TryParseWithIndex(0, ref elementParseArgs, ref ctx, out Optional<TElementType> elementType, PropertyResolutionContext.Modern) || !elementType.HasValue)
                     {
                         if (!elementParseArgs.ShouldIgnoreFailureDiagnostic)
                         {
@@ -744,131 +775,7 @@ public class ListType<TCountType, TElementType>
                             defaultDictionary = dictionary;
                         }
 
-                        string? singularPropertyName = _args.LegacySingularKey;
-
-                        if (string.IsNullOrEmpty(singularPropertyName))
-                        {
-                            if (args.ParentNode is IPropertySourceNode property)
-                            {
-                                singularPropertyName = property.Key;
-                            }
-                            else
-                            {
-                                singularPropertyName = args.Property?.Key ?? string.Empty;
-                                if (args.BaseKey != null)
-                                {
-                                    singularPropertyName = args.BaseKey + "_" + singularPropertyName;
-                                }
-                            }
-
-                            // trim 's' from end by default
-                            if (singularPropertyName.Length > 1 && singularPropertyName[^1] is 's' or 'S')
-                            {
-                                singularPropertyName = singularPropertyName[..^1];
-                            }
-                        }
-                        else if (args.BaseKey != null)
-                        {
-                            singularPropertyName = args.BaseKey + "_" + singularPropertyName;
-                        }
-
-                        IDictionarySourceNode? dictionaryNode = _args.ElementContext switch
-                        {
-                            SpecPropertyContext.Localization or SpecPropertyContext.CrossReferenceLocalization
-                                => valueNode.File is IAssetSourceFile asset
-                                    ? asset.GetDefaultLocalizationFile()
-                                    : defaultDictionary,
-
-                            SpecPropertyContext.Property or SpecPropertyContext.CrossReferenceProperty
-                                => valueNode.File is ILocalizationSourceFile lcl
-                                    ? lcl.Asset
-                                    : defaultDictionary,
-
-                            _ => defaultDictionary
-                        };
-
-                        if (dictionaryNode == null)
-                        {
-                            args.DiagnosticSink?.UNT2004_MissingFile(ref args, valueNode);
-                            args.Result = TypeParserResult.Failed;
-                            return false;
-                        }
-
-                        array = new TElementType?[count];
-                        allFailed = true;
-                        for (int i = 0; i < count; ++i)
-                        {
-                            string newKey = CreateLegacyKey(singularPropertyName, i);
-                            bool needsDefault = false, wasIncluded = false;
-
-                            if (!dictionaryNode.TryGetProperty(newKey, out IPropertySourceNode? property)
-                                && _subType.TrimmingBehavior <= PropertySearchTrimmingBehavior.CreatesSiblingPropertiesInSameFile)
-                            {
-                                args.DiagnosticSink?.UNT1007(ref args, valueNode, newKey);
-                                needsDefault = true;
-                            }
-                            else
-                            {
-                                wasIncluded = true;
-                                TypeParserArgs<TElementType> elementParseArgs;
-                                if (property != null)
-                                {
-                                    args.ReferencedPropertySink?.AcceptReferencedProperty(property);
-                                    args.CreateSubTypeParserArgs(out elementParseArgs, property.Value, property, _subType, LegacyExpansionFilter.Either);
-                                }
-                                else
-                                {
-                                    args.CreateSubTypeParserArgs(out elementParseArgs, null, dictionaryNode, _subType, LegacyExpansionFilter.Legacy);
-                                    elementParseArgs.BaseKey = newKey;
-                                }
-
-                                if (!TryParseWithIndex(i, ref elementParseArgs, ref ctx, out Optional<TElementType> elementType) || !elementType.HasValue)
-                                {
-                                    if (!elementParseArgs.ShouldIgnoreFailureDiagnostic)
-                                    {
-                                        args.DiagnosticSink?.UNT2004_Generic(ref args, property?.Value == null ? "-" : property.Value.ToString()!, _subType);
-                                    }
-
-                                    needsDefault = true;
-                                }
-                                else
-                                {
-                                    array[i] = elementType.Value;
-                                    if (_args.RequireUniqueValues)
-                                    {
-                                        CheckUniqueValue(ref elementParseArgs, valueNode, array, i);
-                                    }
-                                    allFailed = false;
-                                }
-                            }
-
-                            if (!needsDefault)
-                                continue;
-
-                            IValue<TElementType>? defaultValue = wasIncluded
-                                ? _args.LegacyIncludedDefaultElementTypeValue ?? _args.LegacyDefaultElementTypeValue
-                                : _args.LegacyDefaultElementTypeValue;
-
-                            if (defaultValue == null)
-                                continue;
-
-                            DefaultValueVisitor v;
-                            v.Array = array;
-                            v.Index = i;
-                            ListType.Index.Value = i;
-                            try
-                            {
-                                defaultValue.VisitValue(ref v, ref ctx);
-                            }
-                            finally
-                            {
-                                ListType.Index.Value = -1;
-                            }
-                        }
-
-                        value = new EquatableArray<TElementType>(array!);
-                        args.Result = allFailed ? TypeParserResult.Failed : TypeParserResult.Successful;
-                        return !allFailed;
+                        return TryReadLegacyList(count, ref args, ref ctx, out value, valueNode, defaultDictionary);
                     }
 
                     if (!couldBeModernSingle && !parseArgs.ShouldIgnoreFailureDiagnostic)
@@ -881,7 +788,7 @@ public class ListType<TCountType, TElementType>
                 {
                     args.CreateSubTypeParserArgs(out TypeParserArgs<TElementType> parseArgs, args.ValueNode, args.ParentNode, _subType, LegacyExpansionFilter.Modern);
 
-                    if (!TryParseWithIndex(0, ref parseArgs, ref ctx, out Optional<TElementType> element))
+                    if (!TryParseWithIndex(0, ref parseArgs, ref ctx, out Optional<TElementType> element, PropertyResolutionContext.Modern))
                     {
                         if (!parseArgs.ShouldIgnoreFailureDiagnostic)
                             args.DiagnosticSink?.UNT2004_Generic(ref args, valueNode.Value, _subType);
@@ -909,8 +816,152 @@ public class ListType<TCountType, TElementType>
         return false;
     }
 
-    private bool TryParseWithIndex(int index, ref TypeParserArgs<TElementType> parseArgs, ref FileEvaluationContext ctx, out Optional<TElementType> element)
+    private bool TryReadLegacyList(
+        int count,
+        ref TypeParserArgs<EquatableArray<TElementType>> args,
+        ref FileEvaluationContext ctx,
+        out Optional<EquatableArray<TElementType>> value,
+        IValueSourceNode? valueNode,
+        IDictionarySourceNode? defaultDictionary
+    )
     {
+        string? singularPropertyName = _args.LegacySingularKey;
+
+        if (string.IsNullOrEmpty(singularPropertyName))
+        {
+            if (args.ParentNode is IPropertySourceNode property)
+            {
+                singularPropertyName = property.Key;
+            }
+            else
+            {
+                singularPropertyName = args.Property?.Key ?? string.Empty;
+                if (args.BaseKey != null)
+                {
+                    if (args.BaseKey.Length > 0 && args.BaseKey[^1] == '_')
+                        singularPropertyName = args.BaseKey + singularPropertyName;
+                    else
+                        singularPropertyName = args.BaseKey + "_" + singularPropertyName;
+                }
+            }
+
+            // trim 's' from end by default
+            if (singularPropertyName.Length > 1 && singularPropertyName[^1] is 's' or 'S')
+            {
+                singularPropertyName = singularPropertyName[..^1];
+            }
+        }
+        else if (args.BaseKey != null)
+        {
+            if (args.BaseKey.Length > 0 && args.BaseKey[^1] == '_')
+                singularPropertyName = args.BaseKey + singularPropertyName;
+            else
+                singularPropertyName = args.BaseKey + "_" + singularPropertyName;
+        }
+
+        IDictionarySourceNode? dictionaryNode = _args.ElementContext switch
+        {
+            SpecPropertyContext.Localization or SpecPropertyContext.CrossReferenceLocalization
+                => args.ParentNode.File is IAssetSourceFile asset
+                    ? asset.GetDefaultLocalizationFile()
+                    : defaultDictionary,
+
+            SpecPropertyContext.Property or SpecPropertyContext.CrossReferenceProperty
+                => args.ParentNode.File is ILocalizationSourceFile lcl
+                    ? lcl.Asset
+                    : defaultDictionary,
+
+            _ => defaultDictionary
+        };
+
+        if (dictionaryNode == null)
+        {
+            value = Optional<EquatableArray<TElementType>>.Null;
+            args.DiagnosticSink?.UNT2004_MissingFile(ref args, (ISourceNode?)valueNode ?? args.ParentNode);
+            args.Result = TypeParserResult.Failed;
+            return false;
+        }
+
+        TElementType?[] array = new TElementType?[count];
+        bool allFailed = true;
+        for (int i = 0; i < count; ++i)
+        {
+            string newKey = CreateLegacyKey(singularPropertyName, i);
+            bool needsDefault = false, wasIncluded = false;
+
+            if (!dictionaryNode.TryGetProperty(newKey, out IPropertySourceNode? property)
+                && _subType.TrimmingBehavior <= PropertySearchTrimmingBehavior.CreatesSiblingPropertiesInSameFile)
+            {
+                args.DiagnosticSink?.UNT1007(ref args, (ISourceNode?)valueNode ?? args.ParentNode, newKey);
+                needsDefault = true;
+            }
+            else
+            {
+                wasIncluded = true;
+                TypeParserArgs<TElementType> elementParseArgs;
+                if (property != null)
+                {
+                    args.ReferencedPropertySink?.AcceptReferencedProperty(property);
+                    args.CreateSubTypeParserArgs(out elementParseArgs, property.Value, property, _subType, LegacyExpansionFilter.Either);
+                }
+                else
+                {
+                    args.CreateSubTypeParserArgs(out elementParseArgs, null, dictionaryNode, _subType, LegacyExpansionFilter.Legacy);
+                    elementParseArgs.BaseKey = newKey;
+                }
+
+                if (!TryParseWithIndex(i, ref elementParseArgs, ref ctx, out Optional<TElementType> elementType, PropertyResolutionContext.Legacy) || !elementType.HasValue)
+                {
+                    if (!elementParseArgs.ShouldIgnoreFailureDiagnostic)
+                    {
+                        args.DiagnosticSink?.UNT2004_Generic(ref args, property?.Value == null ? "-" : property.Value.ToString()!, _subType);
+                    }
+
+                    needsDefault = true;
+                }
+                else
+                {
+                    array[i] = elementType.Value;
+                    if (_args.RequireUniqueValues)
+                    {
+                        CheckUniqueValue(ref elementParseArgs, (ISourceNode?)valueNode ?? args.ParentNode, array, i);
+                    }
+                    allFailed = false;
+                }
+            }
+
+            if (!needsDefault)
+                continue;
+
+            IValue<TElementType>? defaultValue = wasIncluded
+                ? _args.LegacyIncludedDefaultElementTypeValue ?? _args.LegacyDefaultElementTypeValue
+                : _args.LegacyDefaultElementTypeValue;
+
+            if (defaultValue == null)
+                continue;
+
+            DefaultValueVisitor v;
+            v.Array = array;
+            v.Index = i;
+            ListType.Index.Value = i;
+            try
+            {
+                defaultValue.VisitValue(ref v, ref ctx);
+            }
+            finally
+            {
+                ListType.Index.Value = -1;
+            }
+        }
+
+        value = new EquatableArray<TElementType>(array!);
+        args.Result = allFailed ? TypeParserResult.Failed : TypeParserResult.Successful;
+        return !allFailed;
+    }
+
+    private bool TryParseWithIndex(int index, ref TypeParserArgs<TElementType> parseArgs, ref FileEvaluationContext ctx, out Optional<TElementType> element, PropertyResolutionContext state)
+    {
+        LegacyStateStack.Push(state);
         ListType.Index.Value = index;
         try
         {
@@ -919,6 +970,7 @@ public class ListType<TCountType, TElementType>
         finally
         {
             ListType.Index.Value = -1;
+            LegacyStateStack.Pop();
         }
     }
 
@@ -1057,6 +1109,11 @@ public readonly struct ListTypeArgs<TCountType, TElementType>
     /// Maximum number of elements in the list (inclusive).
     /// </summary>
     public Optional<TCountType> MaximumCount { get; init; }
+
+    /// <summary>
+    /// Minimum number of elements to read, even if the count isn't specified.
+    /// </summary>
+    public Optional<TCountType> LegacyMinimumCount { get; init; }
 
     /// <summary>
     /// The key used for legacy list elements. Ex 'Condition'_0 for 'Conditions'.

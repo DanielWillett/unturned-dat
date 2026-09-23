@@ -502,62 +502,71 @@ public class DictionaryType<TKeyType, TValueType>
                 DictionaryPair<TValueType>[] array = new DictionaryPair<TValueType>[count];
                 bool allPassed = true;
                 int index = 0;
-                foreach (ISourceNode node in nodes)
+
+                LegacyStateStack.Push(PropertyResolutionContext.Modern);
+                try
                 {
-                    if (node is not IPropertySourceNode property)
-                        continue;
-
-                    string key = property.Key;
-                    IAnyValueSourceNode? valueNode = property.Value;
-
-                    args.ReferencedPropertySink?.AcceptReferencedProperty(property);
-
-                    if (args.DiagnosticSink != null
-                        && _keyType != null
-                        && _args.RequireKeyType
-                        && !TryParseKey(property, ref args, ref ctx))
+                    foreach (ISourceNode node in nodes)
                     {
-                        allPassed = false;
-                    }
+                        if (node is not IPropertySourceNode property)
+                            continue;
 
-                    args.CreateSubTypeParserArgs(
-                         out TypeParserArgs<TValueType> parseArgs,
-                         valueNode,
-                         property,
-                         _valueType,
-                         LegacyExpansionFilter.Modern
-                    );
+                        string key = property.Key;
+                        IAnyValueSourceNode? valueNode = property.Value;
 
-                    if (!_valueType.Parser.TryParse(ref parseArgs, ref ctx, out Optional<TValueType> parsedValue)
-                        || !parsedValue.TryGetValueOrNull(out TValueType? actualValue))
-                    {
-                        TValueType? defaultValue = default;
-                        if (_args.DefaultValue != null)
+                        args.ReferencedPropertySink?.AcceptReferencedProperty(property);
+
+                        if (args.DiagnosticSink != null
+                            && _keyType != null
+                            && _args.RequireKeyType
+                            && !TryParseKey(property, ref args, ref ctx))
                         {
-                            DictionaryType.Key.Value = key;
-                            ListType.Index.Value = index;
-                            try
-                            {
-                                if (_args.DefaultValue.TryEvaluateValue(out Optional<TValueType> gottenValue, ref ctx))
-                                {
-                                    defaultValue = gottenValue.Value;
-                                }
-                            }
-                            finally
-                            {
-                                ListType.Index.Value = -1;
-                                DictionaryType.Key.Value = null;
-                            }
+                            allPassed = false;
                         }
 
-                        allPassed = false;
-                        array[index] = new DictionaryPair<TValueType>(key, defaultValue);
-                        ++index;
-                        continue;
-                    }
+                        args.CreateSubTypeParserArgs(
+                             out TypeParserArgs<TValueType> parseArgs,
+                             valueNode,
+                             property,
+                             _valueType,
+                             LegacyExpansionFilter.Modern
+                        );
 
-                    array[index] = new DictionaryPair<TValueType>(key, actualValue);
-                    ++index;
+                        if (!_valueType.Parser.TryParse(ref parseArgs, ref ctx, out Optional<TValueType> parsedValue)
+                            || !parsedValue.TryGetValueOrNull(out TValueType? actualValue))
+                        {
+                            TValueType? defaultValue = default;
+                            if (_args.DefaultValue != null)
+                            {
+                                DictionaryType.Key.Value = key;
+                                ListType.Index.Value = index;
+                                try
+                                {
+                                    if (_args.DefaultValue.TryEvaluateValue(out Optional<TValueType> gottenValue, ref ctx))
+                                    {
+                                        defaultValue = gottenValue.Value;
+                                    }
+                                }
+                                finally
+                                {
+                                    ListType.Index.Value = -1;
+                                    DictionaryType.Key.Value = null;
+                                }
+                            }
+
+                            allPassed = false;
+                            array[index] = new DictionaryPair<TValueType>(key, defaultValue);
+                            ++index;
+                            continue;
+                        }
+
+                        array[index] = new DictionaryPair<TValueType>(key, actualValue);
+                        ++index;
+                    }
+                }
+                finally
+                {
+                    LegacyStateStack.Pop();
                 }
 
                 value = new EquatableArray<DictionaryPair<TValueType>>(array, index);

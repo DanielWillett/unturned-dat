@@ -441,37 +441,16 @@
   <data name="UNT2004_CanNotDetermineType" xml:space="preserve">
     <value>Unable to determine the type of property '{0}'. This is likely a bug in the asset specification.</value>
   </data>
-  <data name="UNT1031_More_Major" xml:space="preserve">
-    <value>Major version {0} is too large. Value should not exceed {1}.</value>
-  </data>
-  <data name="UNT1031_More_Minor" xml:space="preserve">
-    <value>Minor version {0} is too large. Value should not exceed {1}.</value>
-  </data>
-  <data name="UNT1031_More_Build" xml:space="preserve">
-    <value>Build version {0} is too large. Value should not exceed {1}.</value>
-  </data>
-  <data name="UNT1031_More_Revision" xml:space="preserve">
-    <value>Revision version {0} is too large. Value should not exceed {1}.</value>
-  </data>
-  <data name="UNT1031_Less_Major" xml:space="preserve">
-    <value>Major version {0} is too small. Value should not be less than {1}.</value>
-  </data>
-  <data name="UNT1031_Less_Minor" xml:space="preserve">
-    <value>Minor version {0} is too small. Value should not be less than {1}.</value>
-  </data>
-  <data name="UNT1031_Less_Build" xml:space="preserve">
-    <value>Build version {0} is too small. Value should not be less than {1}.</value>
-  </data>
-  <data name="UNT1031_Less_Revision" xml:space="preserve">
-    <value>Revision version {0} is too small. Value should not be less than {1}.</value>
-  </data>
-  <data name="UNT1031_Digits" xml:space="preserve">
-    <value>This version has {0} digits, where it should have exactly {1} digits.</value>
-  </data>
   <data name="UNT2032" xml:space="preserve">
     <value>This dictionary contains multiple '{0}' properties. This property has no effect.</value>
   </data>
   <data name="UNT1032" xml:space="preserve">
     <value>This dictionary contains multiple '{0}' properties. This property overrides all others with the same name.</value>
+  </data>
+  <data name="UNT2004_ThisMissingGuid" xml:space="preserve">
+    <value>Value '{0}' can not be converted to a value of type '{1}', define a GUID to use the 'this' keyword.</value>
+  </data>
+  <data name="UNT2004_ThisMissingId" xml:space="preserve">
+    <value>Value '{0}' can not be converted to a value of type '{1}', define an ID to use the 'this' keyword.</value>
   </data>
 </root>

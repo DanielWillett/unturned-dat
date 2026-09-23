@@ -252,7 +252,7 @@ public partial class OpenedFile : IMutableWorkspaceFile, IDiagnosticSink, IBundl
     /// <returns><see langword="true"/> if the type info changed.</returns>
     internal bool RecalculateTypeInfo()
     {
-        FileTypeInfo newTypeInfo = new FileTypeInfo(File);
+        FileTypeInfo newTypeInfo = new FileTypeInfo(File, _services.Database.Information);
         lock (EditLock)
         {
             if (newTypeInfo.Equals(in TypeInfo))
@@ -278,7 +278,7 @@ public partial class OpenedFile : IMutableWorkspaceFile, IDiagnosticSink, IBundl
 
         string path = Path.GetFullPath(uri.GetFileSystemPath());
         File = path;
-        TypeInfo = new FileTypeInfo(File);
+        TypeInfo = new FileTypeInfo(File, _services.Database.Information);
 #if KEEP_VIRTUAL_FILE_SYSTEM
         _useVirtualFiles = useVirtualFiles;
         _virtualFile = Path.Combine(UnturnedDatLanguageServer.DebugPath, Path.GetFileName(path) + ".txt");

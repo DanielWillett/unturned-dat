@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Utility;
 
 namespace UnturnedDat.Data.Files;
@@ -26,7 +27,7 @@ public readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
     /// </summary>
     public string? AssetPath { get; }
 
-    public FileTypeInfo(ReadOnlySpan<char> fullName)
+    public FileTypeInfo(ReadOnlySpan<char> fullName, AssetInformation information)
     {
         ReadOnlySpan<char> fileName = OSPathHelper.GetFileName(fullName);
 
@@ -73,11 +74,16 @@ public readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
             return;
         }
 
+        string languageName = SteamLanguageUtility.GetInternedLanguageName(fnWithoutExt);
+        if (information.KnownLanguages == null || !information.KnownLanguages.Contains(languageName))
+            return;
+
+        IsLocalization = true;
+
         // Folder/English.dat (with Folder.dat)
         string datAsset = OSPathHelper.CombineAndConcat(fullDirectoryName, directoryName, ".dat");
         if (File.Exists(datAsset))
         {
-            IsLocalization = true;
             AssetPath = datAsset;
             return;
         }
@@ -86,16 +92,29 @@ public readonly struct FileTypeInfo : IEquatable<FileTypeInfo>
         string assetAsset = OSPathHelper.CombineAndConcat(fullDirectoryName, directoryName, ".asset");
         if (File.Exists(assetAsset))
         {
-            IsLocalization = true;
             AssetPath = assetAsset;
             return;
         }
 
+        // Folder/English.dat (with Asset.dat)
         string assetDatPath = OSPathHelper.CombineAndConcat(fullDirectoryName, "Asset.dat", ReadOnlySpan<char>.Empty);
         if (File.Exists(assetDatPath))
         {
-            IsLocalization = true;
             AssetPath = assetDatPath;
+        }
+
+        // Folder/English.dat (with *.asset, only if there's a single one)
+        bool hasOne = false;
+        foreach (string file in Directory.EnumerateFiles(fullDirectoryName.ToString(), "*.asset", SearchOption.TopDirectoryOnly))
+        {
+            if (hasOne)
+            {
+                AssetPath = null;
+                return;
+            }
+
+            AssetPath = file;
+            hasOne = true;
         }
     }
 

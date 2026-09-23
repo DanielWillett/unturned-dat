@@ -212,7 +212,8 @@
                     "Type": "Url",
                     "SpecialTypes": [ "image/png", "image/jpeg" ],
                     "Description": "URL of a 32x32 image shown in the server list.",
-                    "DefaultValue": null
+                    "DefaultValue": null,
+                    "Version": "o:3.24.0.0"
                 },
                 {
                     "Key": "Desc_Hint",
@@ -242,7 +243,8 @@
                         "SupportsRichText": true
                     },
                     "Description": "Short description underneath the server name in the server list.",
-                    "DefaultValue": null
+                    "DefaultValue": null,
+                    "Version": "o:3.24.0.0"
                 },
                 {
                     "Key": "Login_Token",
@@ -1325,7 +1327,8 @@
                     "Type": "Float32",
                     "Minimum": 0.0,
                     "Description": "How long (in seconds) a locked vehicle can sit empty in the safezone before it is automatically unlocked.",
-                    "DefaultValue": 3600.0
+                    "DefaultValue": 3600.0,
+                    "Version": "o:3.23.8.0"
                 },
                 {
                     "Key": "Armor_Multiplier",
@@ -1975,7 +1978,8 @@
                         "Variable": "#This.Difficulty",
                         "Operation": "eq",
                         "Comparand": "HARD"
-                    }
+                    },
+                    "Version": "o:3.26.3.0"
                 },
                 {
                     "Key": "Can_Target_Barricades",
@@ -2171,21 +2175,24 @@
                     "Type": "Float32",
                     "Minimum": 0.0,
                     "Description": "Scales the amount of damage taken by barricades from non-\"Heavy Weapon\" guns. For example, 2.0 doubles the amount of damage dealt to barricades by non-\"Heavy Weapon\" guns.",
-                    "DefaultValue": 1.0
+                    "DefaultValue": 1.0,
+                    "Version": "o:3.26.1.0"
                 },
                 {
                     "Key": "Gun_Highcal_Damage_Multiplier",
                     "Type": "Float32",
                     "Minimum": 0.0,
                     "Description": "Scales the amount of damage taken by barricades from \"Heavy Weapon\" guns. For example, 2.0 doubles the amount of damage dealt to barricades by \"Heavy Weapon\" guns.",
-                    "DefaultValue": 1.0
+                    "DefaultValue": 1.0,
+                    "Version": "o:3.26.1.0"
                 },
                 {
                     "Key": "Melee_Damage_Multiplier",
                     "Type": "Float32",
                     "Minimum": 0.0,
                     "Description": "Scales the amount of damage taken by barricades from melee weapons and fists. For example, 2.0 doubles the amount of damage dealt to barricades by melee.",
-                    "DefaultValue": 1.0
+                    "DefaultValue": 1.0,
+                    "Version": "o:3.24.0.0"
                 },
                 {
                     "Key": "Melee_Repair_Multiplier",
@@ -2254,21 +2261,24 @@
                     "Type": "Float32",
                     "Minimum": 0.0,
                     "Description": "Scales the amount of damage taken by structures from non-\"Heavy Weapon\" guns. For example, 2.0 doubles the amount of damage dealt to structures by non-\"Heavy Weapon\" guns.",
-                    "DefaultValue": 1.0
+                    "DefaultValue": 1.0,
+                    "Version": "o:3.24.0.0"
                 },
                 {
                     "Key": "Gun_Highcal_Damage_Multiplier",
                     "Type": "Float32",
                     "Minimum": 0.0,
                     "Description": "Scales the amount of damage taken by structures from \"Heavy Weapon\" guns. For example, 2.0 doubles the amount of damage dealt to structures by \"Heavy Weapon\" guns.",
-                    "DefaultValue": 1.0
+                    "DefaultValue": 1.0,
+                    "Version": "o:3.24.0.0"
                 },
                 {
                     "Key": "Melee_Damage_Multiplier",
                     "Type": "Float32",
                     "Minimum": 0.0,
                     "Description": "Scales the amount of damage taken by structures from melee weapons and fists. For example, 2.0 doubles the amount of damage dealt to structures by melee.",
-                    "DefaultValue": 1.0
+                    "DefaultValue": 1.0,
+                    "Version": "o:3.24.0.0"
                 },
                 {
                     "Key": "Melee_Repair_Multiplier",
@@ -2806,13 +2816,15 @@
                     "Key": "Spawn_With_Max_Skills",
                     "Type": "Boolean",
                     "Description": "Should all skills default to max level?",
-                    "DefaultValue": false
+                    "DefaultValue": false,
+                    "Version": "o:3.24.1.0"
                 },
                 {
                     "Key": "Spawn_With_Stamina_Skills",
                     "Type": "Boolean",
                     "Description": "Should cardio, diving, exercise, and parkour default to max level?",
-                    "DefaultValue": false
+                    "DefaultValue": false,
+                    "Version": "o:3.24.1.0"
                 },
                 {
                     "Key": "Skillset_Reduces_Skill_Cost",

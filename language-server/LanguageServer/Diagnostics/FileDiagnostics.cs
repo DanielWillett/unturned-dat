@@ -51,7 +51,7 @@ internal class FileDiagnostics : IWorkspaceFile, IDiagnosticSink
     internal void UpdateFileName(string newFileName, DocumentUri newUri)
     {
         FilePath = newFileName;
-        TypeInfo = new FileTypeInfo(newFileName);
+        TypeInfo = new FileTypeInfo(newFileName, _database.Information);
         Uri = newUri;
     }
 

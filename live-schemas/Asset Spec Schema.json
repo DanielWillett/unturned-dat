@@ -26,7 +26,7 @@
         "Version":
         {
             "type": [ "string", "null" ],
-            "pattern": "\\d+\\.\\d+\\.\\d+\\.\\d+"
+            "pattern": "^(?:o:){0,1}\\d+\\.\\d+\\.\\d+\\.\\d+$"
         },
         "EAssetType":
         {
@@ -832,6 +832,12 @@
                             "description": "Default value for undefined legacy elements or elements without values.",
                             "$ref": "#/$defs/ValueAllowConditionals"
                         },
+                        "LegacyMinimumCount":
+                        {
+                            "description": "Minimum number of elements to read, even if the count isn't specified.",
+                            "type": [ "integer", "null" ],
+                            "minimum": 1
+                        },
                         "RequireUniqueValues":
                         {
                             "type": [ "boolean", "null" ],
@@ -984,14 +990,6 @@
                                     "title": "A Globally Unique Identifier (also called a UUID) referencing another asset. Can only be parsed as a string."
                                 },
                                 {
-                                    "const": "BcAssetReference",
-                                    "title": "A backwards-compatible GUID or ID referencing another asset. Can be parsed as a string or object."
-                                },
-                                {
-                                    "const": "BcAssetReferenceString",
-                                    "title": "A backwards-compatible GUID or ID referencing another asset. Can only be parsed as a string."
-                                },
-                                {
                                     "const": "LegacyAssetReferenceString",
                                     "title": "An asset GUID or short ID, where ElementType is the category or asset type."
                                 },
@@ -1027,6 +1025,56 @@
                         {
                             "type": "boolean",
                             "description": "Whether or not referencing the current asset should produce a warning."
+                        }
+                    },
+                    "required": [ "Type" ],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "properties":
+                    {
+                        "Type":
+                        {
+                            "anyOf":
+                            [
+                                {
+                                    "const": "BcAssetReference",
+                                    "title": "A backwards-compatible GUID or ID referencing another asset. Can be parsed as a string or object."
+                                },
+                                {
+                                    "const": "BcAssetReferenceString",
+                                    "title": "A backwards-compatible GUID or ID referencing another asset. Can only be parsed as a string."
+                                }
+                            ]
+                        },
+                        "AssetType":
+                        {
+                            "$ref": "#/$defs/QualifiedType",
+                            "description": "Any references must have this type in their type hierarchy."
+                        },
+                        "AssetTypes":
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/QualifiedType"
+                            },
+                            "description": "Any references must have at least one of these types in their type hierarchy."
+                        },
+                        "SupportsThis":
+                        {
+                            "type": "boolean",
+                            "description": "Whether or not the word 'this' can be used to refer to the current asset."
+                        },
+                        "PreventSelfReference":
+                        {
+                            "type": "boolean",
+                            "description": "Whether or not referencing the current asset should produce a warning."
+                        },
+                        "DefaultIdAssetType":
+                        {
+                            "$ref": "#/$defs/QualifiedType",
+                            "description": "If present, overrides the default category used for IDs without a type. This is usually assumed from \"BaseTypes\" but can be ambiguous at times."
                         }
                     },
                     "required": [ "Type" ],

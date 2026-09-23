@@ -11,7 +11,8 @@
             "Type":
             {
                 "Type": "TypeReference",
-                "BaseType": "SDG.Unturned.GameMode, Assembly-CSharp"
+                "BaseType": "SDG.Unturned.GameMode, Assembly-CSharp",
+                "Mode": "Object"
             },
             "DefaultValue": null,
             "Description": "The default gamemode to use when loading this map.",
@@ -25,7 +26,8 @@
                 "ElementType":
                 {
                     "Type": "TypeReference",
-                    "BaseType": "SDG.Unturned.GameMode, Assembly-CSharp"
+                    "BaseType": "SDG.Unturned.GameMode, Assembly-CSharp",
+                    "Mode": "Object"
                 }
             },
             "DefaultValue": [ ],

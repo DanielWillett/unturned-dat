@@ -139,26 +139,3 @@ public interface ITypeVisitor
     /// <typeparam name="TValue">The types of values that are parsed from this type.</typeparam>
     void Accept<TValue>(IType<TValue> type) where TValue : IEquatable<TValue>;
 }
-
-/// <summary>
-/// A type that represents a value where <c>#Property.IsLegacy</c> would be <see langword="true"/>.
-/// </summary>
-public interface ILegacyCompatibleType : IType
-{
-    /// <summary>
-    /// Attempt to determine whether or not the given property contains a legacy or modern value.
-    /// </summary>
-    /// <param name="property">The property of the value.</param>
-    /// <param name="node">The source node of the property containing the value.</param>
-    /// <param name="crumbs">Breadcrumbs from the source node's root to the value.</param>
-    /// <param name="ctx">Workspace context.</param>
-    /// <param name="isLegacy">Whether not the property is in the legacy (v1) format.</param>
-    /// <returns>Whether or not a state could be reliably determined.</returns>
-    bool TryGetPropertyLegacyStatus(
-        DatProperty property,
-        IPropertySourceNode node,
-        PropertyBreadcrumbs crumbs,
-        ref FileEvaluationContext ctx,
-        out bool isLegacy
-    );
-}

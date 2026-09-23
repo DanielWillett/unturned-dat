@@ -561,4 +561,10 @@
   <data name="Type_Name_Color_ModernIs32Bit" xml:space="preserve">
     <value>Color (0-255, Legacy: 0-1)</value>
   </data>
+  <data name="FormatException_UnturnedVersion_FailedToParse" xml:space="preserve">
+    <value>Unable to parse Unturned version, expected a value in the form: "[o:]0.0.0.0".</value>
+  </data>
+  <data name="ArgumentException_UnturnedVersion_UnknownFormatArgument" xml:space="preserve">
+    <value>Unknown format argument. Expected either 'p' (prefix) or nothing.</value>
+  </data>
 </root>

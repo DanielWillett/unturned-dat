@@ -126,10 +126,10 @@ internal static class AssetReferenceHelper
         foreach (QualifiedType type in baseTypes)
         {
             int c = AssetCategory.GetCategoryFromType(type, database.Information);
-            if (c == -1)
+            if (c <= 0)
                 continue;
 
-            if (c == 0 || category.Index != 0 && category.Index != c)
+            if (category.Index != 0 && category.Index != c)
             {
                 return AssetCategoryValue.None;
             }

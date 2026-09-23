@@ -242,10 +242,7 @@ public static class DatDiagnostics
     /// </summary>
     public static readonly DatDiagnostic UNT1030 = new DatDiagnostic("UNT1030", DatDiagnosticSeverity.Warning);
 
-    /// <summary>
-    /// Version property values are out of range (not strict formatting).
-    /// </summary>
-    public static readonly DatDiagnostic UNT1031 = new DatDiagnostic("UNT1031", DatDiagnosticSeverity.Warning);
+    // TODO UNT1031
 
     /// <summary>
     /// Duplicated property overrides other values in dictionary.
@@ -309,10 +306,7 @@ public static class DatDiagnostics
     /// </summary>
     public static readonly DatDiagnostic UNT2014 = new DatDiagnostic("UNT2014", DatDiagnosticSeverity.Error);
 
-    /// <summary>
-    /// Version property values are out of range (strict formatting).
-    /// </summary>
-    public static readonly DatDiagnostic UNT2031 = new DatDiagnostic("UNT2031", DatDiagnosticSeverity.Error);
+    // TODO UNT2031
 
     /// <summary>
     /// Duplicated property overridden by another value in dictionary.

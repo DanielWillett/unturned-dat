@@ -85,7 +85,8 @@
             "Type": "LegacyBundleName",
             "Description": "Override which .unity3d file this asset uses.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/asset-bundles.html#file-setup",
-            "DefaultValue": null
+            "DefaultValue": null,
+            "Version": "o:3.24.0.0"
         },
         {
             "Key": "Bundle_Path_Include_Filename",
@@ -100,7 +101,8 @@
             "Type": "AssetBundleVersion",
             "Description": "Defines which asset bundle version to use for this asset's legacy bundle.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/asset-bundles.html#file-setup",
-            "DefaultValue": 1
+            "DefaultValue": 1,
+            "Version": "o:3.16.3.0"
         },
         {
             "Key": "Enable_Shader_Consolidation",
@@ -129,7 +131,8 @@
                 {
                     "Value": false
                 }
-            ]
+            ],
+            "Version": "o:3.26.2.0"
         },
         {
             "Key": "Disable_Shader_Consolidation",
@@ -158,7 +161,8 @@
                 {
                     "Value": true
                 }
-            ]
+            ],
+            "Version": "o:3.26.2.0"
         },
         {
             "Key": "Keep_Localization_Loaded",
@@ -1205,7 +1209,8 @@
                             }
                         }
                     ],
-                    "Variable": "spawnQuantity"
+                    "Variable": "spawnQuantity",
+                    "Version": "o:3.23.9.1"
                 },
                 {
                     "Key": "Spawn",
@@ -1327,6 +1332,7 @@
             "DisplayName": "Animal Kills Condition",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html#kills-animal",
             "Parent": "SDG.Unturned.INPCCondition, Assembly-CSharp",
+            "Version": "o:3.21.4.0",
             "Properties":
             [
                 {
@@ -1371,6 +1377,7 @@
             "DisplayName": "Compare Flags Condition",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html#compare-flags",
             "Parent": "SDG.Unturned.INPCCondition, Assembly-CSharp",
+            "Version": "o:3.22.1.0",
             "Properties":
             [
                 {
@@ -1414,6 +1421,7 @@
             "DisplayName": "Time-of-day Condition",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html#time-of-day",
             "Parent": "SDG.Unturned.INPCCondition, Assembly-CSharp",
+            "Version": "o:3.22.1.0",
             "Properties":
             [
                 {
@@ -1438,6 +1446,7 @@
             "DisplayName": "Player Health Condition",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html#player-life-health",
             "Parent": "SDG.Unturned.INPCCondition, Assembly-CSharp",
+            "Version": "o:3.23.7.0",
             "Properties":
             [
                 {
@@ -1462,6 +1471,7 @@
             "DisplayName": "Player Food Condition",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html#player-life-food",
             "Parent": "SDG.Unturned.INPCCondition, Assembly-CSharp",
+            "Version": "o:3.23.7.0",
             "Properties":
             [
                 {
@@ -1486,6 +1496,7 @@
             "DisplayName": "Player Water Condition",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html#player-life-water",
             "Parent": "SDG.Unturned.INPCCondition, Assembly-CSharp",
+            "Version": "o:3.23.7.0",
             "Properties":
             [
                 {
@@ -1510,6 +1521,7 @@
             "DisplayName": "Player Immunity Condition",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html#player-life-virus",
             "Parent": "SDG.Unturned.INPCCondition, Assembly-CSharp",
+            "Version": "o:3.23.7.0",
             "Properties":
             [
                 {
@@ -2788,6 +2800,7 @@
             "DisplayName": "Flag Math Reward",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/rewards.html#flag-math",
             "Parent": "SDG.Unturned.INPCReward, Assembly-CSharp",
+            "Version": "o:3.23.0.0",
             "Properties":
             [
                 {

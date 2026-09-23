@@ -268,7 +268,8 @@
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#bicycle-flag",
             "Variable": "hasZip",
             "ExclusiveWith": [ "Zip", "Reclined" ],
-            "InclusiveWith": [ "Bicycle_Anim_Speed" ]
+            "InclusiveWith": [ "Bicycle_Anim_Speed" ],
+            "Version": "o:3.20.9.0"
         },
         {
             "Key": "Reclined",
@@ -309,7 +310,8 @@
             "DefaultValue": false,
             "Description": "Indicates that this vehicle does not spawn with a battery.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#cannot-spawn-with-battery-flag",
-            "Variable": "canSpawnWithBattery"
+            "Variable": "canSpawnWithBattery",
+            "Version": "o:3.25.2.0"
         },
         {
             "Key": "Battery_Spawn_Charge_Multiplier",
@@ -320,7 +322,8 @@
             "Maximum": 1.0,
             "Description": "Multiplier for the battery charge for newly-spawned vehicles.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#battery-spawn-charge-multiplier-float32-1",
-            "Variable": "batterySpawnChargeMultiplier"
+            "Variable": "batterySpawnChargeMultiplier",
+            "Version": "o:3.25.2.0"
         },
         {
             "Key": "Battery_Burn_Rate",
@@ -330,7 +333,8 @@
             "Minimum": 0.0,
             "Description": "The rate at which battery charge decreases per second.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#battery-burn-rate-float32-20",
-            "Variable": "batteryBurnRate"
+            "Variable": "batteryBurnRate",
+            "Version": "o:3.26.2.0"
         },
         {
             "Key": "Battery_Charge_Rate",
@@ -340,7 +344,8 @@
             "Minimum": 0.0,
             "Description": "The rate at which battery charge increases per second.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#battery-charge-rate-float32-20",
-            "Variable": "batteryChargeRate"
+            "Variable": "batteryChargeRate",
+            "Version": "o:3.26.2.0"
         },
         {
             "Key": "BatteryMode_Driving",
@@ -1179,10 +1184,11 @@
             "Key": "Bicycle_Anim_Speed",
             "Type": "Float32",
             "DefaultValue": 0.0,
-            "Description": "The angle to turn when moving quickly in planes.",
+            "Description": "Speed multiplier for the pedaling bicycle animation.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#bicycle-anim-speed-float32-0",
             "Variable": "bicycleAnimSpeed",
-            "InclusiveWith": [ "Bicycle" ]
+            "InclusiveWith": [ "Bicycle" ],
+            "Version": "o:3.20.9.0"
         },
         {
             "Key": "Stamina_Boost",
@@ -1190,7 +1196,8 @@
             "DefaultValue": 0.0,
             "Description": "Indicates that this vehicle should use the stamina boosting feature found in bicycles, where the value of this property is a multiplier for the maximum vehicle speed applied when not boosting. Usually this would be less than 1.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#stamina-boost-float32",
-            "Variable": "staminaBoost"
+            "Variable": "staminaBoost",
+            "Version": "o:3.20.9.0"
         },
         {
             "Key": "Stamina_Powered",
@@ -1199,7 +1206,8 @@
             "Description": "Indicates that this vehicle doesn't use fuel or a battery. Usually used with @Stamina_Boost.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#stamina-powered-flag",
             "Variable": "isStaminaPowered",
-            "ExclusiveWith": [ "Battery_Powered" ]
+            "ExclusiveWith": [ "Battery_Powered" ],
+            "Version": "o:3.20.9.0"
         },
         {
             "Key": "Battery_Powered",
@@ -1410,7 +1418,8 @@
                     "Key": "Engine",
                     "Value": "TRAIN"
                 }
-            ]
+            ],
+            "Version": "o:3.21.0.0"
         },
         {
             "Key": "Train_Wheel_Offset",
@@ -1425,7 +1434,8 @@
                     "Key": "Engine",
                     "Value": "TRAIN"
                 }
-            ]
+            ],
+            "Version": "o:3.21.0.0"
         },
         {
             "Key": "Train_Car_Length",
@@ -1440,7 +1450,8 @@
                     "Key": "Engine",
                     "Value": "TRAIN"
                 }
-            ]
+            ],
+            "Version": "o:3.21.0.0"
         },
         {
             "Key": "Bypass_Hash_Verification",
@@ -1448,7 +1459,8 @@
             "DefaultValue": false,
             "Description": "Disable hash verification checks, allowing for mismatched files.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#train-car-length-float32-0",
-            "Variable": "shouldVerifyHash"
+            "Variable": "shouldVerifyHash",
+            "Version": "o:3.14.7.0"
         },
         {
             "Key": "PaintableSections",

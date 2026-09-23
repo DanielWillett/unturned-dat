@@ -549,6 +549,10 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
 
         public void EnqueuePropertyForProcessing(DatProperty property)
         {
+            // Asset { } and Metadata { }
+            if (property.Type is NullType)
+                return;
+
             if (!property.AssetPosition.IsValidPosition(
                     _parent._evalCtx.RootPosition,
                     _parent._evalCtx.FileHasAssetDictionary,
@@ -611,10 +615,11 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
             
             ValueVisitor v;
             string key = propertyNode == null ? property.Key : propertyNode.Key;
-            _entries!.TryGetValue(key, out v.Entry);
+            _entries.TryGetValue(key, out v.Entry);
             v.NewEntry = null;
             v.Instance = this;
             v.Property = property;
+            v.Services = _parent._services;
             v.ParentNode = (IParentSourceNode?)propertyNode ?? _rootNode;
             v.ValueNode = propertyNode?.Value;
             v.ParseSuccess = false;
@@ -623,10 +628,7 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
             {
                 propertyType.Visit(ref v);
 
-                if (!v.ParseSuccess)
-                {
-                    return;
-                }
+                v.NewEntry ??= new Entry();
 
                 Entry createdEntry = v.NewEntry!;
                 createdEntry.Generation = _rootNode.File.FileVersion;
@@ -697,6 +699,7 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
             public DatProperty Property;
             public IParentSourceNode ParentNode;
             public IAnyValueSourceNode? ValueNode;
+            public IParsingServices Services;
             public bool ParseSuccess;
 
             /// <inheritdoc />
@@ -713,10 +716,7 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
                 args.Property = Property;
                 args.MissingValueBehavior = TypeParserMissingValueBehavior.FallbackToDefaultValue;
 
-                if (!type.Parser.TryParse(ref args, ref cache._evalCtx, out Optional<TValue> optionalValue))
-                {
-                    return;
-                }
+                ParseSuccess = type.Parser.TryParse(ref args, ref cache._evalCtx, out Optional<TValue> optionalValue);
 
                 if (Entry is not Entry<TValue> value)
                 {
@@ -731,9 +731,25 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
                     value.TypedType = type;
                 }
 
-                value.Value = optionalValue;
-                value.HasLiteralValue = true;
-                ParseSuccess = true;
+                if (ParseSuccess)
+                {
+                    value.Value = optionalValue;
+                    value.HasLiteralValue = true;
+                }
+                else
+                {
+                    IValue? included = Property.GetIncludedDefaultValue();
+                    FileEvaluationContext ctx = new FileEvaluationContext(Services, ParentNode.File, ParentNode.GetRootPosition());
+                    if (included != null && included.TryGetValueAs(ref ctx, out value.Value))
+                    {
+                        value.HasLiteralValue = true;
+                    }
+                    else
+                    {
+                        value.Value = Optional<TValue>.Null;
+                        value.HasLiteralValue = false;
+                    }
+                }
             }
         }
     }

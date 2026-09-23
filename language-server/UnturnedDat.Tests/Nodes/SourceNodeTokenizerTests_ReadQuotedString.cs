@@ -136,6 +136,22 @@ public partial class SourceNodeTokenizerTests
     }
 
     [Test]
+    public void ReadWithExtraPropertyAfterData()
+    {
+        using SourceNodeTokenizer tok = new SourceNodeTokenizer("Key \"Value\" Key2", diagnosticSink: DiagnosticSink);
+
+        string str = tok.ReadQuotedString(out FileRange range, out ReadOnlySpan<char> rangeSpan);
+        Assert.That(range, Is.EqualTo(new FileRange(1, 1, 1, 8)));
+        Assert.That(rangeSpan.ToString(), Is.EqualTo("\"String\""));
+
+        Assert.That(str, Is.EqualTo("String"));
+
+        DiagnosticSink.AssertNoDiagnostics();
+
+        Assert.That(tok.IsAtEnd, Is.False);
+    }
+
+    [Test]
     public void ReadInvalidEscapeSequenceString()
     {
         const string test = "\"Str\\ing\"";

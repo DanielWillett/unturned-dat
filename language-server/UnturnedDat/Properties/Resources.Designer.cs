@@ -88,6 +88,15 @@ namespace UnturnedDat.Data.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown format argument. Expected either &apos;p&apos; (prefix) or nothing..
+        /// </summary>
+        internal static string ArgumentException_UnturnedVersion_UnknownFormatArgument {
+            get {
+                return ResourceManager.GetString("ArgumentException_UnturnedVersion_UnknownFormatArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any animal..
         /// </summary>
         internal static string Description_EAssetType_ANIMAL {
@@ -255,6 +264,15 @@ namespace UnturnedDat.Data.Properties {
         internal static string FormatException_IPv4Format_FailedToParse {
             get {
                 return ResourceManager.GetString("FormatException_IPv4Format_FailedToParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to parse Unturned version, expected a value in the form: &quot;[o:]0.0.0.0&quot;..
+        /// </summary>
+        internal static string FormatException_UnturnedVersion_FailedToParse {
+            get {
+                return ResourceManager.GetString("FormatException_UnturnedVersion_FailedToParse", resourceCulture);
             }
         }
         

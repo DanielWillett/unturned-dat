@@ -142,19 +142,19 @@ public sealed class TypeReferenceType :
                     break;
                 }
 
-                if (!d.TryGetProperty("Type", out IPropertySourceNode? guidNode))
+                if (!d.TryGetProperty("Type", out IPropertySourceNode? typeNode))
                 {
                     args.DiagnosticSink?.UNT1007(ref args, d, "Type");
                     break;
                 }
 
-                args.ReferencedPropertySink?.AcceptReferencedProperty(guidNode);
+                args.ReferencedPropertySink?.AcceptReferencedProperty(typeNode);
 
-                args.CreateSubTypeParserArgs(out TypeParserArgs<QualifiedType> typeArgs, guidNode.Value, guidNode, this, LegacyExpansionFilter.Modern);
-                switch (guidNode.Value)
+                args.CreateSubTypeParserArgs(out TypeParserArgs<QualifiedType> typeArgs, typeNode.Value, typeNode, this, LegacyExpansionFilter.Modern);
+                switch (typeNode.Value)
                 {
                     default:
-                        args.DiagnosticSink?.UNT2004_NoValue(ref typeArgs, guidNode);
+                        args.DiagnosticSink?.UNT2004_NoValue(ref typeArgs, typeNode);
                         args.Result = TypeParserResult.Failed;
                         return false;
 

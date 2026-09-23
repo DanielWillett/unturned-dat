@@ -44,6 +44,7 @@ namespace UnturnedDat.Data.Types;
 ///     <item><c><see cref="QualifiedType"/> BaseType or <see cref="QualifiedType"/>[] BaseTypes</c> - One or more allowed base types.</item>
 ///     <item><c><see cref="bool"/> SupportsThis</c> - Whether or not the <see langword="this"/> keyword can be used to refer to the current file's asset.</item>
 ///     <item><c><see cref="bool"/> PreventSelfReference</c> - Whether or not a warning will be logged if the value is the same as the current file's asset.</item>
+///     <item><c><see cref="QualifiedType"/> DefaultIdAssetType</c> - If present, overrides the default category used for IDs without a type. This is usually assumed from <c>BaseTypes</c> but can be ambiguous at times.</item>
 /// </list>
 /// </para>
 /// <para>
@@ -140,7 +141,7 @@ public sealed class BackwardsCompatibleAssetReferenceType :
         PreventSelfReference = preventSelfReference;
     }
 
-    public BackwardsCompatibleAssetReferenceType(BackwardsCompatibleAssetReferenceKind kind, OneOrMore<QualifiedType> baseTypes, IDatSpecificationReadContext spec, bool supportsThis = false, bool preventSelfReference = false)
+    public BackwardsCompatibleAssetReferenceType(BackwardsCompatibleAssetReferenceKind kind, OneOrMore<QualifiedType> baseTypes, IDatSpecificationReadContext spec, bool supportsThis = false, bool preventSelfReference = false, QualifiedType defaultIdType = default)
     {
         if (kind is < BackwardsCompatibleAssetReferenceKind.GuidOrLegacyId or > BackwardsCompatibleAssetReferenceKind.BcAssetReferenceString)
             throw new ArgumentOutOfRangeException(nameof(kind));
@@ -150,7 +151,15 @@ public sealed class BackwardsCompatibleAssetReferenceType :
         SupportsThis = supportsThis;
         PreventSelfReference = preventSelfReference;
         DisplayName = AssetReferenceHelper.GetDisplayName(baseTypes, DisplayNames[(int)kind], DisplayNamesFormattable[(int)kind]);
-        _defaultCategory = AssetReferenceHelper.GetDefaultCategory(baseTypes, spec);
+        if (defaultIdType.IsNull)
+        {
+            _defaultCategory = AssetReferenceHelper.GetDefaultCategory(baseTypes, spec);
+        }
+        else
+        {
+            int c = AssetCategory.GetCategoryFromType(defaultIdType, spec.Information);
+            _defaultCategory = c < 0 ? AssetCategoryValue.None : new AssetCategoryValue(c);
+        }
     }
 
     public bool TryParse(ref TypeParserArgs<GuidOrId> args, ref FileEvaluationContext ctx, out Optional<GuidOrId> value)
@@ -173,6 +182,43 @@ public sealed class BackwardsCompatibleAssetReferenceType :
                 break;
 
             case IValueSourceNode v:
+                if (SupportsThis && v.Value.Equals("this", StringComparison.OrdinalIgnoreCase))
+                {
+                    Guid? guidOrNull = null;
+                    ushort? idOrNull = null;
+                    AssetCategoryValue category = AssetCategoryValue.None;
+
+                    switch (ctx.File)
+                    {
+                        case IAssetSourceFile asset:
+                            guidOrNull = asset.Guid;
+                            idOrNull = asset.Id;
+                            category = asset.Category;
+                            break;
+
+                        case ILocalizationSourceFile lcl:
+                            guidOrNull = lcl.Asset.Guid;
+                            idOrNull = lcl.Asset.Id;
+                            category = lcl.Asset.Category;
+                            break;
+                    }
+
+                    if (!guidOrNull.HasValue)
+                    {
+                        if (!idOrNull.HasValue || category == AssetCategoryValue.None)
+                        {
+                            args.DiagnosticSink?.UNT2004_ThisMissingGuid(ref args, v.Value, args.Type);
+                            return false;
+                        }
+
+                        value = new GuidOrId(idOrNull.Value, category);
+                        return true;
+                    }
+
+                    value = new GuidOrId(guidOrNull.Value);
+                    return true;
+                }
+
                 GuidOrId guidOrId;
                 if (Kind is not BackwardsCompatibleAssetReferenceKind.BcAssetReference and not BackwardsCompatibleAssetReferenceKind.BcAssetReferenceString)
                 {
@@ -312,9 +358,25 @@ public sealed class BackwardsCompatibleAssetReferenceType :
 
         AssetReferenceHelper.ReadCommonJsonProperties(in typeDefinition, out OneOrMore<QualifiedType> baseTypes, out bool allowThis, out bool preventSelfRef, out bool isDefault);
 
+        QualifiedType defaultIdType = QualifiedType.None;
+        if (typeDefinition.ValueKind == JsonValueKind.Object && typeDefinition.TryGetProperty("DefaultIdAssetType"u8, out JsonElement defaultIdElement)
+                                                             && defaultIdElement.ValueKind != JsonValueKind.Null)
+        {
+            string typeName = defaultIdElement.GetString();
+            defaultIdType = new QualifiedType(typeName);
+            if (defaultIdType.IsNull || defaultIdType.Equals(QualifiedType.ObjectType) || defaultIdType.Equals(QualifiedType.AssetBaseType))
+            {
+                defaultIdType = QualifiedType.None;
+            }
+            else
+            {
+                isDefault = false;
+            }
+        }
+
         return isDefault
             ? GetInstance(mode)
-            : new BackwardsCompatibleAssetReferenceType(mode, baseTypes, spec, allowThis, preventSelfRef);
+            : new BackwardsCompatibleAssetReferenceType(mode, baseTypes, spec, allowThis, preventSelfRef, defaultIdType);
     }
 
     public override void WriteToJson(Utf8JsonWriter writer, JsonSerializerOptions options)

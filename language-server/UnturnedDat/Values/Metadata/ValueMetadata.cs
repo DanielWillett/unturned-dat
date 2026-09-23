@@ -125,7 +125,7 @@ public class ValueMetadata<TValue>(IType<TValue> type, Optional<TValue> value)
 
     public string? Description { get; set; }
 
-    public Version? Version { get; set; }
+    public UnturnedVersion Version { get; set; }
 
     public string? Docs { get; set; }
 

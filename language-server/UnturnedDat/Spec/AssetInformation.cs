@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Text.Json.Serialization;
 using UnturnedDat.Data.Json;
 using UnturnedDat.Data.Utility;
@@ -60,6 +62,25 @@ public class AssetInformation
     public SkillsetInfo?[]? Skillsets { get; set; }
 
     public string?[]? RelevantBundleAssetClasses { get; set; }
+
+    // This comes from https://partner.steamgames.com/doc/store/localization/languages#supported_languages
+    // use the 'API language code' but make the first character capitalized
+    [JsonPropertyName(nameof(KnownLanguages))]
+#if NET8_0_OR_GREATER
+    [JsonInclude]
+    private
+#else
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public
+#endif
+        string[]? KnownLanguagesIntl
+    {
+        get => KnownLanguages?.ToArray();
+        set => KnownLanguages = value == null ? null : new HashSet<string>(value, StringComparer.Ordinal);
+    }
+
+    [JsonIgnore]
+    public HashSet<string>? KnownLanguages { get; private set; }
 
     public SpecialityInfo?[]? Specialities
     {

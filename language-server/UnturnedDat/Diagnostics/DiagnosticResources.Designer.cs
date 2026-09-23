@@ -592,87 +592,6 @@ namespace UnturnedDat.Data.Diagnostics {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This version has {0} digits, where it should have exactly {1} digits..
-        /// </summary>
-        public static string UNT1031_Digits {
-            get {
-                return ResourceManager.GetString("UNT1031_Digits", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Build version {0} is too small. Value should not be less than {1}..
-        /// </summary>
-        public static string UNT1031_Less_Build {
-            get {
-                return ResourceManager.GetString("UNT1031_Less_Build", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Major version {0} is too small. Value should not be less than {1}..
-        /// </summary>
-        public static string UNT1031_Less_Major {
-            get {
-                return ResourceManager.GetString("UNT1031_Less_Major", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minor version {0} is too small. Value should not be less than {1}..
-        /// </summary>
-        public static string UNT1031_Less_Minor {
-            get {
-                return ResourceManager.GetString("UNT1031_Less_Minor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Revision version {0} is too small. Value should not be less than {1}..
-        /// </summary>
-        public static string UNT1031_Less_Revision {
-            get {
-                return ResourceManager.GetString("UNT1031_Less_Revision", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Build version {0} is too large. Value should not exceed {1}..
-        /// </summary>
-        public static string UNT1031_More_Build {
-            get {
-                return ResourceManager.GetString("UNT1031_More_Build", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Major version {0} is too large. Value should not exceed {1}..
-        /// </summary>
-        public static string UNT1031_More_Major {
-            get {
-                return ResourceManager.GetString("UNT1031_More_Major", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minor version {0} is too large. Value should not exceed {1}..
-        /// </summary>
-        public static string UNT1031_More_Minor {
-            get {
-                return ResourceManager.GetString("UNT1031_More_Minor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Revision version {0} is too large. Value should not exceed {1}..
-        /// </summary>
-        public static string UNT1031_More_Revision {
-            get {
-                return ResourceManager.GetString("UNT1031_More_Revision", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This dictionary contains multiple &apos;{0}&apos; properties. This property overrides all others with the same name..
         /// </summary>
         public static string UNT1032 {
@@ -957,6 +876,24 @@ namespace UnturnedDat.Data.Diagnostics {
         public static string UNT2004_StrictColor {
             get {
                 return ResourceManager.GetString("UNT2004_StrictColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value &apos;{0}&apos; can not be converted to a value of type &apos;{1}&apos;, define a GUID to use the &apos;this&apos; keyword..
+        /// </summary>
+        public static string UNT2004_ThisMissingGuid {
+            get {
+                return ResourceManager.GetString("UNT2004_ThisMissingGuid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value &apos;{0}&apos; can not be converted to a value of type &apos;{1}&apos;, define an ID to use the &apos;this&apos; keyword..
+        /// </summary>
+        public static string UNT2004_ThisMissingId {
+            get {
+                return ResourceManager.GetString("UNT2004_ThisMissingId", resourceCulture);
             }
         }
         

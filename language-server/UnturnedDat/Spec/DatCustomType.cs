@@ -178,7 +178,18 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
                     }
                 }
 
-                return maybeLegacy && TryParseLegacyObject(ref args, ref ctx, out value, legacyParentDictionary!);
+                if (!maybeLegacy)
+                    return false;
+
+                LegacyStateStack.Push(PropertyResolutionContext.Legacy);
+                try
+                {
+                    return TryParseLegacyObject(ref args, ref ctx, out value, legacyParentDictionary!);
+                }
+                finally
+                {
+                    LegacyStateStack.Pop();
+                }
 
             case IValueSourceNode valueNode:
                 if (StringParser is { } stringParser)
@@ -225,7 +236,15 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
                     return false;
                 }
 
-                return TryParseLegacyObject(ref args, ref ctx, out value, legacyParentDictionary!);
+                LegacyStateStack.Push(PropertyResolutionContext.Legacy);
+                try
+                {
+                    return TryParseLegacyObject(ref args, ref ctx, out value, legacyParentDictionary!);
+                }
+                finally
+                {
+                    LegacyStateStack.Pop();
+                }
 
             case IListSourceNode listNode:
                 if (maybeModern)
@@ -241,13 +260,22 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
                     return false;
                 }
 
-                return TryParseModernObject(ref args, ref ctx, out value, dictNode);
+                LegacyStateStack.Push(PropertyResolutionContext.Modern);
+                try
+                {
+                    return TryParseModernObject(ref args, ref ctx, out value, dictNode);
+                }
+                finally
+                {
+                    LegacyStateStack.Pop();
+                }
 
         }
     }
 
     private bool TryParseModernObject(ref TypeParserArgs<DatObjectValue> args, ref FileEvaluationContext ctx, out Optional<DatObjectValue> value, IDictionarySourceNode dictionary)
     {
+        // assumes already applied LegacyStateStack
         bool failure = false;
         ImmutableArray<DatObjectPropertyValue>.Builder properties = ImmutableArray.CreateBuilder<DatObjectPropertyValue>();
         bool shouldIgnoreError = args.ShouldIgnoreFailureDiagnostic;
@@ -277,33 +305,39 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
                 break;
         }
 
-        foreach (DatProperty property in Properties)
+        DatTypeWithProperties type = ResolveSubType(ref context);
+
+        for (DatTypeWithProperties? t = type; t != null; t = t.BaseType)
         {
-            if (!property.TryGetValue(
-                    ref context,
-                    out IValue? propertyValue,
-                    out IPropertySourceNode? node,
-                    args.DiagnosticSink,
-                    args.ReferencedPropertySink,
-                    TypeParserMissingValueBehavior.FallbackToDefaultValue
-                )
-            )
+            foreach (DatProperty property in t.Properties)
             {
-                if (!dictionary.TryGetProperty(property, ref ctx, out _, LegacyExpansionFilter.Modern))
+                if (!property.TryGetValue(
+                        ref context,
+                        out IValue? propertyValue,
+                        out IPropertySourceNode? node,
+                        args.DiagnosticSink,
+                        args.ReferencedPropertySink,
+                        TypeParserMissingValueBehavior.FallbackToDefaultValue
+                    )
+                   )
                 {
-                    // missing required property
-                    if (property.Required != null && property.Required.TryEvaluateValue(out Optional<bool> isRequired, ref ctx) && isRequired.Value)
+                    if (!dictionary.TryGetProperty(property, ref ctx, out _, LegacyExpansionFilter.Modern))
                     {
-                        args.DiagnosticSink?.UNT2014_Object(ref args, property.Key, ctx.RootBreadcrumbs.ToString(false));
-                        failure = true;
-                        shouldIgnoreError = true;
+                        // missing required property
+                        if (property.Required != null &&
+                            property.Required.TryEvaluateValue(out Optional<bool> isRequired, ref ctx) && isRequired.Value)
+                        {
+                            args.DiagnosticSink?.UNT2014_Object(ref args, property.Key, ctx.RootBreadcrumbs.ToString(false));
+                            failure = true;
+                            shouldIgnoreError = true;
+                        }
                     }
+
+                    continue;
                 }
 
-                continue;
+                properties.Add(new DatObjectPropertyValue(propertyValue, property, node?.Value));
             }
-
-            properties.Add(new DatObjectPropertyValue(propertyValue, property, node?.Value));
         }
 
         args.ShouldIgnoreFailureDiagnostic = shouldIgnoreError;
@@ -324,6 +358,7 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
         out Optional<DatObjectValue> value,
         IDictionarySourceNode dictionary)
     {
+        // assumes already applied LegacyStateStack
         if (!args.TryGetBaseKey(out string? baseKey))
         {
             value = Optional<DatObjectValue>.Null;
@@ -341,52 +376,60 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
 
         bool referencedNode = false;
 
+        DatTypeWithProperties type = ResolveSubType(ref ctx, baseKey);
+
         bool any = false;
-        foreach (DatProperty property in Properties)
+        for (DatTypeWithProperties? t = type; t != null; t = t.BaseType)
         {
-            if (!property.TryGetValue(
-                    ref ctx,
-                    out IValue? propertyValue,
-                    out IPropertySourceNode? node,
-                    args.DiagnosticSink,
-                    args.ReferencedPropertySink,
-                    TypeParserMissingValueBehavior.FallbackToDefaultValue,
-                    baseKey
-                )
-               )
+            foreach (DatProperty property in t.Properties)
             {
-                if (!dictionary.TryGetProperty(property, ref ctx, out _, LegacyExpansionFilter.Modern))
+                bool success = true;
+                if (!property.TryGetValue(
+                        ref ctx,
+                        out IValue? propertyValue,
+                        out IPropertySourceNode? node,
+                        args.DiagnosticSink,
+                        args.ReferencedPropertySink,
+                        TypeParserMissingValueBehavior.FallbackToDefaultValue,
+                        baseKey
+                    )
+                   )
                 {
-                    // missing required property
-                    if (property.Required != null && property.Required.TryEvaluateValue(out Optional<bool> isRequired, ref ctx) && isRequired.Value)
+                    success = false;
+                    if (!dictionary.TryGetProperty(property, ref ctx, out _, LegacyExpansionFilter.Legacy, baseKey))
                     {
-                        args.DiagnosticSink?.UNT2014_Object(ref args, property.Key, ctx.RootBreadcrumbs.ToString(false));
-                        failure = true;
-                        shouldIgnoreError = true;
+                        // missing required property
+                        if (property.Required != null && property.Required.TryEvaluateValue(out Optional<bool> isRequired, ref ctx) && isRequired.Value)
+                        {
+                            args.DiagnosticSink?.UNT2014_Object(ref args, property.Key, ctx.RootBreadcrumbs.ToString(false));
+                            failure = true;
+                            shouldIgnoreError = true;
+                        }
+                    }
+                    else
+                    {
+                        any = true;
                     }
                 }
-                else
+
+                if (node != null)
                 {
-                    any = true;
+                    if (node == args.ParentNode)
+                    {
+                        referencedNode = true;
+                    }
+                    else
+                    {
+                        args.ReferencedPropertySink?.AcceptReferencedProperty(node);
+                    }
                 }
 
-                continue;
+                if (!success)
+                    continue;
+
+                any = true;
+                properties.Add(new DatObjectPropertyValue(propertyValue!, property, node?.Value));
             }
-
-            if (node != null)
-            {
-                if (node == args.ParentNode)
-                {
-                    referencedNode = true;
-                }
-                else
-                {
-                    args.ReferencedPropertySink?.AcceptReferencedProperty(node);
-                }
-            }
-
-            any = true;
-            properties.Add(new DatObjectPropertyValue(propertyValue, property, node?.Value));
         }
 
         if (!referencedNode && args.ParentNode is IPropertySourceNode prop)
@@ -433,6 +476,39 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
 
         value = new Optional<DatObjectValue>(new DatObjectValue(this, properties.MoveToImmutableOrCopy()));
         return true;
+    }
+
+    // check for subtype switch used in rewards and conditions
+    private DatTypeWithProperties ResolveSubType(ref FileEvaluationContext context, string? baseKey = null)
+    {
+        int subtypeSwitch = GetSubtypeSwitchPropertyIndex();
+        DatTypeWithProperties type = this;
+        if (subtypeSwitch < 0 || subtypeSwitch >= Properties.Length)
+            return type;
+
+        DatProperty subtypeSwitchProperty = Properties[subtypeSwitch];
+        if (subtypeSwitchProperty.SubtypeSwitchPropertyName != null
+            && subtypeSwitchProperty.TryGetValue(
+                ref context,
+                out IValue? propertyValue,
+                out _,
+                null,
+                null,
+                TypeParserMissingValueBehavior.FallbackToDefaultValue,
+                baseKey)
+            && propertyValue is DatEnumValue enumValue
+            && enumValue.DataRoot.TryGetProperty(subtypeSwitchProperty.SubtypeSwitchPropertyName, out JsonElement element) && element.ValueKind == JsonValueKind.String
+           )
+        {
+            QualifiedType subType = new QualifiedType(element.GetString());
+
+            if (context.Services.Database.TryFindType(subType, out DatType? t, this) && t is DatTypeWithProperties propType)
+            {
+                type = propType;
+            }
+        }
+
+        return type;
     }
 
     public override void Visit<TVisitor>(ref TVisitor visitor)

@@ -306,11 +306,16 @@ public sealed class AssetCategory : DatEnumType, IEquatable<AssetCategory>, ICom
     }
 
     /// <inheritdoc />
-    public override bool TryParse(ReadOnlySpan<char> text, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive = true)
+    protected override bool TryParse(ReadOnlySpan<char> text, string? str, [NotNullWhen(true)] out DatEnumValue? value, bool caseInsensitive = true)
     {
         if (!caseInsensitive)
         {
-            return base.TryParse(text, out value, caseInsensitive);
+            return base.TryParse(text, str, out value, caseInsensitive);
+        }
+
+        if (TryParseNumeric(text, out value, str))
+        {
+            return true;
         }
 
         if (TryParse(text, out int index))

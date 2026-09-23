@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Spec;
-using UnturnedDat.Data.Types;
 
 namespace UnturnedDat.Data.Values;
 
@@ -55,26 +54,6 @@ public sealed class SelfDataRef : RootDataRef<SelfDataRef>
     protected override bool AcceptProperty<TVisitor>(in IndicesProperty property, ref FileEvaluationContext ctx, ref TVisitor visitor)
     {
         // todo
-        return false;
-    }
-
-    protected override bool AcceptProperty(in IsLegacyProperty property, ref FileEvaluationContext ctx, out bool value)
-    {
-        value = false;
-        // NOTE: CAUSES STACK OVERFLOW
-        // if (!Owner.Type.TryEvaluateType(out IType? type, ref ctx))
-        // {
-        //     return false;
-        // }
-        // 
-        // if (type is not ILegacyCompatibleType legacyCompatibleType)
-        // {
-        //     return true;
-        // }
-
-        // todo
-        // return legacyCompatibleType.TryGetPropertyLegacyStatus(Owner, null, PropertyBreadcrumbs.Root, ref ctx, out value);
-        value = false;
         return false;
     }
 

@@ -202,7 +202,7 @@
             "Key": "Magazine",
             "Type":
             {
-                "Type": "LegacyAssetReference",
+                "Type": "LegacyAssetReferenceString",
                 "AssetType": "SDG.Unturned.ItemMagazineAsset, Assembly-CSharp"
             },
             "DefaultValue": "00000000-0000-0000-0000-000000000000",
@@ -891,7 +891,8 @@
             "Description": "Explosions from projectiles penetrate through buildables when this flag is set.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/gun-asset.html#projectile-penetrate-buildables-flag",
             "Variable": "projectilePenetrateBuildables",
-            "InclusiveWith": [ "$bndl$::Projectile" ]
+            "InclusiveWith": [ "$bndl$::Projectile" ],
+            "Version": "o:3.20.6.0"
         },
         {
             "Key": "Projectile_Explosion_Launch_Speed",
@@ -1029,6 +1030,14 @@
             "Description": "The maximum distance displayed when using a \"Rangefinder\" tactical attachment on this weapon.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/gun-asset.html#range-rangefinder-float32",
             "Variable": "rangeRangefinder"
+        },
+        {
+            "Key": "Instakill_Headshots",
+            "Type": "Boolean",
+            "DefaultValue": false,
+            "Description": "Whether or not this gun can instantly kill players with a headshot, assuming @SDG.Unturned.PlayersConfigData, Assembly-CSharp::Allow_Instakill_Headshots is enabled.",
+            "Docs": "https://docs.smartlydressedgames.com/en/stable/items/gun-asset.html#instakill-headshots-bool-false",
+            "Variable": "instakillHeadshots"
         },
         {
             "Key": "Infinite_Ammo",

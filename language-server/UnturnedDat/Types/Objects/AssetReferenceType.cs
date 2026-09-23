@@ -150,6 +150,25 @@ public sealed class AssetReferenceType :
                 break;
 
             case IValueSourceNode v:
+                if (SupportsThis && v.Value.Equals("this", StringComparison.OrdinalIgnoreCase))
+                {
+                    Guid? guidOrNull = ctx.File switch
+                    {
+                        IAssetSourceFile asset => asset.Guid,
+                        ILocalizationSourceFile lcl => lcl.Asset.Guid,
+                        _ => null
+                    };
+
+                    if (!guidOrNull.HasValue)
+                    {
+                        args.DiagnosticSink?.UNT2004_ThisMissingGuid(ref args, v.Value, args.Type);
+                        return false;
+                    }
+
+                    value = guidOrNull.Value;
+                    return true;
+                }
+
                 if (!KnownTypeValueHelper.TryParseGuid(v.Value, out Guid guid))
                 {
                     args.DiagnosticSink?.UNT2004_Generic(ref args, v.Value, args.Type);

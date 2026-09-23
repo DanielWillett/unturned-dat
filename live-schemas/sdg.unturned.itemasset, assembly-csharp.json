@@ -161,7 +161,8 @@
             "Description": "Minimum number of items to spawn in a stackable item (like a magazine or ammo crate) when spawning naturally.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/introduction.html#count-min-uint8-1",
             "Variable": "countMin",
-            "InclusiveWith": [ "Count_Max" ]
+            "InclusiveWith": [ "Count_Max" ],
+            "Version": "o:3.9.7.0"
         },
         {
             "Key": "Count_Max",
@@ -170,7 +171,8 @@
             "Minimum": "@Count_Min",
             "Description": "Maximum number of items to spawn in a stackable item (like a magazine or ammo crate) when spawning naturally.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/introduction.html#count-max-uint8-1",
-            "Variable": "countMax"
+            "Variable": "countMax",
+            "Version": "o:3.9.7.0"
         },
         {
             "Key": "Quality_Min",
@@ -181,7 +183,8 @@
             "Description": "Minimum quality/durability level to naturally spawn the item at.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/introduction.html#quality-min-uint8-10",
             "Variable": "qualityMin",
-            "InclusiveWith": [ "Quality_Max" ]
+            "InclusiveWith": [ "Quality_Max" ],
+            "Version": "o:3.9.6.0"
         },
         {
             "Key": "Quality_Max",
@@ -192,7 +195,8 @@
             "Maximum": 100,
             "Description": "Maximum quality/durability level to naturally spawn the item at.",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/introduction.html#quality-max-uint8-90",
-            "Variable": "qualityMax"
+            "Variable": "qualityMax",
+            "Version": "o:3.9.6.0"
         },
         {
             "Key": "EquipableModelParent",
@@ -760,7 +764,8 @@
             "DefaultValue": false,
             "Variable": "shouldVerifyHash",
             "Docs": "https://docs.smartlydressedgames.com/en/stable/items/introduction.html#bypass-hash-verification-bool-false",
-            "Description": "Disables the hash verification check between the client and server."
+            "Description": "Disables the hash verification check between the client and server.",
+            "Version": "o:3.14.7.0"
         },
         {
             "Key": "Override_Show_Quality",
@@ -1378,7 +1383,8 @@
                                     "Value": "TotalItems"
                                 }
                             ]
-                        }
+                        },
+                        "LegacyMinimumCount": 1
                     },
                     "KeyLegacyExpansionFilter": "Modern",
                     "Aliases":
@@ -1758,7 +1764,8 @@
                     },
                     "Description": "Conditions that must be met for this blueprint to be visible and craftable.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html",
-                    "Variable": "questConditionsList"
+                    "Variable": "questConditionsList",
+                    "Version": "o:3.21.4.0"
                 },
                 {
                     "Key": "Rewards",
@@ -1770,7 +1777,8 @@
                     },
                     "Description": "Rewards applied after crafting this blueprint.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/rewards.html",
-                    "Variable": "questRewardsList"
+                    "Variable": "questRewardsList",
+                    "Version": "o:3.21.4.0"
                 },
                 {
                     "Key": "Searchable",
@@ -2119,13 +2127,23 @@
                             },
                             "Value":
                             {
-                                "Type": "BcAssetReference"
+                                "Type": "BcAssetReference",
+                                "AssetTypes":
+                                [
+                                    "SDG.Unturned.ItemAsset, Assembly-CSharp",
+                                    "SDG.Unturned.CraftingAsset, Assembly-CSharp"
+                                ]
                             }
                         },
                         {
                             "Value":
                             {
-                                "Type": "AssetReference"
+                                "Type": "AssetReference",
+                                "AssetTypes":
+                                [
+                                    "SDG.Unturned.ItemAsset, Assembly-CSharp",
+                                    "SDG.Unturned.CraftingAsset, Assembly-CSharp"
+                                ]
                             }
                         }
                     ],
@@ -3165,7 +3183,8 @@
                     "Required": true
                 },
                 {
-                    "Name": "Inspect"
+                    "Name": "Inspect",
+                    "Version": "o:3.12.2.0"
                 },
                 {
                     "Name": "Use"

@@ -111,7 +111,7 @@ public abstract class DatType : BaseType<DatType>, IDatSpecificationObject
     /// <summary>
     /// The version of Unturned this type was added in.
     /// </summary>
-    public Version? Version { get; internal set; }
+    public UnturnedVersion Version { get; internal set; }
 
     private protected abstract string FullName { get; }
 
@@ -242,6 +242,9 @@ public abstract class DatTypeWithProperties : DatType
 {
     private bool _hasDoneLocalPropertiesCalculation;
 
+    // -2 = uncached, -1 = none, otherwise index in Properties
+    private int _subtypeSwitch = -2;
+
     internal ImmutableArray<DatProperty>.Builder? PropertiesBuilder;
 
     /// <summary>
@@ -320,6 +323,39 @@ public abstract class DatTypeWithProperties : DatType
         {
             return type.TrimmingBehavior >= PropertySearchTrimmingBehavior.CreatesOtherPropertiesInLinkedFiles;
         }
+    }
+
+    private protected int GetSubtypeSwitchPropertyIndex()
+    {
+        if (_subtypeSwitch >= -1)
+        {
+            return _subtypeSwitch;
+        }
+
+        if (PropertiesBuilder != null)
+        {
+            for (int i = 0; i < PropertiesBuilder.Count; i++)
+            {
+                DatProperty property = PropertiesBuilder[i];
+                if (!string.IsNullOrEmpty(property.SubtypeSwitchPropertyName))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        for (int i = 0; i < Properties.Length; i++)
+        {
+            DatProperty property = Properties[i];
+            if (string.IsNullOrEmpty(property.SubtypeSwitchPropertyName))
+                continue;
+
+            _subtypeSwitch = i;
+            return i;
+        }
+
+        _subtypeSwitch = -1;
+        return -1;
     }
 }
 

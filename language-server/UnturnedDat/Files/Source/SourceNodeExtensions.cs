@@ -193,7 +193,10 @@ public static class SourceNodeExtensions
 
             return r;
         }
+    }
 
+    extension(IParentSourceNode property)
+    {
         /// <summary>
         /// Gets which root dictionary this property is in, including sub-properties.
         /// </summary>

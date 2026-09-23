@@ -4,6 +4,7 @@ using UnturnedDat.Data.Parsing;
 using UnturnedDat.Data.Properties;
 using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Types;
+using UnturnedDat.Data.Values;
 
 namespace UnturnedDat.Data.Files;
 
@@ -161,6 +162,11 @@ public struct FileEvaluationContext
     /// </summary>
     public LegacyExpansionFilter GetKeyFilter()
     {
+        if (LegacyStateStack.TryGetCurrent(out PropertyResolutionContext context))
+        {
+            return context.ToKeyFilter();
+        }
+
         return _rootBreadcrumbs.Length == 0 ? LegacyExpansionFilter.Either : _rootBreadcrumbs[^1].Context.ToKeyFilter();
     }
 

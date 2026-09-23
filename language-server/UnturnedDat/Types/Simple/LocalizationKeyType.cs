@@ -99,15 +99,34 @@ public sealed class LocalizationKeyType : BaseType<string, LocalizationKeyType>,
 
             IValue? defaultValue = args.Property.GetIncludedDefaultValue(args.ParentNode is IPropertySourceNode);
 
-            if (defaultValue == null
-                || defaultValue.IsNull
-                || !defaultValue.TryGetValueAs(ref ctx, out Optional<string> result)
-                || !result.HasValue
-                || string.IsNullOrEmpty(result.Value))
+            if (defaultValue == null || !defaultValue.TryGetValueAs(ref ctx, out Optional<string> result))
             {
                 args.DiagnosticSink?.UNT2004_Generic(ref args, string.Empty, this);
                 value = Optional<string>.Null;
                 return false;
+            }
+
+            if (string.IsNullOrEmpty(result.Value))
+            {
+                switch (args.MissingValueBehavior)
+                {
+                    default:
+                    case TypeParserMissingValueBehavior.ErrorIfValueOrPropertyNotProvided:
+                        args.DiagnosticSink?.UNT2004_Generic(ref args, string.Empty, this);
+                        value = Optional<string>.Null;
+                        return false;
+
+                    case TypeParserMissingValueBehavior.ErrorOnlyIfValueNotProvided:
+                        if (args.ParentNode is not IPropertySourceNode)
+                            args.DiagnosticSink?.UNT2004_Generic(ref args, string.Empty, this);
+
+                        value = Optional<string>.Null;
+                        return false;
+
+                    case TypeParserMissingValueBehavior.FallbackToDefaultValue:
+                        value = Optional<string>.Null;
+                        return true;
+                }
             }
 
             key = result.Value;
