@@ -68,9 +68,10 @@ public static class SourceNodeExtensions
                 return true;
             }
 
+            
             if (property.Keys.IsDefaultOrEmpty)
             {
-                if (node.TryGetProperty(baseKey + property.Key, out propertyNode))
+                if (node.TryGetProperty(CombineKeys(baseKey, property.Key), out propertyNode))
                     return true;
             }
             else
@@ -83,7 +84,7 @@ public static class SourceNodeExtensions
                     if (key.Condition != null && !key.Condition.TryEvaluateValue(out Optional<bool> passesCondition, ref ctx) && !passesCondition.GetValueOrDefault(false))
                         continue;
 
-                    if (node.TryGetProperty(baseKey + key.Key, out propertyNode))
+                    if (node.TryGetProperty(CombineKeys(baseKey, key.Key), out propertyNode))
                         return true;
                 }
             }
@@ -416,6 +417,28 @@ public static class SourceNodeExtensions
         return filter == LegacyExpansionFilter.Either
                || context == LegacyExpansionFilter.Either
                || filter == context;
+    }
+
+    internal static string CombineKeys(string? a, string? b)
+    {
+        if (string.IsNullOrEmpty(b))
+        {
+            if (string.IsNullOrEmpty(a))
+                return string.Empty;
+
+            if (a[^1] == '_')
+                return a[..^1];
+
+            return a;
+        }
+
+        if (string.IsNullOrEmpty(a))
+            return b;
+
+        if (a[^1] == '_')
+            return a + b;
+
+        return a + "_" + b;
     }
 
     private class GetNodeFromIndexVisitor(int index, bool ignoreMetadata) : OrderedNodeVisitor

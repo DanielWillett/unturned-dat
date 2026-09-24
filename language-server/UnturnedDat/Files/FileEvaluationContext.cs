@@ -162,9 +162,9 @@ public struct FileEvaluationContext
     /// </summary>
     public LegacyExpansionFilter GetKeyFilter()
     {
-        if (LegacyStateStack.TryGetCurrent(out PropertyResolutionContext context))
+        if (DatObjectStack.TryGetCurrent(out IObjectStackContext? context))
         {
-            return context.ToKeyFilter();
+            return context.Context.ToKeyFilter();
         }
 
         return _rootBreadcrumbs.Length == 0 ? LegacyExpansionFilter.Either : _rootBreadcrumbs[^1].Context.ToKeyFilter();

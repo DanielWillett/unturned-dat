@@ -583,6 +583,15 @@ namespace UnturnedDat.Data.Diagnostics {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Localization property &apos;{0}&apos; expected an asset file to be present alongside this localization file..
+        /// </summary>
+        public static string UNT1030_RequiredAsset {
+            get {
+                return ResourceManager.GetString("UNT1030_RequiredAsset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Localization property &apos;{0}&apos; is required but a localization file doesn&apos;t exist for this asset..
         /// </summary>
         public static string UNT1030_RequiredLocal {

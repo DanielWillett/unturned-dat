@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Types;
 using UnturnedDat.Data.Utility;
 
@@ -47,6 +50,12 @@ public readonly struct IndicesProperty : IIndexableDataRefProperty, IEquatable<I
     /// <inheritdoc />
     public string PropertyName => "Indices";
 
+    /// <summary>
+    /// The type returned by this property for a list of indices.
+    /// </summary>
+    [field: MaybeNull]
+    internal static ListType<int, int> ListType => field ??= Types.ListType.Create(Int32Type.Instance);
+
     public IndicesProperty(int? index, bool preventSelfReference)
     {
         Index = index;
@@ -67,7 +76,7 @@ public readonly struct IndicesProperty : IIndexableDataRefProperty, IEquatable<I
         {
             index = length + index;
             if (index < 0)
-                return length;
+                return 0;
         }
 
         return index;
@@ -125,5 +134,58 @@ public readonly struct IndicesProperty : IIndexableDataRefProperty, IEquatable<I
     ) where TValue : IEquatable<TValue>
     {
         return new DataRefProperty<IndicesProperty, TValue>(type, target, Create(indices, properties));
+    }
+
+    internal static bool TryGetCurrentIndices<TVisitor>(DatProperty? currentProperty, in IndicesProperty property, ref TVisitor visitor)
+        where TVisitor : IValueVisitor
+#if NET9_0_OR_GREATER
+        , allows ref struct
+#endif
+    {
+        if (property.Index is >= 0)
+        {
+            int index = property.Index.Value;
+            foreach (IObjectStackContext context in DatObjectStack.AsEnumerable())
+            {
+                if (context is not ObjectStackListContext listContext)
+                    continue;
+
+                if (--index >= 0)
+                    continue;
+
+                visitor.Accept(Int32Type.Instance, listContext.Index);
+                return true;
+            }
+
+            return false;
+        }
+
+        using DatObjectStack.DatObjectStackEnumerator enumerator = DatObjectStack.AsEnumerable().GetEnumerator();
+        using PooledList<int> indices = new PooledList<int>(enumerator.Count);
+        while (enumerator.MoveNext())
+        {
+            if (enumerator.Current is not ObjectStackListContext listContext)
+                continue;
+
+            indices.Add(listContext.Index);
+        }
+
+        if (indices.Count == 0 && property.Index.HasValue)
+        {
+            return false;
+        }
+
+        int targetIndex = property.GetIndex(indices.Count);
+        if (targetIndex < 0)
+        {
+            ListType<int, int> type = IndicesProperty.ListType;
+            visitor.Accept(type, new EquatableArray<int>(indices.ToArray()));
+        }
+        else
+        {
+            visitor.Accept(Int32Type.Instance, indices[targetIndex]);
+        }
+
+        return true;
     }
 }

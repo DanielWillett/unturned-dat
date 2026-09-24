@@ -864,7 +864,8 @@
                     {
                         "Type": "LocalizationKey",
                         "ValueSupportsRichText": true,
-                        "ValueSupportsNewLines": true
+                        "ValueSupportsNewLines": true,
+                        "ValueFormatArguments": 3
                     },
                     "DefaultValue": null,
                     "Description": "The localization key for the 'Text' property for this condition in the localization file for this asset.",

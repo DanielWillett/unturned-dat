@@ -74,10 +74,19 @@ public sealed class PropertyDataRef : RootDataRef<PropertyDataRef>
                 cr.DisposeContext(ref crContext);
             }
         }
+        else if (!PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? objectContext))
+        {
+            value = false;
+            return false;
+        }
+        else if (objectContext != null)
+        {
+            value = objectContext.EvaluateIsIncluded(_value.Property, in property);
+        }
         else
         {
-            DatProperty prop = _value.Property;
-            value = prop.IsIncluded(property.RequireValue, ref ctx);
+            // root property
+            value = _value.Property.IsIncluded(property.RequireValue, ref ctx);
         }
 
         return true;
@@ -103,10 +112,19 @@ public sealed class PropertyDataRef : RootDataRef<PropertyDataRef>
                 cr.DisposeContext(ref crContext);
             }
         }
+        else if (!PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? objectContext))
+        {
+            value = false;
+            return false;
+        }
+        else if (objectContext != null)
+        {
+            value = objectContext.EvaluateIsExcluded(_value.Property, in property);
+        }
         else
         {
-            DatProperty prop = _value.Property;
-            value = prop.IsExcluded(ref ctx);
+            // root property
+            value = _value.Property.IsExcluded(ref ctx);
         }
 
         return true;
@@ -134,10 +152,19 @@ public sealed class PropertyDataRef : RootDataRef<PropertyDataRef>
                 cr.DisposeContext(ref crContext);
             }
         }
+        else if (!PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? objectContext))
+        {
+            value = null;
+            return false;
+        }
+        else if (objectContext != null)
+        {
+            k = objectContext.EvaluateKey(_value.Property, in property);
+        }
         else
         {
-            DatProperty prop = _value.Property;
-            k = GetPropertyKey(prop, ref ctx);
+            // root property
+            k = GetPropertyKey(_value.Property, ref ctx);
         }
 
         value = k;
@@ -153,8 +180,19 @@ public sealed class PropertyDataRef : RootDataRef<PropertyDataRef>
 
     protected override bool AcceptProperty<TVisitor>(in IndicesProperty property, ref FileEvaluationContext ctx, ref TVisitor visitor)
     {
-        // todo
-        return false;
+        if (_propReference.IsCrossReference)
+        {
+            // not supported except for ValueTemplateGroupReference.
+            return false;
+        }
+
+        EnsureValueExists(ctx.Services.Database);
+        if (!PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? objectContext))
+        {
+            return false;
+        }
+
+        return objectContext != null && IndicesProperty.TryGetCurrentIndices(Owner, in property, ref visitor);
     }
 
     protected override bool AcceptProperty(in ValueTypeProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out string? value)
@@ -178,10 +216,23 @@ public sealed class PropertyDataRef : RootDataRef<PropertyDataRef>
                 cr.DisposeContext(ref crContext);
             }
         }
+        else if (!PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? objectContext))
+        {
+            value = null;
+            return false;
+        }
+        else if (objectContext != null)
+        {
+            if (!objectContext.TryEvaluateValueType(_value.Property, in property, out k))
+            {
+                value = null;
+                return false;
+            }
+        }
         else
         {
-            DatProperty prop = _value.Property;
-            k = prop.GetValueType(ref ctx);
+            // root property
+            k = _value.Property.GetValueType(ref ctx);
         }
 
         value = ValueTypeProperty.GetTypeName(k);
@@ -190,7 +241,11 @@ public sealed class PropertyDataRef : RootDataRef<PropertyDataRef>
 
     protected override bool AcceptProperty(in CountProperty property, ref FileEvaluationContext ctx, out int value)
     {
-        // todo
+        if (CountProperty.TryGetCurrentCount(Owner, in property, out value, ref ctx))
+        {
+            return true;
+        }
+
         value = 0;
         return false;
     }

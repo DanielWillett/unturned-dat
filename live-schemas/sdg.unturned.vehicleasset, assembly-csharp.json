@@ -165,7 +165,8 @@
                 "ElementType": "Int32",
                 "Mode": "LegacyList",
                 "LegacySingularKey": "Steering_Tire",
-                "LegacyDefaultElementTypeValue": "#Index"
+                "LegacyDefaultElementTypeValue": "#Index",
+                "LegacyNoWarnOnMissingElement": true 
             },
             "DefaultValue":
             [
@@ -1971,7 +1972,7 @@
                     "Type": "UInt8",
                     "DefaultValue": 0,
                     "Required": true,
-                    "Description": "The zero-based index of the seat to mount turret #(Self.Indices[0]) to.",
+                    "Description": "The zero-based index of the seat to mount turret #(This.Indices[0]) to.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#turret-seat-index-uint8-0",
                     "Variable": "seatIndex"
                 },
@@ -1984,7 +1985,7 @@
                     },
                     "DefaultValue": 0,
                     "Required": true,
-                    "Description": "The gun asset to use for turret #(Self.Indices[0]).",
+                    "Description": "The gun asset to use for turret #(This.Indices[0]).",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#turret-item-id-uint16-0",
                     "Variable": "itemID"
                 },
@@ -1995,7 +1996,7 @@
                     "Maximum": "@Yaw_Max",
                     "DefaultValue": 0.0,
                     "Required": true,
-                    "Description": "Maximum allowed rotation of the turret through the azimuth, in degrees. If this is set to 360, it can rotate rightward forever.",
+                    "Description": "Maximum allowed rotation of turret #(This.Indices[0]) through the azimuth, in degrees. If this is set to 360, it can rotate rightward forever.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#turret-yaw-min-float32-0",
                     "Variable": "yawMin"
                 },
@@ -2006,7 +2007,7 @@
                     "MaximumExclusive": 360,
                     "DefaultValue": 0.0,
                     "Required": true,
-                    "Description": "Minimum allowed rotation of turret #(Self.Indices[0]) through the azimuth, in degrees. If this is set to -360, it can rotate leftward forever.",
+                    "Description": "Minimum allowed rotation of turret #(This.Indices[0]) through the azimuth, in degrees. If this is set to -360, it can rotate leftward forever.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/vehicle-asset.html#turret-yaw-max-float32-0",
                     "Variable": "yawMax"
                 },

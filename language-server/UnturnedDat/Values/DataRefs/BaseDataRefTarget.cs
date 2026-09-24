@@ -243,5 +243,21 @@ public abstract class BaseDataRefTarget : IDataRefTarget
     /// <inheritdoc />
     public abstract bool Equals(IExpressionNode? other);
 
+    private protected static bool TryGetThis([NotNullWhen(true)] out ObjectStackObjectContext? objectContext)
+    {
+        foreach (IObjectStackContext context in DatObjectStack.AsEnumerable())
+        {
+            if (context is not ObjectStackObjectContext objContext)
+                continue;
+
+            objectContext = objContext;
+            return true;
+        }
+
+        objectContext = null;
+        return false;
+    }
+
+
     IDataRef IDataRefExpressionNode.DataRef => DataRef;
 }

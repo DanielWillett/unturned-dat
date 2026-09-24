@@ -473,6 +473,33 @@ public struct PropertyReference : IEquatable<PropertyReference>
         return true;
     }
 
+    internal static bool TryFindPropertyOwnerFromContext(DatProperty property, out ObjectStackObjectContext? objectContext)
+    {
+        if (property.Owner is DatFileType)
+        {
+            objectContext = null;
+            return true;
+        }
+
+        foreach (IObjectStackContext context in DatObjectStack.AsEnumerable())
+        {
+            if (context is not ObjectStackObjectContext objContext)
+                continue;
+
+            for (DatTypeWithProperties? t = objContext.Type; t != null; t = t.BaseType)
+            {
+                if (!t.Equals(property.Owner))
+                    continue;
+
+                objectContext = objContext;
+                return true;
+            }
+        }
+
+        objectContext = null;
+        return false;
+    }
+
     private struct FileCrossRefVisitor : IValueVisitor
     {
         public IParsingServices Services;

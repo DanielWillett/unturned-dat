@@ -70,9 +70,12 @@ internal class DiagnosticsManager : IDisposable
         _fileSync.FileRemoved += OnFileClosed;
         _fileSync.ContentUpdated += OnContentUpdated;
 
-        foreach (WorkspaceFolderTracker folder in _workspaceEnvironment.WorkspaceFolders.Values)
+        lock (_workspaceEnvironment.WorkspaceFoldersLock)
         {
-            OnWorkspaceFolderAdded(folder);
+            foreach (WorkspaceFolderTracker folder in _workspaceEnvironment.WorkspaceFolders.Values)
+            {
+                OnWorkspaceFolderAdded(folder);
+            }
         }
 
         Task.Run(async () =>

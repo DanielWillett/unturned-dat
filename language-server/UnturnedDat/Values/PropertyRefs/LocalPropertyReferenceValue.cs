@@ -87,17 +87,36 @@ public class LocalPropertyReferenceValue : IPropertyReferenceValue
         , allows ref struct
 #endif
     {
-        if ((_property == null || _propertyReference.IsCrossReference) && !TryCacheProperty(ref ctx))
+        // shouldn't happen in LocalPropertyReference
+        if (_propertyReference.IsCrossReference)
+            return false;
+
+        if (_property == null && !TryCacheProperty(ref ctx))
         {
             return false;
         }
 
-        return _property.VisitValue(
-            ref visitor,
-            ref ctx,
-            _propertyReference.Breadcrumbs,
-            missingValueBahvior: TypeParserMissingValueBehavior.FallbackToDefaultValue
-        );
+        if (!PropertyReference.TryFindPropertyOwnerFromContext(_property, out ObjectStackObjectContext? context) || context == null)
+        {
+            return _property.VisitValue(
+                ref visitor,
+                ref ctx,
+                _propertyReference.Breadcrumbs,
+                missingValueBahvior: TypeParserMissingValueBehavior.FallbackToDefaultValue
+            );
+        }
+
+        if (context.TryGetPropertyValue(_property, out IValue? value))
+        {
+            if (_propertyReference.Breadcrumbs.IsRoot)
+            {
+                return value.VisitValue(ref visitor, ref ctx);
+            }
+
+            // todo not implemented
+        }
+
+        return false;
     }
 
     /// <inheritdoc />
@@ -123,6 +142,9 @@ public class LocalPropertyReferenceValue : IPropertyReferenceValue
     {
         return HashCode.Combine(2050227563, _propertyReference);
     }
+
+    /// <inheritdoc />
+    public override string ToString() => _propertyReference.ToString();
 
     bool IValue.VisitConcreteValue<TVisitor>(ref TVisitor visitor) => false;
     bool IValue.IsNull => false;

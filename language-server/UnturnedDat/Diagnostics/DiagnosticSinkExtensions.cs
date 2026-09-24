@@ -726,6 +726,22 @@ public static class DiagnosticSinkExtensions
         }
 
         /// <summary>
+        /// Reports a missing asset file needed by a localization property.
+        /// </summary>
+        public void UNT1030_RequiredAsset<TDiagnosticProvider>(
+            ref TDiagnosticProvider provider,
+            string propertyKey
+        ) where TDiagnosticProvider : struct, IDiagnosticProvider
+        {
+            diagnosticSink.AcceptDiagnostic(new DatDiagnosticMessage
+            {
+                Diagnostic = DatDiagnostics.UNT1030,
+                Message = string.Format(DiagnosticResources.UNT1030_RequiredAsset, propertyKey),
+                Range = provider.GetRangeAndRegisterDiagnostic()
+            });
+        }
+
+        /// <summary>
         /// Reports a <see langword="false"/> value provided for a flag property.
         /// </summary>
         public void UNT2003<TDiagnosticProvider>(

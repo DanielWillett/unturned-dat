@@ -32,7 +32,7 @@
             "Type":
             {
                 "Type": "List",
-                "ElementType": "SDG.Unturned.DialogueMessage, Assembly-CSharp",
+                "ElementType": "SDG.Unturned.DialogueResponse, Assembly-CSharp",
                 "Mode": "LegacyList",
                 "CountType": "UInt8"
             },
@@ -82,7 +82,7 @@
                         "Mode": "LegacyList",
                         "ElementType": "UInt8"
                     },
-                    "DefaultValue": 0,
+                    "DefaultValue": [ ],
                     "Maximum": "@SDG.Unturned.DialogueAsset, Assembly-CSharp::Responses",
                     "Description": "List of responses for this message. Responses appear as buttons for the player to answer an NPC. Note that only either @(SDG.Unturned.DialogueMessage, Assembly-CSharp::Responses) or @(SDG.Unturned.DialogueResponse, Assembly-CSharp::Messages) can be used, not both.",
                     "Variable": "responses",
@@ -96,7 +96,7 @@
                         "AssetType": "SDG.Unturned.DialogueAsset, Assembly-CSharp"
                     },
                     "DefaultValue": "00000000-0000-0000-0000-000000000000",
-                    "Description": "The GUID or short ID of the previous dialogue page of message #(Self.Indices[0]). The player will be returned to this dialogue if no responses are available.",
+                    "Description": "The GUID or short ID of the previous dialogue page of message #(This.Indices[0]). The player will be returned to this dialogue if no responses are available.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/dialogue-asset.html#messages",
                     "Variable": "prevGuid"
                 },
@@ -104,7 +104,7 @@
                     "Key": "FaceOverride",
                     "Type": "FaceIndex",
                     "DefaultValue": null,
-                    "Description": "The index of an overridden face image to use during message #(Self.Indices[0]).",
+                    "Description": "The index of an overridden face image to use during message #(This.Indices[0]).",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/dialogue-asset.html#messages",
                     "Variable": "faceOverride"
                 },
@@ -117,7 +117,7 @@
                         "Mode": "LegacyList, ModernList"
                     },
                     "DefaultValue": [ ],
-                    "Description": "Conditions that must be met for message #(Self.Indices[0]) to be shown.",
+                    "Description": "Conditions that must be met for message #(This.Indices[0]) to be shown.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html",
                     "Variable": "conditions"
                 },
@@ -130,7 +130,7 @@
                         "Mode": "LegacyList, ModernList"
                     },
                     "DefaultValue": [ ],
-                    "Description": "Rewards applied before viewing message #(Self.Indices[0]).",
+                    "Description": "Rewards applied before viewing message #(This.Indices[0]).",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/rewards.html",
                     "Variable": "rewards"
                 }
@@ -151,7 +151,7 @@
                         "Mode": "LegacyList",
                         "ElementType": "UInt8"
                     },
-                    "DefaultValue": 0,
+                    "DefaultValue": [ ],
                     "Maximum": "@SDG.Unturned.DialogueAsset, Assembly-CSharp::Responses",
                     "Description": "List of messages this response should come after. Responses appear as buttons for the player to answer an NPC. Note that only either @(SDG.Unturned.DialogueMessage, Assembly-CSharp::Responses) or @(SDG.Unturned.DialogueResponse, Assembly-CSharp::Messages) can be used, not both.",
                     "Variable": "messages",
@@ -205,7 +205,7 @@
                         "Mode": "LegacyList, ModernList"
                     },
                     "DefaultValue": [ ],
-                    "Description": "Conditions that must be met for response #(Self.Indices[0]) to be shown.",
+                    "Description": "Conditions that must be met for response #(This.Indices[0]) to be shown.",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/conditions.html",
                     "Variable": "conditions"
                 },
@@ -218,7 +218,7 @@
                         "Mode": "LegacyList, ModernList"
                     },
                     "DefaultValue": [ ],
-                    "Description": "Rewards applied before viewing response #(Self.Indices[0]).",
+                    "Description": "Rewards applied before viewing response #(This.Indices[0]).",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/rewards.html",
                     "Variable": "rewards"
                 }
@@ -235,7 +235,7 @@
                         "ExtraTags": [ "<name_npc>", "<name_char>" ]
                     },
                     "Required": true,
-                    "Description": "The text shown for response #(Self.Indices[0]).",
+                    "Description": "The text shown for response #(This.Indices[0]).",
                     "Docs": "https://docs.smartlydressedgames.com/en/stable/npcs/dialogue-asset.html#localization",
                     "Variable": "text"
                 }

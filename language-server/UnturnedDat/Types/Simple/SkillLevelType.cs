@@ -190,7 +190,11 @@ internal class SkillLevelType : BaseType<int, SkillLevelType>, ITypeParser<int>,
             }
             else if (_skillValue != null)
             {
-                args.DiagnosticSink.UNT109(ref args, _skillValue.ToString()!);
+                string propertyName = _skillValue is LocalPropertyReferenceValue v
+                    ? v.Reference.PropertyName
+                    : _skillValue.ToString();
+
+                args.DiagnosticSink.UNT109(ref args, propertyName);
             }
             else if (_specialityIndexValue != null && _skillIndexValue != null)
             {

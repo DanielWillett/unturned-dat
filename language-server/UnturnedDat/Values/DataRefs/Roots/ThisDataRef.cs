@@ -40,23 +40,38 @@ public sealed class ThisDataRef : RootDataRef<ThisDataRef>
 
     protected override bool AcceptProperty(in IncludedProperty property, ref FileEvaluationContext ctx, out bool value)
     {
-        // TODO: check if object is included instead
-        value = Owner.IsIncluded(property.RequireValue, ref ctx);
-        return true;
+        if (TryGetThis(out ObjectStackObjectContext? context))
+        {
+            value = context.EvaluateIsIncluded(null, in property);
+            return true;
+        }
+
+        value = false;
+        return false;
     }
 
     protected override bool AcceptProperty(in ExcludedProperty property, ref FileEvaluationContext ctx, out bool value)
     {
-        // TODO: check if object is excluded instead
-        value = Owner.IsExcluded(ref ctx);
-        return true;
+        if (TryGetThis(out ObjectStackObjectContext? context))
+        {
+            value = context.EvaluateIsExcluded(null, in property);
+            return true;
+        }
+
+        value = false;
+        return false;
     }
 
     protected override bool AcceptProperty(in KeyProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out string? value)
     {
-        // TODO: get object key
-        value = PropertyDataRef.GetPropertyKey(Owner, ref ctx);
-        return value != null;
+        if (TryGetThis(out ObjectStackObjectContext? context))
+        {
+            value = context.EvaluateKey(null, in property);
+            return value != null;
+        }
+
+        value = null;
+        return false;
     }
 
     protected override bool AcceptProperty(in AssetNameProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out string? value)
@@ -97,20 +112,19 @@ public sealed class ThisDataRef : RootDataRef<ThisDataRef>
 
     protected override bool AcceptProperty<TVisitor>(in IndicesProperty property, ref FileEvaluationContext ctx, ref TVisitor visitor)
     {
-        // todo
-        return false;
+        return IndicesProperty.TryGetCurrentIndices(null, in property, ref visitor);
     }
 
     protected override bool AcceptProperty(in IsLegacyProperty property, ref FileEvaluationContext ctx, out bool value)
     {
         value = false;
-        if (!LegacyStateStack.TryGetCurrent(out PropertyResolutionContext state))
+        if (!DatObjectStack.TryGetCurrent(out IObjectStackContext? context))
         {
             value = false;
             return false;
         }
 
-        value = state == PropertyResolutionContext.Legacy;
+        value = context.Context == PropertyResolutionContext.Legacy;
         return true;
     }
 

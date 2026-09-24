@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Properties;
 using UnturnedDat.Data.Spec;
 
 namespace UnturnedDat.Data.Values;
@@ -35,37 +36,82 @@ public sealed class SelfDataRef : RootDataRef<SelfDataRef>
 
     protected override bool AcceptProperty(in IncludedProperty property, ref FileEvaluationContext ctx, out bool value)
     {
-        value = Owner.IsIncluded(property.RequireValue, ref ctx);
-        return true;
+        if (PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? context))
+        {
+            value = context?.EvaluateIsIncluded(Owner, in property) ?? Owner.IsIncluded(property.RequireValue, ref ctx);
+            return true;
+        }
+
+        value = false;
+        return false;
     }
 
     protected override bool AcceptProperty(in ExcludedProperty property, ref FileEvaluationContext ctx, out bool value)
     {
-        value = Owner.IsExcluded(ref ctx);
-        return true;
+        if (PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? context))
+        {
+            value = context?.EvaluateIsExcluded(Owner, in property) ?? Owner.IsExcluded(ref ctx);
+            return true;
+        }
+
+        value = false;
+        return false;
     }
 
     protected override bool AcceptProperty(in KeyProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out string? value)
     {
-        value = PropertyDataRef.GetPropertyKey(Owner, ref ctx);
-        return value != null;
+        if (PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? context))
+        {
+            string key = context != null
+                ? context.EvaluateKey(Owner, in property)
+                : PropertyDataRef.GetPropertyKey(Owner, ref ctx);
+
+            value = key;
+            return key != null;
+        }
+
+        value = null;
+        return false;
     }
 
     protected override bool AcceptProperty<TVisitor>(in IndicesProperty property, ref FileEvaluationContext ctx, ref TVisitor visitor)
     {
-        // todo
-        return false;
+        return IndicesProperty.TryGetCurrentIndices(Owner, in property, ref visitor);
     }
 
     protected override bool AcceptProperty(in ValueTypeProperty property, ref FileEvaluationContext ctx, [NotNullWhen(true)] out string? value)
     {
-        value = ValueTypeProperty.GetTypeName(Owner.GetValueType(ref ctx));
-        return true;
+        if (PropertyReference.TryFindPropertyOwnerFromContext(Owner, out ObjectStackObjectContext? context))
+        {
+            SourceValueType valueType;
+            if (context != null)
+            {
+                if (!context.TryEvaluateValueType(Owner, in property, out valueType))
+                {
+                    value = null;
+                    return false;
+                }
+            }
+            else
+            {
+                valueType = Owner.GetValueType(ref ctx);
+            }
+
+            value = ValueTypeProperty.GetTypeName(valueType);
+            return true;
+        }
+
+        value = null;
+        return false;
     }
 
     protected override bool AcceptProperty(in CountProperty property, ref FileEvaluationContext ctx, out int value)
     {
-        // todo
+        if (CountProperty.TryGetCurrentCount(Owner, in property, out value, ref ctx))
+        {
+            return true;
+        }
+
         value = 0;
         return false;
     }

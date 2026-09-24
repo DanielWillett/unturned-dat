@@ -212,10 +212,12 @@ public sealed class BackwardsCompatibleAssetReferenceType :
                         }
 
                         value = new GuidOrId(idOrNull.Value, category);
+                        args.Result = TypeParserResult.Successful;
                         return true;
                     }
 
                     value = new GuidOrId(guidOrNull.Value);
+                    args.Result = TypeParserResult.Successful;
                     return true;
                 }
 
@@ -242,6 +244,7 @@ public sealed class BackwardsCompatibleAssetReferenceType :
                     }
                 }
 
+                args.Result = TypeParserResult.Successful;
                 value = guidOrId;
                 return true;
 
@@ -264,6 +267,7 @@ public sealed class BackwardsCompatibleAssetReferenceType :
                     }
 
                     value = guid.HasValue ? new Optional<GuidOrId>(new GuidOrId(guid.Value)) : Optional<GuidOrId>.Null;
+                    args.Result = TypeParserResult.Successful;
                     return true;
                 }
 
@@ -303,6 +307,7 @@ public sealed class BackwardsCompatibleAssetReferenceType :
                         value = id.Value == 0
                             ? new Optional<GuidOrId>(GuidOrId.Empty)
                             : new Optional<GuidOrId>(new GuidOrId(id.Value, new AssetCategoryValue(categoryIndex)));
+                        args.Result = TypeParserResult.Successful;
                         return true;
                     }
                 }

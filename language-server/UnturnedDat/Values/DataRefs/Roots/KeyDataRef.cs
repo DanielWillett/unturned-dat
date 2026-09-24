@@ -9,7 +9,7 @@ using UnturnedDat.Data.Utility;
 namespace UnturnedDat.Data.Values;
 
 // Allowing concrete parsing would give the impression that context doesn't matter.
-// It does in fact matter, it's just being accessed through a static ThreadLocal<string>
+// It does in fact matter, it's just being accessed through a static ThreadLocal
 // so it doesn't need a reference to the context.
 
 /// <summary>
@@ -49,7 +49,14 @@ public sealed class KeyDataRef<TKey> : RootDataRef<TKey, KeyDataRef<TKey>>
         [NotNullWhen(true)] out IType<TKey>? type,
         out Optional<TKey> value)
     {
-        string? key = DictionaryType.Key.Value;
+        string? key = null;
+        foreach (IObjectStackContext context in DatObjectStack.AsEnumerable())
+        {
+            if (context is not ObjectStackDictionaryContext dictContext)
+                continue;
+
+            key = dictContext.Key;
+        }
 
         if (key != null)
         {

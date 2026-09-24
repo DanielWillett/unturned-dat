@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
+using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
+using UnturnedDat.Data.Properties;
+using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Types;
 using UnturnedDat.Data.Utility;
 
@@ -62,5 +67,68 @@ public readonly struct CountProperty : IDataRefProperty, IEquatable<CountPropert
     ) where TValue : IEquatable<TValue>
     {
         return new DataRefProperty<CountProperty, TValue>(type, target, default);
+    }
+
+    internal static bool TryGetCurrentCount(DatProperty currentProperty, in CountProperty property, out int count, ref FileEvaluationContext ctx)
+    {
+        if (!PropertyReference.TryFindPropertyOwnerFromContext(currentProperty, out ObjectStackObjectContext? objectContext))
+        {
+            count = 0;
+            return false;
+        }
+
+        CountValueVisitor countVisitor;
+        countVisitor.Count = 0;
+        countVisitor.Success = false;
+
+        if (objectContext != null)
+        {
+            if (objectContext.TryGetPropertyValue(currentProperty, out IValue? value))
+            {
+                value.VisitValue(ref countVisitor, ref ctx);
+
+                if (countVisitor.Success)
+                {
+                    count = countVisitor.Count;
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            currentProperty.VisitValue(ref countVisitor, ref ctx, missingValueBahvior: TypeParserMissingValueBehavior.FallbackToDefaultValue);
+            if (countVisitor.Success)
+            {
+                count = countVisitor.Count;
+                return true;
+            }
+        }
+
+        count = 0;
+        return false;
+    }
+
+    private struct CountValueVisitor : IValueVisitor
+    {
+        public int Count;
+        public bool Success;
+
+        public void Accept<TValue>(IType<TValue> type, Optional<TValue> value)
+            where TValue : IEquatable<TValue>
+        {
+            switch (value.Value)
+            {
+                case IEquatableArray<TValue> equatableArray:
+                    Array array = equatableArray.Array;
+                    Count = array?.Length ?? 0;
+                    Success = true;
+                    return;
+
+                default:
+                    Count = 1;
+                    Success = true;
+                    return;
+            }
+        }
     }
 }

@@ -453,4 +453,7 @@
   <data name="UNT2004_ThisMissingId" xml:space="preserve">
     <value>Value '{0}' can not be converted to a value of type '{1}', define an ID to use the 'this' keyword.</value>
   </data>
+  <data name="UNT1030_RequiredAsset" xml:space="preserve">
+    <value>Localization property '{0}' expected an asset file to be present alongside this localization file.</value>
+  </data>
 </root>

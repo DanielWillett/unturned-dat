@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using UnturnedDat.Data.Parsing;
 using UnturnedDat.Data.Properties;
@@ -241,6 +242,8 @@ public abstract class DatType : BaseType<DatType>, IDatSpecificationObject
 public abstract class DatTypeWithProperties : DatType
 {
     private bool _hasDoneLocalPropertiesCalculation;
+    private DatProperty[]? _propertyMap;
+    private int _propertyMapLength, _localizationPropertyMapLength;
 
     // -2 = uncached, -1 = none, otherwise index in Properties
     private int _subtypeSwitch = -2;
@@ -276,6 +279,67 @@ public abstract class DatTypeWithProperties : DatType
             field = CalculateHasLocalizationProperties();
             _hasDoneLocalPropertiesCalculation = true;
             return field;
+        }
+    }
+
+    /// <summary>
+    /// An ordered array of all properties, including base types. This includes localization and bundle asset properties.
+    /// </summary>
+    /// <remarks>Values use a reference to indices in this array.</remarks>
+    internal DatProperty[] AllPropertiesMap
+    {
+        get
+        {
+            if (_propertyMap == null)
+                CalculatePropertyMap();
+
+            return _propertyMap;
+        }
+    }
+
+    /// <summary>
+    /// An ordered array of all asset properties, including base types.
+    /// </summary>
+    internal ArraySegment<DatProperty> PropertyMap
+    {
+        get
+        {
+            if (_propertyMap == null)
+                CalculatePropertyMap();
+
+            return new ArraySegment<DatProperty>(_propertyMap, 0, _propertyMapLength);
+        }
+    }
+
+    /// <summary>
+    /// An ordered array of all localization properties, including base types.
+    /// </summary>
+    internal ArraySegment<DatProperty> LocalizationPropertyMap
+    {
+        get
+        {
+            if (_propertyMap == null)
+                CalculatePropertyMap();
+
+            return new ArraySegment<DatProperty>(_propertyMap, _propertyMapLength, _localizationPropertyMapLength);
+        }
+    }
+
+    /// <summary>
+    /// An ordered array of all bundle assets, including base types.
+    /// </summary>
+    internal ArraySegment<DatBundleAsset> BundleAssetMap
+    {
+        get
+        {
+            if (_propertyMap == null)
+                CalculatePropertyMap();
+
+            // this is pretty bad but its fine
+            DatBundleAsset[] array = Unsafe.As<DatProperty[], DatBundleAsset[]>(ref _propertyMap);
+
+            int startIndex = _propertyMapLength + _localizationPropertyMapLength;
+            return new ArraySegment<DatBundleAsset>(array, startIndex, array.Length - startIndex);
         }
     }
 
@@ -357,6 +421,73 @@ public abstract class DatTypeWithProperties : DatType
         _subtypeSwitch = -1;
         return -1;
     }
+
+    [MemberNotNull(nameof(_propertyMap))]
+    private void CalculatePropertyMap()
+    {
+        IDatTypeWithLocalizationProperties? lclType = this as IDatTypeWithLocalizationProperties;
+        IDatTypeWithBundleAssets? bndlType = this as IDatTypeWithBundleAssets;
+
+        if (PropertiesBuilder != null || lclType?.LocalizationPropertiesBuilder != null || bndlType?.BundleAssetsBuilder != null)
+            throw new InvalidOperationException("Properties not yet finalized.");
+
+        int mainCount = Properties.Length;
+        int localCount = lclType == null ? 0 : lclType.LocalizationProperties.Length;
+        int bndlCount = bndlType == null ? 0 : bndlType.BundleAssets.Length;
+        for (DatTypeWithProperties? t = BaseType; t != null; t = t.BaseType)
+        {
+            IDatTypeWithLocalizationProperties? tLclType = t as IDatTypeWithLocalizationProperties;
+            IDatTypeWithBundleAssets? tBndlType = t as IDatTypeWithBundleAssets;
+
+            if (t.PropertiesBuilder != null || tLclType?.LocalizationPropertiesBuilder != null || tBndlType?.BundleAssetsBuilder != null)
+                throw new InvalidOperationException($"Properties not yet finalized on base type {t.TypeName.GetTypeName()}.");
+
+            mainCount += t.Properties.Length;
+            if (tLclType != null)
+                localCount += tLclType.LocalizationProperties.Length;
+            if (tBndlType != null)
+                bndlCount += tBndlType.BundleAssets.Length;
+        }
+
+        if (mainCount + localCount + bndlCount == 0)
+        {
+            _propertyMapLength = 0;
+            _localizationPropertyMapLength = 0;
+            _propertyMap = Array.Empty<DatProperty>();
+            return;
+        }
+
+        int mainIndex = 0,
+            localIndex = mainCount,
+            bndlIndex = mainCount + localCount;
+
+        DatProperty[] propertyList = new DatProperty[mainCount + localCount + bndlCount];
+        for (DatTypeWithProperties? t = this; t != null; t = t.BaseType)
+        {
+            ImmutableArray<DatProperty> properties = t.Properties;
+            properties.CopyTo(propertyList, mainIndex);
+            mainIndex += properties.Length;
+            if (t is IDatTypeWithLocalizationProperties tLclType)
+            {
+                ImmutableArray<DatProperty> localizationProperties = tLclType.LocalizationProperties;
+                localizationProperties.CopyTo(0, propertyList, localIndex, localizationProperties.Length);
+                localIndex += localizationProperties.Length;
+            }
+            if (t is IDatTypeWithBundleAssets tBndlType)
+            {
+                ImmutableArray<DatBundleAsset> bundleAssets = tBndlType.BundleAssets;
+                for (int i = 0; i < bundleAssets.Length; ++i)
+                {
+                    propertyList[bndlIndex] = bundleAssets[i];
+                    ++bndlIndex;
+                }
+            }
+        }
+
+        _propertyMapLength = mainCount;
+        _localizationPropertyMapLength = localCount;
+        _propertyMap = propertyList;
+    }
 }
 
 /// <summary>
@@ -408,8 +539,6 @@ public interface IDatTypeWithStringParseableType<T>
 /// </summary>
 public class DatFileType : DatTypeWithProperties
 {
-    private bool _hasDoneLocalPropertiesCalculation;
-
     // allows type properties to reference other types before they're finalized.
     internal ImmutableDictionary<QualifiedType, DatType>.Builder? TypesBuilder;
 

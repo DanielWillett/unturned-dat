@@ -38,7 +38,7 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
 
     private bool _hasInitialized;
 
-    private readonly ConcurrentDictionary<DocumentUri, WorkspaceFolderTracker> _folderTrackers;
+    private readonly Dictionary<DocumentUri, WorkspaceFolderTracker> _folderTrackers;
 
     private readonly List<DocumentUri> _rootUris;
 
@@ -56,6 +56,7 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
     public event Action<WorkspaceFolderTracker, LspProjectFile>? ProjectFileCreated;
 
     public IReadOnlyDictionary<DocumentUri, WorkspaceFolderTracker> WorkspaceFolders { get; }
+    public Lock WorkspaceFoldersLock { get; } = new Lock();
 
     public LspWorkspaceEnvironment(
         OpenedFileTracker tracker,
@@ -74,7 +75,7 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
         _database = database;
         _languageServer = languageServer;
 
-        _folderTrackers = new ConcurrentDictionary<DocumentUri, WorkspaceFolderTracker>();
+        _folderTrackers = new Dictionary<DocumentUri, WorkspaceFolderTracker>();
         WorkspaceFolders = new ReadOnlyDictionary<DocumentUri, WorkspaceFolderTracker>(_folderTrackers);
 
         if (fileSync != null)
@@ -101,25 +102,33 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
         if (value.Event == WorkspaceFolderEvent.Remove)
         {
             _logger.LogInformation("Removed workspace folder {0}.", value.Folder.Uri);
-            if (_folderTrackers.TryRemove(value.Folder.Uri, out WorkspaceFolderTracker? tracker))
+            bool removed;
+            WorkspaceFolderTracker? tracker;
+            lock (WorkspaceFoldersLock)
+            {
+                removed = _folderTrackers.Remove(value.Folder.Uri, out tracker);
+            }
+
+            if (removed)
             {
                 try
                 {
-                    WorkspaceFolderRemoved?.Invoke(tracker);
+                    WorkspaceFolderRemoved?.Invoke(tracker!);
                 }
                 finally
                 {
-                    RemoveFolder(tracker);
+                    RemoveFolder(tracker!);
                 }
-                lock (_rootUris)
+                lock (WorkspaceFoldersLock)
+                {
                     _rootUris.Remove(value.Folder.Uri);
+                }
             }
         }
         else
         {
             WorkspaceFolderTracker tracker;
-            WorkspaceFolderTracker? oldValue = null;
-            lock (_folderTrackers)
+            lock (WorkspaceFoldersLock)
             {
                 _logger.LogInformation("Added workspace folder {0}, watched by client: {1}.", value.Folder.Uri, !_hasInitialized);
                 if (_folderTrackers.ContainsKey(value.Folder.Uri))
@@ -128,29 +137,12 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
                 }
 
                 tracker = new WorkspaceFolderTracker(value.Folder.Uri, value.Folder, !_hasInitialized, _logger);
-                _folderTrackers.AddOrUpdate(value.Folder.Uri,
-                    _ =>
-                    {
-                        oldValue = null;
-                        return tracker;
-                    },
-                    (_, current) =>
-                    {
-                        oldValue = current;
-                        return tracker;
-                    }
-                );
-                lock (_rootUris)
-                {
-                    if (!_rootUris.Contains(value.Folder.Uri))
-                        _rootUris.Add(value.Folder.Uri);
-                }
-
-                RegisterFolder(tracker);
+                _folderTrackers.Add(value.Folder.Uri, tracker);
+                if (!_rootUris.Contains(value.Folder.Uri))
+                    _rootUris.Add(value.Folder.Uri);
             }
 
-            if (oldValue != null)
-                RemoveFolder(oldValue);
+            RegisterFolder(tracker);
 
             WorkspaceFolderAdded?.Invoke(tracker);
         }
@@ -229,7 +221,7 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
         int best = 0;
         DocumentUri? bestUri = null;
         
-        lock (_rootUris)
+        lock (WorkspaceFoldersLock)
         {
             foreach (DocumentUri uri in _rootUris)
             {
@@ -272,8 +264,12 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
 
             _logger.LogTrace("Client reported change for file \"{0}\" in root URI \"{1}\".", change.Uri, rootUri);
 
-            if (!_folderTrackers.TryGetValue(rootUri, out WorkspaceFolderTracker? tracker))
-                continue;
+            WorkspaceFolderTracker? tracker;
+            lock (WorkspaceFoldersLock)
+            {
+                if (!_folderTrackers.TryGetValue(rootUri, out tracker))
+                    continue;
+            }
 
             string filePath = Path.GetFullPath(change.Uri.GetFileSystemPath());
             tracker.ConsumeChange(filePath, change.Type);
@@ -293,25 +289,37 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
 
         if (_languageServer.ClientSettings.WorkspaceFolders is not null)
         {
-            foreach (WorkspaceFolder rootFolder in _languageServer.ClientSettings.WorkspaceFolders)
+            List<WorkspaceFolderTracker> trackersToRegister = new List<WorkspaceFolderTracker>(4);
+            lock (WorkspaceFoldersLock)
             {
-                WorkspaceFolderTracker folder = new WorkspaceFolderTracker(rootFolder.Uri, rootFolder, !_hasInitialized, _logger);
-                if (!_folderTrackers.TryAdd(rootFolder.Uri, folder))
-                    folder.Dispose();
-                if (!_rootUris.Contains(rootFolder.Uri))
-                    _rootUris.Add(rootFolder.Uri);
-                RegisterFolder(folder);
+                foreach (WorkspaceFolder rootFolder in _languageServer.ClientSettings.WorkspaceFolders)
+                {
+                    WorkspaceFolderTracker folder = new WorkspaceFolderTracker(rootFolder.Uri, rootFolder, !_hasInitialized, _logger);
+                    if (!_folderTrackers.TryAdd(rootFolder.Uri, folder))
+                        folder.Dispose();
+                    if (!_rootUris.Contains(rootFolder.Uri))
+                        _rootUris.Add(rootFolder.Uri);
+
+                    trackersToRegister.Add(folder);
+                }
             }
+
+            foreach (WorkspaceFolderTracker tracker in trackersToRegister)
+                RegisterFolder(tracker);
         }
 
         DocumentUri? rootFolderUri = _languageServer.ClientSettings.RootUri;
         if (rootFolderUri is not null && !_folderTrackers.ContainsKey(rootFolderUri))
         {
             WorkspaceFolderTracker folder = new WorkspaceFolderTracker(rootFolderUri, null, !_hasInitialized, _logger);
-            if (!_folderTrackers.TryAdd(rootFolderUri, folder))
-                folder.Dispose();
-            if (!_rootUris.Contains(rootFolderUri))
-                _rootUris.Add(rootFolderUri);
+            lock (WorkspaceFoldersLock)
+            {
+                if (!_folderTrackers.TryAdd(rootFolderUri, folder))
+                    folder.Dispose();
+                if (!_rootUris.Contains(rootFolderUri))
+                    _rootUris.Add(rootFolderUri);
+            }
+
             RegisterFolder(folder);
         }
 
@@ -319,7 +327,7 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
 
         _hasInitialized = true;
 
-        lock (_folderTrackers)
+        lock (WorkspaceFoldersLock)
         {
             foreach (WorkspaceFolderTracker tracker in _folderTrackers.Values)
             {
@@ -368,11 +376,14 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
 
     internal void CreateAllProjectFiles()
     {
-        foreach (WorkspaceFolderTracker tracker in _folderTrackers.Values)
+        lock (WorkspaceFoldersLock)
         {
-            lock (tracker.ProjectFileLock)
+            foreach (WorkspaceFolderTracker tracker in _folderTrackers.Values)
             {
-                CreateProjectFiles(tracker);
+                lock (tracker.ProjectFileLock)
+                {
+                    CreateProjectFiles(tracker);
+                }
             }
         }
     }
@@ -647,15 +658,14 @@ internal class LspWorkspaceEnvironment : IWorkspaceEnvironment, IObserver<Worksp
 
         _workspaceFoldersUnsubscriber?.Dispose();
 
-        while (_folderTrackers.Count > 0)
+        lock (WorkspaceFoldersLock)
         {
-            foreach (DocumentUri uri in _folderTrackers.Keys.ToList())
+            foreach (WorkspaceFolderTracker tracker in _folderTrackers.Values)
             {
-                if (_folderTrackers.TryRemove(uri, out WorkspaceFolderTracker? tracker))
-                {
-                    tracker.Dispose();
-                }
+                tracker.Dispose();
             }
+
+            _folderTrackers.Clear();
         }
 
         Interlocked.Exchange(ref _bundleCache, null)?.Dispose();

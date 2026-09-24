@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using UnturnedDat.Data.Diagnostics;
 using UnturnedDat.Data.Files;
@@ -16,6 +17,8 @@ public class ProjectFile(string filePath)
     public string? Orderfile { get; set; }
 
     public GuidStyle? GuidStyle { get; set; }
+
+    public string? PreferredLanguage { get; set; }
 
     public static bool TryReadFromFile(
         ref FileEvaluationContext ctx,
@@ -46,6 +49,8 @@ public class ProjectFile(string filePath)
             ctx.Services.CreateLogger<ProjectFile>().LogWarning($"Database not yet initialized, or type {ProjectFileType.TypeId} isn't available.");
             return false;
         }
+
+        Reset();
 
         foreach (DatProperty property in fileType.Properties)
         {
@@ -90,7 +95,32 @@ public class ProjectFile(string filePath)
                 }
 
                 break;
+
+            case "Language":
+                if (value.TryGetValueAs(ref ctx, out string? language) && !string.IsNullOrEmpty(language))
+                {
+                    if (language.Length < 128)
+                    {
+                        Span<char> newLanguage = stackalloc char[language.Length];
+                        newLanguage[0] = char.ToUpperInvariant(language[0]);
+                        for (int i = 1; i < language.Length; ++i)
+                            newLanguage[i] = char.ToLowerInvariant(language[i]);
+
+                        language = newLanguage.ToString();
+                    }
+
+                    PreferredLanguage = language;
+                }
+
+                break;
         }
+    }
+
+    private void Reset()
+    {
+        PreferredLanguage = null;
+        GuidStyle = null;
+        Orderfile = null;
     }
 }
 

@@ -191,6 +191,7 @@ public sealed class TypeReferenceType :
 #pragma warning disable CS8500
     private bool TryParseTypeRefValue(ref TypeParserArgs<QualifiedType> args, ref FileEvaluationContext ctx, string value, out QualifiedType type)
     {
+        QualifiedType typeValue = QualifiedType.None;
         bool couldBeBadEnum = false;
         if (!QualifiedType.ExtractParts(value.AsSpan(), out ReadOnlySpan<char> typeName, out ReadOnlySpan<char> asmName)
             && _enumType != null)
@@ -198,7 +199,7 @@ public sealed class TypeReferenceType :
             if (_enumType.TryParse(value.AsSpan(), out DatEnumValue? enumValue))
             {
                 QualifiedType correspondingType = enumValue.CorrespondingType;
-                type = correspondingType;
+                typeValue = correspondingType;
                 goto checkBaseTypes;
             }
 
@@ -228,7 +229,7 @@ public sealed class TypeReferenceType :
             {
                 ConcatAssemblyNameState state;
                 state.Ptr = &typeName;
-                type = new QualifiedType(
+                typeValue = new QualifiedType(
                     string.Create(typeName.Length + defaultAssemblyNameLen + 2,
                         state,
                         (span, state) =>
@@ -249,28 +250,29 @@ public sealed class TypeReferenceType :
             newTypeName[typeName.Length] = ',';
             newTypeName[typeName.Length + 1] = ' ';
             defaultAssemblyName.CopyTo(newTypeName.Slice(typeName.Length + 2));
-            type = new QualifiedType(newTypeName.ToString(), isCaseInsensitive: !IsCaseSensitive);
+            typeValue = new QualifiedType(newTypeName.ToString(), isCaseInsensitive: !IsCaseSensitive);
 #endif
         }
         else
         {
-            type = new QualifiedType(value, !IsCaseSensitive);
+            typeValue = new QualifiedType(value, !IsCaseSensitive);
         }
 
         checkBaseTypes:
         if (args.DiagnosticSink != null && !_baseTypes.IsNull)
         {
-            InverseTypeHierarchy parents = ctx.Services.Database.Information.GetParentTypes(value);
+            InverseTypeHierarchy parents = ctx.Services.Database.Information.GetParentTypes(typeValue);
             if (couldBeBadEnum && !parents.IsValid)
             {
-                args.DiagnosticSink?.UNT1014(ref args, value);
+                args.DiagnosticSink?.UNT1014(ref args, typeValue.Type);
             }
             else if (!parents.IsValid || !_baseTypes.Any(x => Array.IndexOf(parents.ParentTypes, x) >= 0))
             {
-                args.DiagnosticSink?.UNT103(ref args, value, string.Join(", ", _baseTypes.Select(x => x.Type)));
+                args.DiagnosticSink?.UNT103(ref args, typeValue.GetTypeName(), string.Join(", ", _baseTypes.Select(x => x.GetTypeName())));
             }
         }
 
+        type = typeValue;
         return true;
     }
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER

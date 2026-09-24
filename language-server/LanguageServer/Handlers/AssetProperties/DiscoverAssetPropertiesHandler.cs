@@ -41,6 +41,8 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
             return Empty;
         }
 
+        RequestState state = new RequestState();
+
         ISourceFile sourceFile = file.SourceFile;
 
         List<AssetProperty> outputProperties = new List<AssetProperty>(64);
@@ -69,16 +71,16 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
             IDictionarySourceNode? asset = assetFile.GetAssetDataDictionary();
             IDictionarySourceNode? meta = assetFile.GetMetadataDictionary();
             if (meta != null)
-                Execute(meta, AssetDatPropertyPosition.Metadata, outputProperties);
+                Execute(meta, state, AssetDatPropertyPosition.Metadata, outputProperties);
 
             if (asset != null)
-                Execute(asset, AssetDatPropertyPosition.Asset, outputProperties);
+                Execute(asset, state, AssetDatPropertyPosition.Asset, outputProperties);
             else
-                Execute(sourceFile, AssetDatPropertyPosition.Root, outputProperties);
+                Execute(sourceFile, state, AssetDatPropertyPosition.Root, outputProperties);
         }
         else
         {
-            Execute(sourceFile, AssetDatPropertyPosition.Root, outputProperties);
+            Execute(sourceFile, state, AssetDatPropertyPosition.Root, outputProperties);
         }
 
         QualifiedType actualType = sourceFile.ActualType;
@@ -100,7 +102,7 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
         return new Container<AssetProperty>(outputProperties);
     }
 
-    private void Execute(IDictionarySourceNode dictionary, AssetDatPropertyPosition position, List<AssetProperty> outputProperties)
+    private void Execute(IDictionarySourceNode dictionary, RequestState state, AssetDatPropertyPosition position, List<AssetProperty> outputProperties)
     {
         FileEvaluationContext ctx = new FileEvaluationContext(_parsingServices, dictionary.File, position);
 
@@ -141,21 +143,29 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
                 v.ParentProperty = property;
                 v.Index = -1;
 
-                if (!ctx.TryGetTargetPropertyNodeForProperty(property, out IPropertySourceNode? propertyNode))
+                if (ctx.TryGetTargetPropertyNodeForProperty(property, out IPropertySourceNode? propertyNode))
                 {
-                    if (property.DefaultValue != null)
-                    {
-                        v.Node = null;
-                        property.DefaultValue.VisitValue(ref v, ref ctx);
-                    }
+                    state.ReferencedProperties.Add(propertyNode);
+                    v.Node = propertyNode.Value;
                 }
                 else
                 {
-                    prop.Range = propertyNode.Range.ToRange();
-                    v.Node = propertyNode.Value;
-                    property.VisitValue(ref v, ref ctx, missingValueBahvior: TypeParserMissingValueBehavior.FallbackToDefaultValue);
+                    v.Node = null;
                 }
 
+                property.VisitValue(ref v, ref ctx, referencedPropertySink: state, missingValueBahvior: TypeParserMissingValueBehavior.FallbackToDefaultValue);
+                if (state.ReferencedProperties.Count > 0)
+                {
+                    FileRange range = state.ReferencedProperties[0].Range;
+                    for (int i = 1; i < state.ReferencedProperties.Count; ++i)
+                    {
+                        range.Encapsulate(state.ReferencedProperties[i].Range);
+                    }
+
+                    prop.Range = range.ToRange();
+                }
+
+                state.ReferencedProperties.Clear();
                 outputProperties.Add(prop);
             }
         }
@@ -381,6 +391,21 @@ internal class DiscoverAssetPropertiesHandler : IDiscoverAssetPropertiesHandler
                 { "key", pair.Key },
                 { "value", Property.Value }
             };
+        }
+    }
+
+    private class RequestState : IReferencedPropertySink
+    {
+        public readonly List<IPropertySourceNode> ReferencedProperties = new List<IPropertySourceNode>();
+
+        public void AcceptReferencedProperty(IPropertySourceNode property)
+        {
+            ReferencedProperties.Add(property);
+        }
+
+        public void AcceptDereferencedProperty(IPropertySourceNode property)
+        {
+            ReferencedProperties.Remove(property);
         }
     }
 }

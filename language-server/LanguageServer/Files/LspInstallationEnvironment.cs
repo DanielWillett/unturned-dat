@@ -33,9 +33,12 @@ internal class LspInstallationEnvironment : InstallationEnvironment
         _workspace.WorkspaceFolderAdded += OnWorkspaceFolderAdded;
         _workspace.WorkspaceFolderRemoved += OnWorkspaceFolderRemoved;
 
-        foreach (WorkspaceFolderTracker folder in _workspace.WorkspaceFolders.Values)
+        lock (_workspace.WorkspaceFoldersLock)
         {
-            OnWorkspaceFolderAdded(folder);
+            foreach (WorkspaceFolderTracker folder in _workspace.WorkspaceFolders.Values)
+            {
+                OnWorkspaceFolderAdded(folder);
+            }
         }
 
         using IDisposable? scope = Logger.BeginScope("Source directories");

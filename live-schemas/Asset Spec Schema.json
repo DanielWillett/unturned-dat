@@ -843,6 +843,11 @@
                             "type": [ "boolean", "null" ],
                             "description": "Determines whether or not all elements in the list must be unique (or a warning is shown). Defaults to false."
                         },
+                        "LegacyNoWarnOnMissingElement":
+                        {
+                            "type": [ "boolean", "null" ],
+                            "description": "Supresses the warning emitted when a element isn't defined. Defaults to false."
+                        },
                         "ElementContext":
                         {
                             "type": [ "string", "null" ],

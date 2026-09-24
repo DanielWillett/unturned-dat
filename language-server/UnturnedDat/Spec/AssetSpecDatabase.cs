@@ -305,7 +305,7 @@ public class AssetSpecDatabase : IDisposable, IAssetSpecDatabase
     {
         Interlocked.Exchange(ref _statusJson, null)?.Dispose();
 
-        LegacyStateStack.Dispose();
+        DatObjectStack.Dispose();
 
         if (!disposing)
             return;

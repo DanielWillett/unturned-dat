@@ -465,6 +465,28 @@ public class DatProperty : IDatSpecificationObject
         }
     }
 
+    /// <summary>
+    /// Gets the first key that matches the legacy/modern filter.
+    /// </summary>
+    public string GetFirstKey(LegacyExpansionFilter filter)
+    {
+        if (Keys.IsDefaultOrEmpty)
+        {
+            return Key;
+        }
+
+        if (filter is LegacyExpansionFilter.Legacy or LegacyExpansionFilter.Modern)
+        {
+            foreach (DatPropertyKey key in Keys)
+            {
+                if (SourceNodeExtensions.FilterMatches(key.Filter, filter))
+                    return key.Key;
+            }
+        }
+
+        return Keys[0].Key;
+    }
+
     /// <inheritdoc cref="MatchesKey(string,ref FileEvaluationContext,bool,out DatProperty.KeyMatch)"/>
     public virtual bool MatchesKey(string candidateKey, ref FileEvaluationContext ctx, out KeyMatch match)
     {

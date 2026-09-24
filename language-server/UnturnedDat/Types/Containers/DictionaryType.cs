@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using System.Threading;
 using UnturnedDat.Data.Diagnostics;
 using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Parsing;
@@ -20,11 +19,6 @@ namespace UnturnedDat.Data.Types;
 public sealed class DictionaryType : ITypeFactory
 {
     public const string TypeId = "Dictionary";
-
-    /// <summary>
-    /// Shared index local used by <see cref="KeyDataRef{TKey}"/>.
-    /// </summary>
-    internal static readonly ThreadLocal<string?> Key = new ThreadLocal<string?>(false);
 
     /// <summary>
     /// Factory used to create <see cref="DictionaryType{TKeyType,TValueType}"/> values from JSON.
@@ -503,7 +497,8 @@ public class DictionaryType<TKeyType, TValueType>
                 bool allPassed = true;
                 int index = 0;
 
-                LegacyStateStack.Push(PropertyResolutionContext.Modern);
+                ObjectStackDictionaryContext context = new ObjectStackDictionaryContext(0, string.Empty, count);
+                DatObjectStack.Push(context);
                 try
                 {
                     foreach (ISourceNode node in nodes)
@@ -515,6 +510,9 @@ public class DictionaryType<TKeyType, TValueType>
                         IAnyValueSourceNode? valueNode = property.Value;
 
                         args.ReferencedPropertySink?.AcceptReferencedProperty(property);
+
+                        context.Key = key;
+                        context.Index = index;
 
                         if (args.DiagnosticSink != null
                             && _keyType != null
@@ -538,19 +536,9 @@ public class DictionaryType<TKeyType, TValueType>
                             TValueType? defaultValue = default;
                             if (_args.DefaultValue != null)
                             {
-                                DictionaryType.Key.Value = key;
-                                ListType.Index.Value = index;
-                                try
+                                if (_args.DefaultValue.TryEvaluateValue(out Optional<TValueType> gottenValue, ref ctx))
                                 {
-                                    if (_args.DefaultValue.TryEvaluateValue(out Optional<TValueType> gottenValue, ref ctx))
-                                    {
-                                        defaultValue = gottenValue.Value;
-                                    }
-                                }
-                                finally
-                                {
-                                    ListType.Index.Value = -1;
-                                    DictionaryType.Key.Value = null;
+                                    defaultValue = gottenValue.Value;
                                 }
                             }
 
@@ -566,7 +554,7 @@ public class DictionaryType<TKeyType, TValueType>
                 }
                 finally
                 {
-                    LegacyStateStack.Pop();
+                    DatObjectStack.Pop();
                 }
 
                 value = new EquatableArray<DictionaryPair<TValueType>>(array, index);

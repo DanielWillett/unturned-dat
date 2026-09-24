@@ -7,9 +7,8 @@ using UnturnedDat.Data.Utility;
 namespace UnturnedDat.Data.Values;
 
 // Allowing concrete parsing would give the impression that context doesn't matter.
-// It does in fact matter, it's just being accessed through a static ThreadLocal<long>
+// It does in fact matter, it's just being accessed through a static ThreadLocal
 // so it doesn't need a reference to the context.
-
 
 /// <summary>
 /// Data-ref referencing the current element in a list's index
@@ -50,7 +49,15 @@ public sealed class IndexDataRef<TCountType> : RootDataRef<TCountType, IndexData
         [NotNullWhen(true)] out IType<TCountType>? type,
         out Optional<TCountType> value)
     {
-        long index = ListType.Index.Value;
+        int index = -1;
+        foreach (IObjectStackContext context in DatObjectStack.AsEnumerable())
+        {
+            if (context is not ObjectStackListContext listContext)
+                continue;
+
+            index = listContext.Index;
+        }
+
         if (index < 0)
         {
             type = null;
@@ -61,8 +68,8 @@ public sealed class IndexDataRef<TCountType> : RootDataRef<TCountType, IndexData
         type = Type;
         if (typeof(TCountType) == typeof(int))
         {
-            value = new Optional<TCountType>(MathMatrix.As<int, TCountType>(unchecked((int)index)));
-            return index <= int.MaxValue;
+            value = new Optional<TCountType>(MathMatrix.As<int, TCountType>(index));
+            return true;
         }
         if (typeof(TCountType) == typeof(byte))
         {
@@ -72,7 +79,7 @@ public sealed class IndexDataRef<TCountType> : RootDataRef<TCountType, IndexData
         if (typeof(TCountType) == typeof(uint))
         {
             value = new Optional<TCountType>(MathMatrix.As<uint, TCountType>(unchecked((uint)index)));
-            return index <= uint.MaxValue;
+            return true;
         }
         if (typeof(TCountType) == typeof(ushort))
         {

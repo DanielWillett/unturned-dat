@@ -108,6 +108,11 @@ public class ProjectFileType : DatFileType
         guidStyle.DefaultValue = guidStyleEnumType.Values[0];
         builder.Add(guidStyle);
 
+        DatProperty language = DatProperty.Create("Language", StringType.Instance, this, none, SpecPropertyContext.Property);
+        guidStyle.Description = Value.Create("The preferred language to use for resolving localization properties. Defaults to \"English\".", StringType.Instance);
+        guidStyle.DefaultValue = Value.Create("English", StringType.Instance);
+        builder.Add(language);
+
         Properties = builder.MoveToImmutableOrCopy();
     }
 

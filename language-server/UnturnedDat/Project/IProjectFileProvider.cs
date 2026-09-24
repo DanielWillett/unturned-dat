@@ -22,7 +22,7 @@ public interface IProjectFileProvider
     /// <summary>
     /// Enumerates project files in hierarchical order (with the most precise one first), choosing the first non-null value.
     /// </summary>
-    T? AggregateProjectFiles<T>(IWorkspaceFile? fileContext, Func<ProjectFile, T> selector) where T : class;
+    T? AggregateProjectFiles<T>(IWorkspaceFile? fileContext, Func<ProjectFile, T> selector) where T : class?;
 
     /// <summary>
     /// Enumerates project files in hierarchical order (with the most precise one first), choosing the first non-null value.
@@ -53,7 +53,7 @@ public sealed class NilProjectFileProvider : IProjectFileProvider
 
     /// <inheritdoc />
     public T? AggregateProjectFiles<T>(IWorkspaceFile? fileContext, Func<ProjectFile, T> selector)
-        where T : class
+        where T : class?
     {
         return null;
     }
@@ -79,6 +79,14 @@ public static class ProjectFileProviderExtensions
         public GuidStyle GetGuidStyle(IWorkspaceFile? fileContext)
         {
             return provider.AggregateProjectFiles(fileContext, p => p.GuidStyle) ?? GuidStyle.NormalLower;
+        }
+
+        /// <summary>
+        /// Gets the preferred language given all project files.
+        /// </summary>
+        public string GetPreferredLanguage(IWorkspaceFile? fileContext)
+        {
+            return provider.AggregateProjectFiles(fileContext, p => p.PreferredLanguage) ?? "English";
         }
     }
 }

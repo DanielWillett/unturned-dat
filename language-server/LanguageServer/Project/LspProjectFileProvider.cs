@@ -29,7 +29,7 @@ internal class LspProjectFileProvider : IProjectFileProvider
 
     /// <inheritdoc />
     public T? AggregateProjectFiles<T>(IWorkspaceFile? fileContext, Func<ProjectFile, T> selector)
-        where T : class
+        where T : class?
     {
         return null;
     }

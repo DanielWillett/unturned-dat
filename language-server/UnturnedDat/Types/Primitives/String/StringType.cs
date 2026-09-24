@@ -39,7 +39,6 @@ public sealed class StringType : PrimitiveType<string, StringType>, ITypeParser<
     private readonly bool _allowLineBreakTag;
     private readonly OneOrMore<Regex> _extraRichTextTags;
     private readonly uint _maxFormatArguments;
-    private object[]? _formatArgs;
 
     public override string Id => TypeId;
 

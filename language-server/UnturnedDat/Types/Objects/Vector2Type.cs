@@ -117,23 +117,29 @@ public sealed class Vector2Type : BaseVectorType<Vector2, Vector2Type>
         }
 
         hadOneComp = true;
-        if (xProperty == null || yProperty == null)
-        {
-            if (xProperty == null)
-            {
-                args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
-            }
-            if (yProperty == null)
-            {
-                args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, yKey);
-            }
 
-            value = default;
-            return false;
+        bool success = true;
+        if (xProperty == null)
+        {
+            value.X = 0;
+            args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
+        }
+        else
+        {
+            success &= VectorTypes.TryParseArg(ref args, out value.X, xProperty);
         }
 
-        return VectorTypes.TryParseArg(ref args, out value.X, xProperty)
-               & VectorTypes.TryParseArg(ref args, out value.Y, yProperty);
+        if (yProperty == null)
+        {
+            value.Y = 0;
+            args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
+        }
+        else
+        {
+            success &= VectorTypes.TryParseArg(ref args, out value.Y, yProperty);
+        }
+
+        return success;
     }
 
     protected override bool TryParseFromDictionary(ref TypeParserArgs<Vector2> args, IDictionarySourceNode dictionary, out Vector2 value)
@@ -147,29 +153,30 @@ public sealed class Vector2Type : BaseVectorType<Vector2, Vector2Type>
             return false;
         }
 
-        if (xProperty == null || yProperty == null)
+        bool success = true;
+        if (xProperty == null)
         {
-            if (xProperty == null)
-                args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
-            else
-                args.ReferencedPropertySink?.AcceptReferencedProperty(xProperty);
-
-            if (yProperty == null)
-                args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, yKey);
-            else
-                args.ReferencedPropertySink?.AcceptReferencedProperty(yProperty);
-
-            value = default;
-            return false;
+            value.X = 0;
+            args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
+        }
+        else
+        {
+            success &= VectorTypes.TryParseArg(ref args, out value.X, xProperty);
+            args.ReferencedPropertySink?.AcceptReferencedProperty(xProperty);
         }
 
-        if (args.ReferencedPropertySink != null)
+        if (yProperty == null)
         {
-            args.ReferencedPropertySink.AcceptReferencedProperty(xProperty);
-            args.ReferencedPropertySink.AcceptReferencedProperty(yProperty);
+            value.Y = 0;
+            args.DiagnosticSink?.UNT1007(ref args, args.ParentNode, xKey);
+        }
+        else
+        {
+            success &= VectorTypes.TryParseArg(ref args, out value.Y, yProperty);
+            args.ReferencedPropertySink?.AcceptReferencedProperty(yProperty);
         }
 
-        return VectorTypes.TryParseArg(ref args, out value.X, xProperty) & VectorTypes.TryParseArg(ref args, out value.Y, yProperty);
+        return success;
     }
 
 

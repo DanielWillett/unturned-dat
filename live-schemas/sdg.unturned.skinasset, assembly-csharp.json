@@ -13,8 +13,7 @@
             "Key": "Bypass_ID_Limit",
             "Type": "Flag",
             "DefaultValue": false,
-            "Description": "Allows IDs to be less than 2000 if this isn't the vanilla bundle.",
-            "Docs": "https://docs.smartlydressedgames.com/en/stable/assets/resource-asset.html#resource-properties"
+            "Description": "Allows IDs to be less than 2000 if this isn't the vanilla bundle."
         },
         {
             "Key": "Pattern",
@@ -115,6 +114,16 @@
             "Description": "The number of mesh overrides defined in the bundle, which will replace the meshes (in order of LOD levels) on the item or vehicle this skin is applied to.",
             "Variable": "overrideMeshes",
             "CountForTemplateGroup": "skin-meshes"
+        },
+        {
+            "Key": "Is_Legacy_Canned_Beans",
+            "Type": "Boolean",
+            "DefaultValue": false,
+            "Experimental": true,
+            "Description": "Indicates this skin has an @Animations prefab that overrides the @($bndl$::SDG.Unturned.ItemAsset, Assembly-CSharp::Animations)",
+            "Required": "#$bndl$::Animations.Included",
+            "Variable": "overrideAnimations",
+            "Version": "3.26.3.7"
         }
     ],
     "Types":
@@ -249,6 +258,268 @@
             "Description": "An object containing a Mesh Filter configured to use the desired mesh. One of these objects can also include 'Stat_Tracker' and 'Icon' transforms to set the corresponding location.",
             "Variable": "overrideMeshes",
             "Required": true
+        },
+        {
+            "Key": "Animations",
+            "Description": "Overrides the original item animations when equipped.",
+            "Docs": "https://docs.smartlydressedgames.com/en/stable/items/introduction.html#animations-prefab",
+            "InclusiveWith":
+            [
+                {
+                    "Key": "Is_Legacy_Canned_Beans",
+                    "Value": true
+                }
+            ],
+            "Required": "@Is_Legacy_Canned_Beans",
+            "Type": "UnityEngine.GameObject, UnityEngine.CoreModule",
+            "Variable": "animations",
+            "Animations":
+            [
+                {
+                    "Name": "Equip",
+                    "Required": true
+                },
+                {
+                    "Name": "Inspect",
+                    "Version": "o:3.12.2.0"
+                },
+                {
+                    "Name": "Use"
+                },
+                {
+                    "Name": "Aid",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "SDG.Unturned.ItemConsumableAsset, Assembly-CSharp::Aid",
+                            "Value": true
+                        },
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableConsumeable, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Tug",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableFisher, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Cast",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableFisher, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Reel",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableFisher, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Catch_Loop",
+                    "Version": "3.26.2.0",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableFisher, Assembly-CSharp",
+                            "Condition":
+                            {
+                                "Variable": "$prop$::SDG.Unturned.UseableFisher, Assembly-CSharp::CatchChallenge_Enabled",
+                                "Operation": "eq",
+                                "Comparand": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "Name": "Catch_Failure",
+                    "Version": "3.26.2.0",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableFisher, Assembly-CSharp",
+                            "Condition":
+                            {
+                                "Variable": "$prop$::SDG.Unturned.UseableFisher, Assembly-CSharp::CatchChallenge_Enabled",
+                                "Operation": "eq",
+                                "Comparand": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "Name": "UnjamChamber",
+                    "NameProperty": "SDG.Unturned.ItemGunAsset, Assembly-CSharp::Unjam_Chamber_Anim",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        },
+                        {
+                            "Key": "$prop$::SDG.Unturned.ItemGunAsset, Assembly-CSharp::Can_Ever_Jam",
+                            "Value": true
+                        }
+                    ]
+                },
+                {
+                    "Name": "Reload",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Hammer",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Aim_Start",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Aim_Stop",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Sprint_Start",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Sprint_Stop",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Attach_Start",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Attach_Stop",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableGun, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Start_Swing",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableMelee, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Stop_Swing",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableMelee, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Weak",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableMelee, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Strong",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableMelee, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Refill",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableRefill, Assembly-CSharp"
+                        }
+                    ]
+                },
+                {
+                    "Name": "Refill",
+                    "InclusiveWith":
+                    [
+                        {
+                            "Key": "$prop$::Useable",
+                            "Value": "SDG.Unturned.UseableRefill, Assembly-CSharp"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

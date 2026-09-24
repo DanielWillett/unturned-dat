@@ -5,6 +5,7 @@ using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Parsing;
 using UnturnedDat.Data.Spec;
 using UnturnedDat.Data.Utility;
+using UnturnedDat.Data.Values;
 
 namespace UnturnedDat.Data.Types;
 
@@ -97,8 +98,7 @@ public sealed class SteamItemDefType : PrimitiveType<int, SteamItemDefType>, ITy
     {
         switch (parsedValue)
         {
-            case < 0 when _allowNegative
-                         || _allowNegativeForFirstElement && ListType.Index.IsValueCreated && ListType.Index.Value == 0:
+            case < 0 when _allowNegative || (_allowNegativeForFirstElement && IsFirstElement()):
                 break;
                 
             case < MinValue:
@@ -109,6 +109,11 @@ public sealed class SteamItemDefType : PrimitiveType<int, SteamItemDefType>, ITy
                 sink.UNT1028_MaximumInclusive(ref args, null, parsedValue.ToString("N"), MaxValue.ToString("N"));
                 break;
         }
+    }
+
+    private static bool IsFirstElement()
+    {
+        return DatObjectStack.TryGetCurrent(out IObjectStackContext? context) && context is ObjectStackListContext { Index: 0 };
     }
 
     IType<int> ITypeConverter<int>.DefaultType => this;
