@@ -868,14 +868,10 @@ public class ListType<TCountType, TElementType>
                 }
                 else
                 {
-                    singularPropertyName = args.Property?.Key ?? string.Empty;
-                    if (args.BaseKey != null)
-                    {
-                        if (args.BaseKey.Length > 0 && args.BaseKey[^1] == '_')
-                            singularPropertyName = args.BaseKey + singularPropertyName;
-                        else
-                            singularPropertyName = args.BaseKey + "_" + singularPropertyName;
-                    }
+                    singularPropertyName = SourceNodeExtensions.CombineKeys(
+                        args.BaseKey,
+                        args.Property?.GetFirstKey(LegacyExpansionFilter.Legacy) ?? string.Empty
+                    );
                 }
 
                 // trim 's' from end by default
@@ -884,12 +880,9 @@ public class ListType<TCountType, TElementType>
                     singularPropertyName = singularPropertyName[..^1];
                 }
             }
-            else if (args.BaseKey != null)
+            else
             {
-                if (args.BaseKey.Length > 0 && args.BaseKey[^1] == '_')
-                    singularPropertyName = args.BaseKey + singularPropertyName;
-                else
-                    singularPropertyName = args.BaseKey + "_" + singularPropertyName;
+                singularPropertyName = SourceNodeExtensions.CombineKeys(args.BaseKey, singularPropertyName);
             }
 
             IDictionarySourceNode? dictionaryNode = _args.ElementContext switch
@@ -1063,7 +1056,7 @@ public class ListType<TCountType, TElementType>
         CreateLegacyKeyState state;
         state.BaseKey = baseKey;
         state.Index = i;
-        if (_args.SkipUnderscoreInLegacyKey)
+        if (_args.SkipUnderscoreInLegacyKey || (baseKey.Length > 0 && baseKey[^1] == '_'))
         {
             return string.Create(l, state, static (span, state) =>
             {
@@ -1085,7 +1078,7 @@ public class ListType<TCountType, TElementType>
             return baseKey + i.ToString(CultureInfo.InvariantCulture);
         }
 
-        return baseKey + "_" + i.ToString(CultureInfo.InvariantCulture);
+        return SourceNodeExtensions.CombineKeys(baseKey, i.ToString(CultureInfo.InvariantCulture));
 #endif
     }
 

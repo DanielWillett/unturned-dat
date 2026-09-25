@@ -168,6 +168,41 @@ public static class CommonTypes
     }
 
     /// <summary>
+    /// Determines whether the type given for <typeparamref name="T"/> is a 'primitive' type, meaning a concrete value of it couldn't carry any dynamic data.
+    /// </summary>
+    public static bool IsPrimitiveType<T>()
+        where T : IEquatable<T>
+    {
+        return TypeCache<T>.IsPrimitiveType;
+    }
+
+    private static bool IsPrimitiveTypeIntl<T>()
+        where T : IEquatable<T>
+    {
+        if (typeof(T).IsPrimitive)
+            return true;
+
+        if (typeof(T) == typeof(string)
+               || typeof(T) == typeof(decimal)
+               || typeof(T) == typeof(DateTime)
+               || typeof(T) == typeof(TimeSpan)
+               || typeof(T) == typeof(Guid)
+               || typeof(T) == typeof(GuidOrId)
+               || typeof(T) == typeof(DateTimeOffset)
+               || typeof(T) == typeof(IPv4Filter)
+               || typeof(T) == typeof(QualifiedType)
+               || typeof(T) == typeof(QualifiedOrAliasedType)
+               || typeof(T) == typeof(UnturnedVersion)
+               || typeof(T) == typeof(DatEnumValue)
+               || typeof(T) == typeof(DatFlagEnumValue))
+        {
+            return true;
+        }
+
+        return VectorTypes.TryGetProvider<T>() != null;
+    }
+
+    /// <summary>
     /// Loads an integer value into a generic parameter if it's a compatible type.
     /// </summary>
     public static bool TryLoadInteger<TResult>(long i, [MaybeNullWhen(false)] out TResult result)
@@ -386,4 +421,10 @@ public static class CommonTypes
     }
 
     private delegate IType? SpecificationTypeFactory(in SpecificationTypeFactoryArgs args);
+
+    private static class TypeCache<T>
+        where T : IEquatable<T>
+    {
+        public static readonly bool IsPrimitiveType = IsPrimitiveTypeIntl<T>();
+    }
 }

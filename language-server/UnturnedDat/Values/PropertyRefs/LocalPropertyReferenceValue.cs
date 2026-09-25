@@ -76,6 +76,12 @@ public class LocalPropertyReferenceValue : IPropertyReferenceValue
     }
 
     /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        return CreateValueVisitor.TryCreateFromValue(this, ref ctx, out value);
+    }
+
+    /// <inheritdoc />
     public void WriteToJson(Utf8JsonWriter writer, JsonSerializerOptions options)
     {
         _propertyReference.WriteToJson(writer);
@@ -96,12 +102,22 @@ public class LocalPropertyReferenceValue : IPropertyReferenceValue
             return false;
         }
 
-        if (!PropertyReference.TryFindPropertyOwnerFromContext(_property, out ObjectStackObjectContext? context) || context == null)
+        if (!PropertyReference.TryFindPropertyOwnerFromContext(_property, out ObjectStackObjectContext? context))
         {
             return _property.VisitValue(
                 ref visitor,
                 ref ctx,
                 _propertyReference.Breadcrumbs,
+                missingValueBahvior: TypeParserMissingValueBehavior.FallbackToDefaultValue
+            );
+        }
+
+        if (context == null)
+        {
+            ctx.CreateRootContext(out FileEvaluationContext rootCtx);
+            return _property.VisitValue(
+                ref visitor,
+                ref rootCtx,
                 missingValueBahvior: TypeParserMissingValueBehavior.FallbackToDefaultValue
             );
         }

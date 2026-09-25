@@ -99,55 +99,60 @@
         {
             "Key": "Explosion",
             "Type":
-            {
-                "Type": "LegacyAssetReferenceString",
-                "AssetTypes": [ "SDG.Unturned.EffectAsset, Assembly-CSharp", "SDG.Unturned.VehicleAsset, Assembly-CSharp" ]
-            },
-            "DefaultValue": "00000000-0000-0000-0000-000000000000",
-            "Description": "Effect played when this barricade is destroyed. If @Build is 'Vehicle', this is the vehicle that will be spawned.",
-            "Variable": "explosionGuid",
-            "Docs": "https://docs.smartlydressedgames.com/en/stable/items/barricade-asset.html#barricade-asset-properties",
-            "ExclusiveWith":
             [
                 {
-                    "Key": "Build",
-                    "Condition":
+                    "Case":
                     {
-                        "And":
-                        [
-                            {
-                                "Variable": "Build",
-                                "Operation": "eq",
-                                "Comparand": "VEHICLE"
-                            },
-                            {
-                                "Variable": "Explosion",
-                                "Operation": "is-type",
-                                "Comparand": "SDG.Unturned.EffectAsset, Assembly-CSharp"
-                            }
-                        ]
+                        "Variable": "Build",
+                        "Operation": "eq",
+                        "Comparand": "VEHICLE"
+                    },
+                    "Value":
+                    {
+                        "Type": "LegacyAssetReferenceString",
+                        "AssetType": "SDG.Unturned.VehicleAsset, Assembly-CSharp"
                     }
                 },
                 {
-                    "Key": "Build",
-                    "Condition":
+                    "Value":
                     {
-                        "And":
-                        [
-                            {
-                                "Variable": "Build",
-                                "Operation": "neq",
-                                "Comparand": "VEHICLE"
-                            },
-                            {
-                                "Variable": "Explosion",
-                                "Operation": "is-type",
-                                "Comparand": "SDG.Unturned.VehicleAsset, Assembly-CSharp"
-                            }
-                        ]
+                        "Type": "LegacyAssetReferenceString",
+                        "AssetType": "SDG.Unturned.EffectAsset, Assembly-CSharp"
                     }
                 }
-            ]
+            ],
+            "DefaultValue": "00000000-0000-0000-0000-000000000000",
+            "Description":
+            [
+                {
+                    "Case":
+                    {
+                        "Variable": "Build",
+                        "Operation": "eq",
+                        "Comparand": "VEHICLE"
+                    },
+                    "Value": "Vehicle to spawn when this barricade is placed."
+                },
+                {
+                    "Value": "Effect played when this barricade is destroyed."
+                }
+            ],
+            "Variable":
+            [
+                {
+                    "Case":
+                    {
+                        "Variable": "Build",
+                        "Operation": "eq",
+                        "Comparand": "VEHICLE"
+                    },
+                    "Value": "VehicleGuid"
+                },
+                {
+                    "Value": "explosionGuid"
+                }
+            ],
+            "Docs": "https://docs.smartlydressedgames.com/en/stable/items/barricade-asset.html#barricade-asset-properties"
         },
         {
             "Key": "Can_Be_Damaged",

@@ -247,6 +247,12 @@ public sealed class UnityObject : IValue<UnityObject>, IEquatable<UnityObject?>,
         return Path;
     }
 
+    bool IValue.TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        value = this;
+        return true;
+    }
+
     void IValue.WriteToJson(Utf8JsonWriter writer, JsonSerializerOptions options)
     {
         throw new NotSupportedException();

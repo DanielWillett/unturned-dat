@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Types;
@@ -161,6 +162,18 @@ public class ComplexConditionalSwitchCase : ISwitchCase
             return false;
 
         return Value.VisitValue(ref visitor, ref ctx);
+    }
+
+    /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        if (!TryCheckConditions(ref ctx, out bool v) || !v)
+        {
+            value = null;
+            return false;
+        }
+
+        return Value.TryCreateConcreteValue(ref ctx, out value);
     }
 
     /// <inheritdoc />

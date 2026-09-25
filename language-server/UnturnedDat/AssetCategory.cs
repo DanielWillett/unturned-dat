@@ -401,7 +401,7 @@ public sealed class AssetCategory : DatEnumType, IEquatable<AssetCategory>, ICom
             case 'o':
                 if (str.Equals("OBJECT".AsSpan(), StringComparison.OrdinalIgnoreCase))
                 {
-                    index = Effect.Index;
+                    index = Object.Index;
                     return true;
                 }
 

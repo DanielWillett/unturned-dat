@@ -695,6 +695,27 @@ public class SwitchValue : IValue, IEquatable<SwitchValue?>
     }
 
     /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        foreach (ISwitchCase c in Cases)
+        {
+            if (!c.TryCheckConditions(ref ctx, out bool doesPassConditions))
+            {
+                value = null;
+                return false;
+            }
+
+            if (!doesPassConditions)
+                continue;
+
+            return c.Value.TryCreateConcreteValue(ref ctx, out value);
+        }
+
+        value = null;
+        return false;
+    }
+
+    /// <inheritdoc />
     public void WriteToJson(Utf8JsonWriter writer, JsonSerializerOptions options)
     {
         writer.WriteStartArray();

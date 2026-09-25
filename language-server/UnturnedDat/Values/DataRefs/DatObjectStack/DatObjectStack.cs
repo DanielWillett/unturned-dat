@@ -66,7 +66,9 @@ internal static class DatObjectStack
             return false;
         }
 
-        value.Pop();
+        IObjectStackContext val = value.Pop();
+        if (val is IDisposable disp)
+            disp.Dispose();
         return true;
     }
 

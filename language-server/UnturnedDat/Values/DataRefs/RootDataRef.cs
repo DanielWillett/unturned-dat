@@ -34,7 +34,13 @@ public abstract class RootDataRef<TSelf> : BaseDataRefTarget, IDataRef
 #endif
     ;
 
-        /// <inheritdoc />
+    /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        return CreateValueVisitor.TryCreateFromValue(this, ref ctx, out value);
+    }
+
+    /// <inheritdoc />
     public void WriteToJson(Utf8JsonWriter writer, JsonSerializerOptions options)
     {
         writer.WriteStringValue(GetExpressionString());

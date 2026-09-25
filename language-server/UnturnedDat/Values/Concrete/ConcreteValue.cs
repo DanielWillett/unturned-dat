@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Types;
@@ -8,10 +9,12 @@ using UnturnedDat.Data.Values.Expressions;
 
 namespace UnturnedDat.Data.Values;
 
+#pragma warning disable CS8500
+
 /// <summary>
 /// A concrete/constant value that isn't dynamic in any way.
 /// </summary>
-/// <remarks>Create using <see cref="Values.Value.Value.Value.Create"/>.</remarks>
+/// <remarks>Create using <see cref="Value.Create"/>.</remarks>
 /// <typeparam name="TValue">The type of value.</typeparam>
 public sealed class ConcreteValue<TValue>
     : IValue<TValue>,
@@ -160,4 +163,123 @@ public sealed class ConcreteValue<TValue>
     {
         return IsNull ? 1302072072 : HashCode.Combine(_value, 1302072072);
     }
+
+    bool IValue.TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        if (CommonTypes.IsPrimitiveType<TValue>() || _value == null)
+        {
+            value = this;
+            return true;
+        }
+
+        if (!TryCreateConcreteValue(_value, out TValue? newValue, ref ctx))
+        {
+            value = null;
+            return false;
+        }
+
+        if (!typeof(TValue).IsValueType && (object)_value == (object?)newValue)
+        {
+            value = this;
+            return true;
+        }
+
+        value = newValue == null ? Values.Value.Null(Type) : Values.Value.Create(newValue, Type);
+        return true;
+    }
+
+    internal static bool TryCreateConcreteValue(TValue? value, out TValue? newValue, ref FileEvaluationContext ctx)
+    {
+        switch (value)
+        {
+            case null:
+                newValue = default;
+                return true;
+
+            case IValue v:
+                if (v.TryCreateConcreteValue(ref ctx, out IValue? v2))
+                {
+                    switch (v2)
+                    {
+                        case TValue newV:
+                            newValue = newV;
+                            return true;
+
+                        case ConcreteValue<TValue> conc:
+                            newValue = conc._value;
+                            return true;
+
+                        case { IsNull: true }:
+                            newValue = default;
+                            return !typeof(TValue).IsValueType;
+                    }
+                }
+
+                break;
+
+            case IEquatableArray<TValue> array:
+#if NET9_0_OR_GREATER
+                scoped
+#endif
+                    EquatableArrayReduceVisitor<TValue> visitor = default;
+#if NET9_0_OR_GREATER
+                visitor.EvalContext = ref ctx;
+                array.Visit(ref visitor);
+#else
+                unsafe
+                {
+                    fixed (FileEvaluationContext* ctxPtr = &ctx)
+                    {
+                        visitor.EvalContext = ctxPtr;
+                        array.Visit(ref visitor);
+                    }
+                }
+#endif
+                if (visitor.Success)
+                {
+                    newValue = visitor.ReducedValue;
+                    return true;
+                }
+                break;
+        }
+
+        newValue = value;
+        return true;
+    }
 }
+
+#if NET9_0_OR_GREATER
+file ref struct EquatableArrayReduceVisitor<TArrayType> : IEquatableArrayVisitor
+#else
+file unsafe struct EquatableArrayReduceVisitor<TArrayType> : IEquatableArrayVisitor
+#endif
+{
+    public TArrayType ReducedValue;
+    public bool Success;
+#if NET9_0_OR_GREATER
+    public ref FileEvaluationContext EvalContext;
+#else
+    public FileEvaluationContext* EvalContext;
+#endif
+
+    public void Accept<T>(EquatableArray<T> array) where T : IEquatable<T>
+    {
+#if NET9_0_OR_GREATER
+        ref FileEvaluationContext ctx = ref EvalContext;
+#else
+        ref FileEvaluationContext ctx = ref Unsafe.AsRef<FileEvaluationContext>(EvalContext);
+#endif
+        T[] newArray = new T[array.Array.Length];
+        for (int i = 0; i < array.Array.Length; ++i)
+        {
+            if (!ConcreteValue<T>.TryCreateConcreteValue(array.Array[i], out newArray[i], ref ctx))
+                return;
+        }
+
+        EquatableArray<T> newEqArray = new EquatableArray<T>(newArray);
+        Success = true;
+        ReducedValue = Unsafe.As<EquatableArray<T>, TArrayType>(ref newEqArray);
+    }
+}
+
+#pragma warning restore CS8500

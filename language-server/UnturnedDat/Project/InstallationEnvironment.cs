@@ -1078,10 +1078,11 @@ public class InstallationEnvironment : IDisposable
             }
             if (file.Id != 0 && file.Category > 0 && file.Category <= _idIndex.Length)
             {
-                if (_idIndex[oldCategory - 1].TryGetValue(file.Id, out index))
-                    _idIndex[oldCategory - 1][file.Id] = index.Add(file);
+                Dictionary<ushort, OneOrMore<DiscoveredDatFile>> dict = _idIndex[file.Category - 1];
+                if (dict.TryGetValue(file.Id, out index))
+                    dict[file.Id] = index.Add(file);
                 else
-                    _idIndex[oldCategory - 1].Add(file.Id, file);
+                    dict.Add(file.Id, file);
             }
         }
 
@@ -1318,14 +1319,14 @@ public class InstallationEnvironment : IDisposable
                 _guidIndex.Add(file.Guid, file);
         }
 
-        if (file.Id == 0 || file.Category <= 0 || file.Category > _idIndex.Length)
-            return;
-
-        Dictionary<ushort, OneOrMore<DiscoveredDatFile>> indexGroup = _idIndex[file.Category - 1];
-        if (indexGroup.TryGetValue(file.Id, out files))
-            indexGroup[file.Id] = files.Add(file);
-        else
-            indexGroup.Add(file.Id, file);
+        if (file.Id != 0 && file.Category > 0 && file.Category <= _idIndex.Length)
+        {
+            Dictionary<ushort, OneOrMore<DiscoveredDatFile>> indexGroup = _idIndex[file.Category - 1];
+            if (indexGroup.TryGetValue(file.Id, out files))
+                indexGroup[file.Id] = files.Add(file);
+            else
+                indexGroup.Add(file.Id, file);
+        }
 
         foreach (ushort caliber in file.Calibers)
         {

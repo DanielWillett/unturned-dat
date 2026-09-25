@@ -201,18 +201,8 @@ public static class TypeParsers
                         break;
                     }
 
-                    if (property.DefaultValue == null)
-                    {
-                        returnValue = false;
-                        value = Optional<T>.Null;
-                        args.Result = TypeParserResult.UsedDefaultValueNoneAvailable;
-                    }
-                    else
-                    {
-                        returnValue = property.DefaultValue.TryGetValueAs(ref ctx, out value);
-                        args.Result = returnValue ? TypeParserResult.UsedDefaultValue : TypeParserResult.Failed;
-                    }
-
+                    bool success = property.TryEvaluateDefaultValue(false, ref ctx, out value, out args.Result);
+                    returnValue = success;
                     return true;
 
                 case TypeParserMissingValueBehavior.FallbackToDefaultValue:
@@ -243,23 +233,16 @@ public static class TypeParsers
     ) where T : IEquatable<T>
     {
         bool hasProperty = args.ParentNode is IPropertySourceNode;
-        if (args.Property?.GetIncludedDefaultValue(hasProperty) is { } defValue)
-        {
-            if (defValue.TryGetValueAs(ref ctx, out value))
-            {
-                args.Result = hasProperty ? TypeParserResult.UsedIncludedDefaultValue : TypeParserResult.UsedDefaultValue;
-                return true;
-            }
-
-            args.Result = TypeParserResult.Failed;
-        }
-        else
+        if (args.Property == null)
         {
             args.Result = hasProperty ? TypeParserResult.UsedIncludedDefaultValueNoneAvailable : TypeParserResult.UsedDefaultValueNoneAvailable;
+            value = Optional<T>.Null;
+            return false;
         }
 
-        value = Optional<T>.Null;
-        return false;
+        bool success = args.Property.TryEvaluateDefaultValue(hasProperty, ref ctx, out value, out TypeParserResult result);
+        args.Result = result;
+        return success;
     }
 
     private static class TypeParserCache<T> where T : IEquatable<T>

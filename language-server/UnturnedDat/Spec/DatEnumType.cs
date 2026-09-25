@@ -1074,6 +1074,11 @@ public class DatEnumValue : IValue<DatEnumValue>, IEquatable<DatEnumValue>, IDat
     string IDatSpecificationObject.FullName => Index == -1
         ? $"{Owner.Owner.TypeName.GetFullTypeName()}/{Owner.TypeName.GetFullTypeName()}/[{Value}]"
         : $"{Owner.Owner.TypeName.GetFullTypeName()}/{Owner.TypeName.GetFullTypeName()}.{Value}";
+    bool IValue.TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        value = this;
+        return true;
+    }
 }
 
 /// <summary>

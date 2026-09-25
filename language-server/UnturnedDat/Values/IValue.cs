@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Types;
@@ -17,6 +18,14 @@ public interface IValue : IEquatable<IValue?>
     /// </summary>
     /// <remarks>It's still possible for a value to evaluate to <see langword="null"/> even if this is <see langword="false"/>.</remarks>
     bool IsNull { get; }
+
+    /// <summary>
+    /// Attempts to reduce this value into a value that can be accessed using <see cref="VisitConcreteValue{TVisitor}"/>.
+    /// </summary>
+    /// <param name="ctx">File context.</param>
+    /// <param name="value">The new value, or <see langword="this"/> if this value is already able to be accessed concretely.</param>
+    /// <returns><see langword="true"/> if the value could be reduced, otherwise <see langword="false"/>.</returns>
+    bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value);
 
     /// <summary>
     /// Writes this value to a <see cref="Utf8JsonWriter"/> in a way that it can be recreated later.

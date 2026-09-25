@@ -97,11 +97,15 @@ public sealed class LocalizationKeyType : BaseType<string, LocalizationKeyType>,
                 return false;
             }
 
-            IValue? defaultValue = args.Property.GetIncludedDefaultValue(args.ParentNode is IPropertySourceNode);
-
-            if (defaultValue == null || !defaultValue.TryGetValueAs(ref ctx, out Optional<string> result))
+            if (!args.Property.TryEvaluateDefaultValue(
+                    args.ParentNode is IPropertySourceNode,
+                    ref ctx,
+                    out Optional<string> result,
+                    out TypeParserResult parseResult
+                ))
             {
                 args.DiagnosticSink?.UNT2004_Generic(ref args, string.Empty, this);
+                args.Result = parseResult;
                 value = Optional<string>.Null;
                 return false;
             }

@@ -738,9 +738,8 @@ public class FileRelationalCache : IDiagnosticSink, IFileRelationalModel
                 }
                 else
                 {
-                    IValue? included = Property.GetIncludedDefaultValue();
                     FileEvaluationContext ctx = new FileEvaluationContext(Services, ParentNode.File, ParentNode.GetRootPosition());
-                    if (included != null && included.TryGetValueAs(ref ctx, out value.Value))
+                    if (Property.TryEvaluateDefaultValue(ParentNode is IPropertySourceNode, ref ctx, out value.Value, out _))
                     {
                         value.HasLiteralValue = true;
                     }

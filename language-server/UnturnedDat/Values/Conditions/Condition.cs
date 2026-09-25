@@ -262,6 +262,18 @@ public readonly struct Condition<TComparand> : IEquatable<Condition<TComparand>>
         }
     }
 
+    bool IValue.TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        if (!TryEvaluateValue(out Optional<bool> opt, ref ctx))
+        {
+            value = null;
+            return false;
+        }
+
+        value = Value.Boolean(opt.Value);
+        return true;
+    }
+
     bool IValue.IsNull => false;
     IType<bool> IValue<bool>.Type => Conditions.Type;
 }

@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using UnturnedDat.Data.Files;
+using UnturnedDat.Data.Parsing;
 using UnturnedDat.Data.Project;
 using UnturnedDat.Data.Properties;
 using UnturnedDat.Data.Types;
@@ -211,7 +212,6 @@ public class DatProperty : IDatSpecificationObject
     /// <remarks>Corresponds to the <c>InclusiveWith</c> property.</remarks>
     public ImmutableArray<IInclusionCondition> InclusionConditions { get; internal set; }
 
-    internal IValue? GetIncludedDefaultValue() => IncludedDefaultValue ?? DefaultValue;
     internal IValue? GetIncludedDefaultValue(bool hasProperty) => hasProperty ? IncludedDefaultValue ?? DefaultValue : DefaultValue;
 
     /// <summary>
@@ -233,6 +233,69 @@ public class DatProperty : IDatSpecificationObject
         DataRoot = element;
         Context = context;
         Type = null!;
+    }
+
+    /// <summary>
+    /// Attempts to evaluate default value given whether or not the property is present or not. Always returns a concrete value.
+    /// </summary>
+    /// <param name="hasProperty">Whether or not a property node is present. This is used to select either <see cref="IncludedDefaultValue"/> or <see cref="DefaultValue"/>.</param>
+    /// <param name="ctx">File context.</param>
+    /// <param name="value">The parsed concrete value.</param>
+    public bool TryEvaluateDefaultValue(bool hasProperty, ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value, out TypeParserResult result)
+    {
+        IValue? defaultValue = GetIncludedDefaultValue(hasProperty);
+        if (defaultValue != null)
+        {
+            if (defaultValue.TryCreateConcreteValue(ref ctx, out value))
+            {
+                result = (object)defaultValue == IncludedDefaultValue ? TypeParserResult.UsedIncludedDefaultValue : TypeParserResult.UsedDefaultValue;
+                return true;
+            }
+            
+            result = TypeParserResult.Failed;
+        }
+        else
+        {
+            result = hasProperty ? TypeParserResult.UsedIncludedDefaultValueNoneAvailable : TypeParserResult.UsedDefaultValueNoneAvailable;
+        }
+
+        value = null;
+        return false;
+    }
+
+    /// <inheritdoc cref="TryEvaluateDefaultValue"/>
+    public bool TryEvaluateDefaultValue<TValue>(bool hasProperty, ref FileEvaluationContext ctx, out Optional<TValue> value, out TypeParserResult result)
+        where TValue : IEquatable<TValue>
+    {
+        IValue? defaultValue = GetIncludedDefaultValue(hasProperty);
+        if (defaultValue == null)
+        {
+            result = hasProperty ? TypeParserResult.UsedIncludedDefaultValueNoneAvailable : TypeParserResult.UsedDefaultValueNoneAvailable;
+        }
+        else if (defaultValue.TryGetValueAs(ref ctx, out value))
+        {
+            if (value.HasValue && !CommonTypes.IsPrimitiveType<TValue>())
+            {
+                if (!ConcreteValue<TValue>.TryCreateConcreteValue(value.Value, out TValue? newValue, ref ctx))
+                {
+                    value = Optional<TValue>.Null;
+                    result = TypeParserResult.Failed;
+                    return false;
+                }
+
+                value = new Optional<TValue>(newValue);
+            }
+
+            result = (object)defaultValue == IncludedDefaultValue ? TypeParserResult.UsedIncludedDefaultValue : TypeParserResult.UsedDefaultValue;
+            return true;
+        }
+        else
+        {
+            result = TypeParserResult.Failed;
+        }
+
+        value = Optional<TValue>.Null;
+        return false;
     }
 
     /// <summary>

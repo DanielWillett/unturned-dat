@@ -124,6 +124,18 @@ public class ConditionalSwitchCase<TComparand> : IConditionalSwitchCase
     }
 
     /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        if (!Condition.TryEvaluateValue(out Optional<bool> v, ref ctx) || !v.GetValueOrDefault(false))
+        {
+            value = null;
+            return false;
+        }
+
+        return Value.TryCreateConcreteValue(ref ctx, out value);
+    }
+
+    /// <inheritdoc />
     public virtual bool Equals(IValue? other)
     {
         return other is ConditionalSwitchCase<TComparand> sw && _condition.Equals(sw._condition) && Value.Equals(sw.Value);

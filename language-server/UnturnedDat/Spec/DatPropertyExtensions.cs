@@ -346,8 +346,7 @@ public static class DatPropertyExtensions
         {
             if (propertyType.TrimmingBehavior <= PropertySearchTrimmingBehavior.CreatesSiblingPropertiesInSameFile)
             {
-                IValue? defaultValue = property.DefaultValue;
-                return defaultValue != null && defaultValue.VisitValue(ref visitor, ref ctx);
+                return property.TryEvaluateDefaultValue(false, ref ctx, out IValue? value, out _) && value.VisitValue(ref visitor, ref ctx);
             }
         }
 
@@ -501,9 +500,7 @@ public static class DatPropertyExtensions
         {
             if (propertyType.TrimmingBehavior <= PropertySearchTrimmingBehavior.CreatesSiblingPropertiesInSameFile)
             {
-                value = property.DefaultValue;
-                propertyNode = null;
-                return value != null;
+                return property.TryEvaluateDefaultValue(false, ref ctx, out value, out _);
             }
         }
 
@@ -599,9 +596,7 @@ public static class DatPropertyExtensions
         {
             if (propertyType.TrimmingBehavior <= PropertySearchTrimmingBehavior.CreatesSiblingPropertiesInSameFile)
             {
-                value = property.DefaultValue;
-                propertyNode = null;
-                return value != null;
+                return property.TryEvaluateDefaultValue(false, ref ctx, out value, out _);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Types;
@@ -32,6 +33,7 @@ public class DefaultSwitchCase : ISwitchCase
         writer.WriteEndObject();
     }
 
+    /// <inheritdoc />
     public bool VisitConcreteValue<TVisitor>(ref TVisitor visitor)
         where TVisitor : IValueVisitor
 #if NET9_0_OR_GREATER
@@ -41,6 +43,7 @@ public class DefaultSwitchCase : ISwitchCase
         return Value.VisitConcreteValue(ref visitor);
     }
 
+    /// <inheritdoc />
     public bool VisitValue<TVisitor>(ref TVisitor visitor, ref FileEvaluationContext ctx)
         where TVisitor : IValueVisitor
 #if NET9_0_OR_GREATER
@@ -50,6 +53,11 @@ public class DefaultSwitchCase : ISwitchCase
         return Value.VisitValue(ref visitor, ref ctx);
     }
 
+    /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        return Value.TryCreateConcreteValue(ref ctx, out value);
+    }
 
     /// <inheritdoc />
     public virtual bool Equals(IValue? other)

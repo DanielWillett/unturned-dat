@@ -158,23 +158,19 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
                     }
                     else
                     {
-                        bool hasProperty = args.ParentNode is IPropertySourceNode;
-                        if (args.Property?.GetIncludedDefaultValue(hasProperty) is { } defValue)
+                        ObjectStackObjectContext context = new ObjectStackObjectContext(PropertyResolutionContext.Modern, this, ref ctx, ref args);
+                        DatObjectStack.Push(context);
+                        try
                         {
-                            if (defValue.TryGetValueAs(ref ctx, out value))
-                            {
-                                args.Result = hasProperty ? TypeParserResult.UsedIncludedDefaultValue : TypeParserResult.UsedDefaultValue;
-                                return true;
-                            }
-
-                            args.Result = TypeParserResult.Failed;
+                            TypeParserResult result = TypeParserResult.Failed;
+                            bool success = args.Property?.TryEvaluateDefaultValue(args.ParentNode is IPropertySourceNode, ref ctx, out value, out result) ?? false;
+                            args.Result = result;
+                            return success;
                         }
-                        else
+                        finally
                         {
-                            args.Result = hasProperty ? TypeParserResult.UsedIncludedDefaultValueNoneAvailable : TypeParserResult.UsedDefaultValueNoneAvailable;
+                            DatObjectStack.Pop();
                         }
-
-                        return false;
                     }
                 }
 
@@ -203,9 +199,21 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
                     ValueParseInfo.Value = args;
                     try
                     {
-                        if (StringDefaultValue.TryEvaluateValue(out value, ref ctx))
+                        ObjectStackObjectContext context = new ObjectStackObjectContext(PropertyResolutionContext.Modern, this, ref ctx, ref args);
+                        DatObjectStack.Push(context);
+                        try
                         {
-                            return true;
+                            if (StringDefaultValue.TryEvaluateValue(out value, ref ctx))
+                            {
+                                if (value.HasValue && value.Value.TryCreateConcreteValue(ref ctx, out DatObjectValue? concreteVal))
+                                    value = concreteVal;
+
+                                return true;
+                            }
+                        }
+                        finally
+                        {
+                            DatObjectStack.Pop();
                         }
 
                         args.DiagnosticSink?.UNT2004_Generic(ref args, valueNode.Value, Owner);
@@ -581,6 +589,19 @@ public class DatCustomType : DatTypeWithProperties, IType<DatObjectValue>, IType
         }
 
         bool IValue.IsNull => false;
+
+        public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+        {
+            IValue? v = Value.TryReadValueFromJson(in Element, ValueReadOptions.Default, PropertyType, ctx.Services.Database, Owner);
+            if (v != null)
+            {
+                return v.TryCreateConcreteValue(ref ctx, out value);
+            }
+
+            value = null;
+            return false;
+        }
+
         void IValue.WriteToJson(Utf8JsonWriter writer, JsonSerializerOptions options) => Element.WriteTo(writer);
         bool IEquatable<IValue?>.Equals(IValue? other) => (object)this == other;
         bool IValue.VisitConcreteValue<TVisitor>(ref TVisitor visitor) => false;

@@ -51,6 +51,7 @@ internal sealed class IsType : ConditionOperation<IsType>
         }
         else if (typeof(TValue) == typeof(ushort))
         {
+            // TODO: how to get category?
             guidOrId = new GuidOrId(Unsafe.As<TValue, ushort>(ref value));
         }
         else if (!ConvertVisitor<GuidOrId>.TryConvert(value, out guidOrId) || guidOrId.IsNull)

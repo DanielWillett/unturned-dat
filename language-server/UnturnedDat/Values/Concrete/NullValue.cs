@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using UnturnedDat.Data.Files;
 using UnturnedDat.Data.Types;
@@ -64,6 +65,12 @@ public sealed class NullValue : IValue
     public override int GetHashCode()
     {
         return 1453913317;
+    }
+
+    bool IValue.TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        value = this;
+        return true;
     }
 }
 
@@ -165,7 +172,6 @@ public sealed class NullValue<T>(IType<T> type) : IValue<T>, IValueExpressionNod
         }
     }
 
-
     private struct EqualityVisitor : IValueVisitor
     {
         public bool IsNull;
@@ -175,5 +181,11 @@ public sealed class NullValue<T>(IType<T> type) : IValue<T>, IValueExpressionNod
         {
             IsNull = !optVal.HasValue;
         }
+    }
+
+    bool IValue.TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        value = this;
+        return true;
     }
 }

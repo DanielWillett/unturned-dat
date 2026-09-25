@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Immutable;
-using System.ComponentModel.Design.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using UnturnedDat.Data.Diagnostics;
 using UnturnedDat.Data.Files;
@@ -188,25 +187,27 @@ internal sealed class ObjectStackObjectContext : IObjectStackContext, ITypeVisit
 
                 case TypeParserMissingValueBehavior.FallbackToDefaultValue:
                     bool useIncludedDefault = _parserArgs.ParentNode is IPropertySourceNode;
-                    if (_parserArgs.Property?.GetIncludedDefaultValue(useIncludedDefault) is { } defValue)
-                    {
-                        if (defValue.TryGetValueAs(ref _evalContext, out parsedObject))
-                        {
-                            _parserArgs.Result = (object)defValue == _parserArgs.Property.IncludedDefaultValue
-                                ? TypeParserResult.UsedIncludedDefaultValue
-                                : TypeParserResult.UsedDefaultValue;
-
-                            if (parsedObject != null)
-                                return true;
-                        }
-
-                        _parserArgs.Result = TypeParserResult.Failed;
-                    }
-                    else
+                    if (_parserArgs.Property == null)
                     {
                         _parserArgs.Result = useIncludedDefault
                             ? TypeParserResult.UsedIncludedDefaultValueNoneAvailable
                             : TypeParserResult.UsedDefaultValueNoneAvailable;
+                        parsedObject = null;
+                        return false;
+                    }
+
+                    bool success = _parserArgs.Property.TryEvaluateDefaultValue(
+                        useIncludedDefault,
+                        ref _evalContext,
+                        out Optional<DatObjectValue> parsedObjectOpt,
+                        out TypeParserResult result
+                    );
+
+                    _parserArgs.Result = result;
+                    if (success && parsedObjectOpt.HasValue)
+                    {
+                        parsedObject = parsedObjectOpt.Value;
+                        return true;
                     }
 
                     parsedObject = null;
@@ -214,7 +215,7 @@ internal sealed class ObjectStackObjectContext : IObjectStackContext, ITypeVisit
             }
         }
 
-        parsedObject = new DatObjectValue(Type, values.UnsafeFreeze());
+        parsedObject = new DatObjectValue(Type, values.UnsafeFreeze(), isConcrete: true);
         return true;
     }
 
@@ -310,9 +311,9 @@ internal sealed class ObjectStackObjectContext : IObjectStackContext, ITypeVisit
 
         if (!foundProperty && propertyType.TrimmingBehavior <= PropertySearchTrimmingBehavior.CreatesSiblingPropertiesInSameFile)
         {
-            if (property.DefaultValue != null)
+            if (property.TryEvaluateDefaultValue(false, ref ctx, out IValue? defaultValue, out _))
             {
-                _values![index] = new DatObjectPropertyValue(property.DefaultValue, property);
+                _values![index] = new DatObjectPropertyValue(defaultValue, property);
                 return true;
             }
 
@@ -550,16 +551,7 @@ internal sealed class ObjectStackObjectContext : IObjectStackContext, ITypeVisit
 
         if (Context == PropertyResolutionContext.Legacy)
         {
-            string? baseKey = _baseKey;
-            if (_parentNode is IPropertySourceNode prop)
-                baseKey = prop.Key;
-            else
-            {
-                string lclKey = property.GetFirstKey(Context.ToKeyFilter());
-                baseKey = SourceNodeExtensions.CombineKeys(baseKey, lclKey);
-            }
-
-            parseArgs.BaseKey = baseKey;
+            parseArgs.BaseKey = _baseKey;
         }
 
         if (!type.Parser.TryParse(ref parseArgs, ref ctx, out Optional<TValue> value))

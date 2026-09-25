@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -34,6 +35,12 @@ public class DataRefProperty<TProperty> : IDataRef, IEquatable<DataRefProperty<T
 
     /// <inheritdoc />
     public string PropertyName => _property.PropertyName;
+
+    public DataRefProperty(IDataRefTarget target, TProperty property)
+    {
+        Target = target;
+        _property = property;
+    }
 
     /// <inheritdoc />
     public StringBuilder AppendExpressionString(StringBuilder sb, bool hash = true)
@@ -138,10 +145,10 @@ public class DataRefProperty<TProperty> : IDataRef, IEquatable<DataRefProperty<T
         return Target.AcceptProperty(in _property, ref visitor, ref ctx);
     }
 
-    public DataRefProperty(IDataRefTarget target, TProperty property)
+    /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
     {
-        Target = target;
-        _property = property;
+        return CreateValueVisitor.TryCreateFromValue(this, ref ctx, out value);
     }
 
     /// <inheritdoc />

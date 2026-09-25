@@ -84,8 +84,11 @@ public class CrossedPropertyReferenceValue : ICrossedPropertyReference
         return HashCode.Combine(1332296112, _propertyReference);
     }
 
-    bool IValue.VisitConcreteValue<TVisitor>(ref TVisitor visitor) => false;
-    bool IValue.IsNull => false;
+    /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        return CreateValueVisitor.TryCreateFromValue(this, ref ctx, out value);
+    }
 
     /// <inheritdoc />
     public bool TryResolveReference(
@@ -132,8 +135,6 @@ public class CrossedPropertyReferenceValue : ICrossedPropertyReference
         return true;
     }
 
-   
-
     /// <inheritdoc />
     public void DisposeContext(ref FileEvaluationContext newContext)
     {
@@ -142,6 +143,9 @@ public class CrossedPropertyReferenceValue : ICrossedPropertyReference
             disp.Dispose();
         }
     }
+
+    bool IValue.VisitConcreteValue<TVisitor>(ref TVisitor visitor) => false;
+    bool IValue.IsNull => false;
     IPropertyReferenceValue IPropertyReferenceExpressionNode.Value => this;
 }
 

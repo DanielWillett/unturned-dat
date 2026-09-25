@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using UnturnedDat.Data.Files;
@@ -39,6 +40,19 @@ public class ExpressionValue<TResult> : IValue<TResult>, IEquatable<ExpressionVa
     public bool TryEvaluateValue(out Optional<TResult> value, ref FileEvaluationContext ctx)
     {
         return TryEvaluate(out value, false, ref ctx);
+    }
+
+    /// <inheritdoc />
+    public bool TryCreateConcreteValue(ref FileEvaluationContext ctx, [NotNullWhen(true)] out IValue? value)
+    {
+        if (!TryEvaluateValue(out Optional<TResult> result, ref ctx))
+        {
+            value = null;
+            return false;
+        }
+
+        value = result.HasValue ? Value.Create(result.Value, Type) : Value.Null(Type);
+        return true;
     }
 
     /// <inheritdoc />
