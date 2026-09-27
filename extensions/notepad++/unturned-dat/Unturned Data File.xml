@@ -1,0 +1,45 @@
+﻿<NotepadPlus version="2">
+
+  <Languages>
+  
+    <Language name="Unturned Data File" ext="dat asset vdf tool udat udatproj" commentLine="/" commentStart="" commentEnd="">
+
+      <Keywords name="keywords">true false this</Keywords>
+      <Keywords name="props">Asset Metadata GUID ID Type</Keywords>
+      
+    </Language>
+    
+  </Languages>
+
+  <LexerStyles>
+
+    <LexerType name="Unturned Data File" desc="Unturned Data File" ext="" excluded="no">
+
+      <!-- Light Theme -->
+      <WordsStyle styleID="0"  name="(Light) White space" fgColor="333333" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="1"  name="(Light) Comment" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="2"  name="(Light) Number Value" fgColor="ff3300" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="3"  name="(Light) GUID Value" fgColor="ff3300" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="4"  name="(Light) String Value" fgColor="ff9933" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="5"  name="(Light) Property Name" fgColor="262626" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" keywordClass="props" />
+      <WordsStyle styleID="6"  name="(Light) Punctuation" fgColor="333333" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="7"  name="(Light) Keyword" fgColor="000099" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" keywordClass="keywords" />
+      <WordsStyle styleID="8"  name="(Light) Escape Sequence (\n, etc)" fgColor="ee8c2b" bgColor="FFFFFF" fontName="" fontStyle="0" fontSize="" />
+      
+      <!-- Dark Theme -->
+      <WordsStyle styleID="9"  name="(Dark) White space" fgColor="ffffff" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="10" name="(Dark) Comment" fgColor="57A64A" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="11" name="(Dark) Number Value" fgColor="ffff66" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="12" name="(Dark) GUID Value" fgColor="ffff66" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="13" name="(Dark) String Value" fgColor="ffcc66" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="14" name="(Dark) Property Name" fgColor="cccccc" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" keywordClass="props" />
+      <WordsStyle styleID="15" name="(Dark) Punctuation" fgColor="a6a6a6" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" />
+      <WordsStyle styleID="16" name="(Dark) Keyword" fgColor="66b3ff" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" keywordClass="keywords" />
+      <WordsStyle styleID="17" name="(Dark) Escape Sequence (\n, etc)" fgColor="ffdf80" bgColor="3F3F3F" fontName="" fontStyle="0" fontSize="" />
+
+
+    </LexerType>
+    
+  </LexerStyles>
+  
+</NotepadPlus>

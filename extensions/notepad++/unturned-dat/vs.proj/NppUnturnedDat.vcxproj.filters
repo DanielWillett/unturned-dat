@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\NppUnturnedDat.cpp" />
+    <ClCompile Include="..\src\PluginDefinition.cpp" />
+    <ClCompile Include="..\src\Lexer\LexUnturnedDat.cpp">
+      <Filter>Lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Host\DefaultLexer.cxx">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Host\StyleContext.cxx">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Host\WordList.cxx">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Host\LexAccessor.cxx">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Host\CharacterSet.cxx">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Host\Accessor.cxx">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Host\PropSetSimple.cxx">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\PluginDefinition.h" />
+    <ClInclude Include="..\src\Host\Notepad_plus_msgs.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\PluginInterface.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\menuCmdID.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lexer\LexUnturnedDat.h">
+      <Filter>Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\Scintilla.h">
+      <Filter>Host\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\Sci_Position.h">
+      <Filter>Host\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\ILexer.h">
+      <Filter>Host\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\DefaultLexer.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\LexAccessor.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\StyleContext.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\WordList.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lexer\LexerInterface.h">
+      <Filter>Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\OptionSet.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\SciLexer.h">
+      <Filter>Host\Lexilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\CharacterSet.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\LexerModule.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\Accessor.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Host\PropSetSimple.h">
+      <Filter>Host\Lexilla\Lexlib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\NppUnturnedDat.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Lexer">
+      <UniqueIdentifier>{ed8b313e-064f-42ba-a479-b7520892b542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Host">
+      <UniqueIdentifier>{70a26512-cc62-4050-b083-f457187531c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Host\Scintilla">
+      <UniqueIdentifier>{c16f7485-137b-4cf7-b4d6-e266e6e0c7a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Host\Lexilla">
+      <UniqueIdentifier>{0777a8e2-c47f-4cf0-ba7a-18d94f76b746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Host\Lexilla\Lexlib">
+      <UniqueIdentifier>{a9442367-3bd4-432f-8554-78190310c8f9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\Unturned Data File.xml" />
+  </ItemGroup>
+</Project>

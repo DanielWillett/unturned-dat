@@ -7,12 +7,16 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="README.md" />
+    <File Path=".github/workflows/Update Notepad++ Files.yml" />
     <File Path="language-server/test.runsettings" />
   </Folder>
   <Folder Name="/Solution Items/assets/">
     <File Path="assets/Syntax Highlighting.png" />
   </Folder>
   <Folder Name="/Extensions/" />
+  <Folder Name="/Extensions/Notepad++/">
+    <Project Path="extensions/notepad++/unturned-dat/vs.proj/NppUnturnedDat.vcxproj" Id="02A4E76A-21BA-47F4-A47F-86A2797ED2D1" />
+  </Folder>
   <Folder Name="/Extensions/VS Code/">
     <Project Path="extensions/vscode/unturned-dat/unturned-dat.esproj">
       <Platform Project="AnyCPU" />
